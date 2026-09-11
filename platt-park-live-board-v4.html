@@ -288,28 +288,9 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
 .unit.featured .tankwrap::before{content:'';position:absolute;inset:-46px -34px;pointer-events:none;z-index:0;
   background:radial-gradient(circle at 50% 38%, rgba(238,191,25,.14), rgba(238,191,25,.05) 48%, transparent 68%)}
 
-/* ---- DYNAMIC DAY: the board breathes with Denver's sky ---- */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:55;
-  transition:background-color 60s linear;background-color:rgba(0,0,0,0)}
-body.tod-dawn{background:#efdfc5}
-body.tod-golden{background:#eedcb0}
-body.tod-dusk{background:#dbd7cf}
 
-body.tod-night::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:56;
-  background:radial-gradient(ellipse 115% 105% at 50% 40%, transparent 55%, rgba(10,18,12,.14) 100%)}
 
-/* ---- NIGHT MODE: the board steps back into the room ---- */
-body{transition:background 60s linear, color 60s linear}
-body.tod-night{background:#18251c}
-body.tod-night .name{color:#e7eacd}
-body.tod-night .meta{color:#aab88f}
-body.tod-night .quiet{color:#dfe3c8}
-body.tod-night .tag{color:#8fa470}
-body.tod-night .addr, body.tod-night .elev{color:#8fa470}
-body.tod-night .stamp{filter:invert(1) brightness(1.1);opacity:.09}
-body.tod-night .stage::before{filter:invert(1);opacity:.35}
-body.tod-night .unit.featured .name{color:#f2ecd7}
-.name,.meta,.quiet,.tag{transition:color 60s linear}
+
 
 /* ---- subtle life: liquid drift, sun breath, register clunk ---- */
 .wave{animation:drift 9s ease-in-out infinite alternate}
@@ -654,7 +635,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.0615';
+window.__BUILD='2026-09-11.0630';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
@@ -758,18 +739,7 @@ function festOverride(s){
   window.__buildWire=buildWire;
 })();
 
-/* Denver's actual sky drives the palette: dawn 5-8, day 8-17, golden 17-19, dusk 19-21, night after */
-(function(){
-  function tod(){
-    try{
-      var h=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',hour:'numeric',hour12:false}).formatToParts(new Date()).find(function(p){return p.type==='hour'}).value,10);
-      var ph = h>=5&&h<8?'tod-dawn' : h>=8&&h<17?'' : h>=17&&h<19?'tod-golden' : h>=19&&h<21?'tod-dusk' : 'tod-night';
-      document.body.classList.remove('tod-dawn','tod-golden','tod-dusk','tod-night');
-      if(ph) document.body.classList.add(ph);
-    }catch(e){}
-  }
-  tod(); setInterval(tod, 300000);
-})();
+
 
 /* the odometer clunks like the antique registers this room used to sell */
 (function(){ var last=null; setInterval(function(){ var o=$('odo'); if(!o) return;
