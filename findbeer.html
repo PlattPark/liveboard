@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Our Beer — Platt Park Brewing Co.</title>
+<meta name="description" content="Where to find Platt Park Brewing beer on draft and in cans along the Front Range.">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{--cream:#e7eacd;--forest:#293d22;--ink:#131f0f;--coral:#f0553d;--mustard:#eebf19;--olive:#5a8142}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:'Barlow',sans-serif;background:var(--cream);color:var(--forest);display:flex;flex-direction:column}
+  header{background:var(--forest);color:var(--cream);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-family:'Archivo Black';font-size:20px;letter-spacing:1px;line-height:1.1}
+  header .sub{font-size:13px;letter-spacing:3px;color:var(--mustard);text-transform:uppercase;font-weight:700}
+  .controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:.5px;border:none;border-radius:5px;
+    padding:9px 14px;cursor:pointer;background:var(--mustard);color:var(--ink)}
+  .btn.ghost{background:transparent;color:var(--cream);border:2px solid rgba(231,234,205,.5)}
+  .btn.active{background:var(--coral);color:#fff}
+  .wrap{flex:1;display:flex;min-height:0}
+  #map{flex:1;min-height:0}
+  aside{width:340px;max-width:44vw;background:var(--cream);border-left:3px solid var(--forest);overflow-y:auto}
+  aside .hd{padding:12px 16px 8px;font-family:'Archivo Black';font-size:13px;letter-spacing:2.5px;color:var(--olive);text-transform:uppercase;position:sticky;top:0;background:var(--cream);border-bottom:1.5px solid rgba(41,61,34,.15)}
+  .spot{padding:13px 16px;border-bottom:1.5px solid rgba(41,61,34,.12);cursor:pointer}
+  .spot:hover{background:rgba(238,191,25,.15)}
+  .spot .nm{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+  .spot .dist{margin-left:auto;font-size:12.5px;color:var(--olive);font-weight:600;white-space:nowrap}
+  .spot .meta{font-size:13.5px;color:#46683a;margin-top:2px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:3px;text-transform:uppercase;vertical-align:2px}
+  .tag.draft{background:var(--mustard);color:var(--ink)}
+  .tag.cans{background:var(--forest);color:var(--cream)}
+  .tag.home{background:var(--coral);color:#fff}
+  footer{background:var(--ink);color:#b9c49a;font-size:12px;padding:8px 16px;display:flex;gap:14px;flex-wrap:wrap}
+  footer a{color:var(--mustard);text-decoration:none}
+  .leaflet-popup-content-wrapper{background:var(--cream);color:var(--forest);border-radius:6px;border:2.5px solid var(--forest);box-shadow:4px 4px 0 rgba(41,61,34,.3)}
+  .leaflet-popup-content{font-family:'Barlow';margin:12px 14px}
+  .pp .pn{font-family:'Archivo Black';font-size:15px;margin-bottom:3px}
+  .pp .pm{font-size:13px;color:#46683a;margin-bottom:6px}
+  .pp a{display:inline-block;margin-top:6px;font-weight:700;color:var(--coral);text-decoration:none;font-size:13.5px}
+  #status{position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:1200;background:var(--forest);color:var(--cream);
+    padding:8px 16px;border-radius:6px;font-size:13.5px;display:none;box-shadow:3px 3px 0 rgba(0,0,0,.25)}
+  @media (max-width:760px){
+    .wrap{flex-direction:column}
+    aside{width:100%;max-width:none;height:42vh;border-left:none;border-top:3px solid var(--forest)}
+    header h1{font-size:17px}
+  }
+.regb{display:inline-block;background:#eebf19;color:#131f0f;font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:3px;vertical-align:1px;white-space:nowrap}
+.callout{font-size:12.5px;color:#5a8142;margin:2px 0 0}
+.ctafoot{border-top:1px solid rgba(41,61,34,.18);margin-top:10px;padding-top:9px;font-size:12.5px;line-height:1.55}
+.ctafoot a{color:#f0553d;font-weight:700;text-decoration:none}
+.evb{display:inline-block;background:#f0553d;color:#e7eacd;font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:3px;vertical-align:1px}
+.whenl{font-weight:700;color:#293d22;font-size:12px}
+.hoodh{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5a8142;background:rgba(90,129,66,.10);padding:6px 14px;margin-top:2px;border-bottom:1px solid rgba(41,61,34,.12);position:sticky;top:0;z-index:2}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="sub">Platt Park Brewing Co</div>
+    <h1>Find Our Beer</h1>
+    <div class="callout">100+ spots across the Front Range · taps rotate &amp; shelves sell out — call ahead for tonight's pour</div>
+  </div>
+  <div class="controls">
+    <button class="btn ghost filter active" data-f="all">All</button>
+    <button class="btn ghost filter" data-f="draft">On Draft</button>
+    <button class="btn ghost filter" data-f="cans">Cans</button>
+    <button class="btn" id="near">📍 Near me</button>
+  </div>
+</header>
+<div class="wrap">
+  <div id="map"></div>
+  <aside>
+    <div class="hd" id="listHd">Pouring &amp; stocking Platt Park</div>
+    <div id="list"></div>
+  </aside>
+</div>
+<div class="ctafoot" style="padding:0 16px 10px;background:var(--cream, #e7eacd)"><span style="background:#eebf19;color:#131f0f;font-weight:800;font-size:10px;letter-spacing:.06em;padding:2px 7px;border-radius:3px">REGULAR ROTATION</span> = reorders every week or two, best odds we're pouring. Freshest pints are always at the source — <a href="https://maps.google.com/?q=Platt+Park+Brewing+1875+S+Pearl+St+Denver" style="color:#f0553d;font-weight:700">1875 S Pearl St</a>. Bar or bottle shop that wants us on your list? <a href="mailto:jt@plattparkbrewing.com" style="color:#f0553d;font-weight:700">jt@plattparkbrewing.com</a></div>
+<footer>
+  <span>All USA malts · mostly Colorado-grown · brewed at 1875 S Pearl St, Denver · <a href="https://plattpark.github.io/liveboard/menu.html">full menu</a></span>
+  <span style="margin-left:auto">Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</span>
+</footer>
+<div id="status"></div>
+
+<script>
+/* =========================================================================
+   ACCOUNTS — the only block you ever edit.
+   pours: 'draft' | 'cans' | 'both'
+   Give lat/lng if you know them; otherwise just the address and the page
+   geocodes it once per visitor's device (cached after that).
+   ========================================================================= */
+const HOME = {name:'Platt Park Brewing Co', type:'The mothership', pours:'both',
+  addr:'1875 S Pearl St, Denver, CO 80210', lat:39.6825819, lng:-104.9808023,
+  note:'Taproom · Gates Deli & Grog · brewed 40 feet from the glass'};
+
+const ACCOUNTS = [
+  // === EVENTS — from/until = show window (inclusive); entry vanishes automatically after `until` ===
+  {name:"South Pearl Street Oktoberfest", hood:"This Weekend", event:true, until:"2026-09-12", pours:"draft",
+   lat:39.6900, lng:-104.9808, addr:"S Pearl St, Denver, CO",
+   when:"Sat Sept 12 \u00b7 noon\u201310pm", note:"We're pouring \u2014 four blocks of our home street"},
+  // === DRAFT — bars, restaurants, taphouses ===
+  {name:"Esters Neighborhood Pub — Virginia Vale", hood:"Wash Park & SE Denver", reg:true, pours:"draft", addr:"1950 S Holly St, Denver, CO"},
+  {name:"Esters — Oneida Park", hood:"Uptown, City Park & Park Hill", reg:true, pours:"draft", addr:"2231 Oneida St, Denver, CO"},
+  {name:"Esters — Gold's Marketplace", hood:"Arvada & Wheat Ridge", reg:true, pours:"draft", addr:"Gold's Marketplace, 4901 Kipling St, Wheat Ridge, CO"},
+  {name:"Chook Charcoal Chicken — S Pearl", hood:"Platt Park & S Pearl", reg:true, pours:"draft", addr:"1300 S Pearl St, Denver, CO", note:"Our neighbors up the street"},
+  {name:"Chook Charcoal Chicken — Hilltop", pours:"draft", addr:"Chook Charcoal Chicken, Birch St, Denver, CO"},
+  {name:"Kaos Pizzeria", hood:"Platt Park & S Pearl", reg:true, pours:"draft", addr:"1439 S Pearl St, Denver, CO", note:"S Pearl neighbors"},
+  {name:"FoodLab — South Pearl", hood:"Platt Park & S Pearl", pours:"draft", addr:"FoodLab, S Pearl St, Denver, CO", note:"S Pearl neighbors"},
+  {name:"Meow Wolf Denver — Convergence Station", hood:"Downtown & RiNo", reg:true, pours:"both", addr:"1338 1st St, Denver, CO", note:"Sixtels on tap + cases in the bars"},
+  {name:"Golden Mill", hood:"Golden", reg:true, pours:"draft", addr:"1012 Ford St, Golden, CO", note:"Food hall — always pouring"},
+  {name:"Tap Fourteen — Downtown", hood:"Downtown & RiNo", reg:true, pours:"draft", addr:"Tap Fourteen, 1920 Blake St, Denver, CO", note:"Pouring Platt Park since 2015"},
+  {name:"Tap Fourteen — Uptown", hood:"Uptown, City Park & Park Hill", pours:"draft", addr:"Tap Fourteen Uptown, Denver, CO"},
+  {name:"Homegrown Tap & Dough — Wash Park", hood:"Wash Park & SE Denver", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, S Gaylord St, Denver, CO"},
+  {name:"Homegrown Tap & Dough — Arvada", hood:"Arvada & Wheat Ridge", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, Arvada, CO"},
+  {name:"Homegrown Tap & Dough — Westminster", hood:"Broomfield & Westminster", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, Westminster, CO"},
+  {name:"Homegrown Tap & Dough — Parker", hood:"South Metro", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, Parker, CO"},
+  {name:"Homegrown Tap & Dough — Castle Rock", hood:"South Metro", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, Castle Rock, CO"},
+  {name:"Homegrown Tap & Dough — Ken Caryl", hood:"Littleton & Englewood", reg:true, pours:"draft", addr:"Homegrown Tap and Dough, Ken Caryl, Littleton, CO"},
+  {name:"Parry's Pizzeria & Taphouse — Santa Fe", hood:"Littleton & Englewood", pours:"draft", addr:"Parry's Pizzeria, River Point Parkway, Sheridan, CO"},
+  {name:"Oakwell Beer Spa — Denver", hood:"Uptown, City Park & Park Hill", pours:"draft", addr:"Oakwell Beer Spa, Denver, CO", note:"Yes, a beer spa"},
+  {name:"Oakwell Beer Spa — Highlands Ranch", hood:"South Metro", pours:"draft", addr:"Oakwell Beer Spa, Highlands Ranch, CO"},
+  {name:"Schoolyard Beer Garden", hood:"Littleton & Englewood", pours:"draft", addr:"Schoolyard Beer Garden, Littleton, CO"},
+  {name:"Rocky Mountain Tap & Garden", hood:"Broomfield & Westminster", pours:"draft", addr:"Rocky Mountain Tap and Garden, Broomfield, CO"},
+  {name:"Point Easy", hood:"Uptown, City Park & Park Hill", reg:true, pours:"draft", addr:"Point Easy, 2000 E 28th Ave, Denver, CO"},
+  {name:"Yards Taphouse", pours:"draft", addr:"Yards Taphouse, Denver, CO"},
+  {name:"Belleview Beer Garden", hood:"Littleton & Englewood", reg:true, pours:"draft", addr:"Belleview Beer Garden, Englewood, CO"},
+  {name:"The District Pour and Provision", reg:true, pours:"draft", addr:"The District Pour and Provision, CO"},
+  {name:"The Table Top", pours:"draft", addr:"The Table Top, Denver, CO"},
+  {name:"Appaloosa Grill", hood:"Downtown & RiNo", pours:"draft", addr:"535 16th Street Mall, Denver, CO"},
+  {name:"Colorado Taphouse — Arvada", hood:"Arvada & Wheat Ridge", reg:true, pours:"draft", addr:"Colorado Taphouse, Arvada, CO"},
+  {name:"Colorado Tap House — Parker", hood:"South Metro", pours:"draft", addr:"19308 Cottonwood Dr, Parker, CO"},
+  {name:"Bluegrass Lounge — Olde Town", hood:"Arvada & Wheat Ridge", reg:true, pours:"draft", addr:"Bluegrass Lounge, Olde Town Arvada, Arvada, CO"},
+  {name:"Bluegrass Lounge — North", hood:"Broomfield & Westminster", pours:"draft", addr:"Bluegrass Lounge, Westminster, CO"},
+  {name:"Trash Hawk Tavern", hood:"Broadway & Baker", pours:"draft", addr:"Trash Hawk Tavern, S Broadway, Denver, CO"},
+  {name:"Fire on the Mountain — Highlands", hood:"Highlands & North Denver", pours:"draft", addr:"3801 W 32nd Ave, Denver, CO"},
+  {name:"Double D's Pizza", hood:"Broadway & Baker", reg:true, pours:"draft", addr:"Double D's Sourdough Pizza, Denver, CO"},
+  {name:"King of Wings — Wheat Ridge", hood:"Arvada & Wheat Ridge", pours:"draft", addr:"King of Wings, Wheat Ridge, CO"},
+  {name:"Riot BBQ", pours:"draft", addr:"Riot BBQ, CO"},
+  {name:"Berkeley Untapped", hood:"Highlands & North Denver", pours:"draft", addr:"Berkeley Untapped, Tennyson St, Denver, CO"},
+  {name:"Sloan's Bar & Grill", hood:"Highlands & North Denver", pours:"draft", addr:"Sloans Bar and Grill, Denver, CO"},
+  {name:"Rooftop Tavern — Morrison", hood:"Foothills", pours:"draft", addr:"Rooftop Tavern, Morrison, CO", note:"Hometown pour"},
+  {name:"Yardbird", reg:true, pours:"draft", addr:"Yardbird, Denver, CO"},
+  {name:"Stanley Beer Hall", hood:"Aurora & Stanley", reg:true, pours:"draft", addr:"Stanley Marketplace, 2501 Dallas St, Aurora, CO"},
+  {name:"The Local Drive — Stanley Marketplace", hood:"Aurora & Stanley", pours:"draft", addr:"Stanley Marketplace, 2501 Dallas St, Aurora, CO"},
+  {name:"Trailhead Taphouse", pours:"draft", addr:"Trailhead Taphouse, CO"},
+  {name:"2 Penguins Tap & Grill", hood:"South Metro", pours:"draft", addr:"2 Penguins Tap and Grill, Centennial, CO"},
+  {name:"Jake's Brew Bar", hood:"Littleton & Englewood", pours:"draft", addr:"Jakes Brew Bar, Littleton, CO"},
+  {name:"Max Taps Co — Highlands Ranch", hood:"South Metro", pours:"draft", addr:"Max Taps, Highlands Ranch, CO"},
+  {name:"Blue Pan Pizza — Highlands", hood:"Highlands & North Denver", pours:"draft", addr:"Blue Pan Pizza, W 32nd Ave, Denver, CO"},
+  {name:"Monkey Barrel", hood:"Highlands & North Denver", pours:"draft", addr:"Monkey Barrel, Denver, CO"},
+  {name:"Walnut Room — RiNo", hood:"Downtown & RiNo", pours:"draft", addr:"Walnut Room, Walnut St, Denver, CO"},
+  {name:"Joe Willy's", pours:"draft", addr:"Joe Willy's, CO"},
+  {name:"St. Paul Tavern", hood:"Uptown, City Park & Park Hill", pours:"draft", addr:"St Paul Tavern, E Colfax Ave, Denver, CO"},
+  {name:"Walters Pizza — Uptown", hood:"Uptown, City Park & Park Hill", pours:"draft", addr:"Walters303 Pizzeria, Denver, CO"},
+  {name:"Shoes & Brews", hood:"Longmont", pours:"draft", addr:"Shoes and Brews, Longmont, CO"},
+  {name:"Commerce City Pour Tap House", hood:"North Metro", pours:"draft", addr:"Commerce City Pour Taphouse, Commerce City, CO"},
+  {name:"Meier Skis", reg:true, pours:"draft", addr:"Meier Skis, Denver, CO", note:"Beers in a ski factory"},
+
+  // === CANS — bottle shops, liquor stores, markets ===
+  {name:"Total Wine & More — Lakewood", hood:"Lakewood & Edgewater", reg:true, pours:"cans", addr:"Total Wine, Lakewood, CO"},
+  {name:"Total Wine & More — Centennial", hood:"South Metro", reg:true, pours:"cans", addr:"Total Wine, Centennial, CO"},
+  {name:"Total Wine & More — Evans", hood:"Wash Park & SE Denver", reg:true, pours:"cans", addr:"Total Wine, E Evans Ave, Denver, CO"},
+  {name:"Molly's Spirits — Lakeside", hood:"Highlands & North Denver", reg:true, pours:"cans", addr:"Molly's Spirits, 5809 W 44th Ave, Denver, CO"},
+  {name:"Molly's Spirits — Greenwood Village", hood:"South Metro", reg:true, pours:"cans", addr:"Molly's Spirits, Greenwood Village, CO"},
+  {name:"Daveco Liquors", hood:"North Metro", pours:"cans", addr:"Daveco Liquors, Thornton, CO"},
+  {name:"Applejack Wine & Spirits — Wheat Ridge", hood:"Arvada & Wheat Ridge", pours:"cans", addr:"Applejack Wine and Spirits, Wheat Ridge, CO"},
+  {name:"Applejacks — Thornton", hood:"North Metro", pours:"cans", addr:"Applejacks Liquor, Thornton, CO"},
+  {name:"Davidsons Liquors — Highlands Ranch", hood:"South Metro", pours:"cans", addr:"Davidsons Liquors, Highlands Ranch, CO"},
+  {name:"Bubbles Liquor World", hood:"South Metro", pours:"cans", addr:"Bubbles Liquor World, Castle Rock, CO"},
+  {name:"Wyatt's Wet Goods", hood:"Longmont", pours:"cans", addr:"Wyatts Wet Goods, Longmont, CO"},
+  {name:"Whole Foods — Longmont", hood:"Longmont", pours:"cans", addr:"Whole Foods Market, Longmont, CO"},
+  {name:"Leevers Locavore", hood:"Highlands & North Denver", reg:true, pours:"cans", addr:"Leevers Locavore, 2630 W 38th Ave, Denver, CO"},
+  {name:"Tony's Meats & Market — Littleton", hood:"Littleton & Englewood", reg:true, pours:"cans", addr:"Tony's Market, Littleton, CO"},
+  {name:"Tony's Meats & Market — Centennial", hood:"South Metro", reg:true, pours:"cans", addr:"Tony's Market, Centennial, CO"},
+  {name:"Grove Liquor", hood:"North Metro", pours:"cans", addr:"Grove Liquor, Thornton, CO"},
+  {name:"Superior Liquor", hood:"Broomfield & Westminster", pours:"cans", addr:"Superior Liquor, Superior, CO"},
+  {name:"Uptown Wines Beer & Spirits", hood:"Uptown, City Park & Park Hill", pours:"cans", addr:"Uptown Wines Beer and Spirits, Denver, CO"},
+  {name:"Rino Liquors", hood:"Downtown & RiNo", reg:true, pours:"cans", addr:"Rino Liquors, Denver, CO"},
+  {name:"Mile High Wine Cellars", pours:"cans", addr:"Mile High Wine Cellars, CO"},
+  {name:"Warrior Liquor", pours:"cans", addr:"Warrior Liquor, CO"},
+  {name:"Columbine Valley Liquors", hood:"Littleton & Englewood", pours:"cans", addr:"Columbine Valley Liquors, Littleton, CO"},
+  {name:"Depew Liquors — Edgewater", hood:"Lakewood & Edgewater", pours:"cans", addr:"Depew Liquors, Edgewater, CO"},
+  {name:"Lowry Liquors", hood:"Wash Park & SE Denver", pours:"cans", addr:"Lowry Liquors, Denver, CO"},
+  {name:"Colorado's Best Beers", hood:"Littleton & Englewood", pours:"cans", addr:"Colorado's Best Beers, Littleton, CO"},
+  {name:"Arista Wine & Spirits", hood:"Broomfield & Westminster", reg:true, pours:"cans", addr:"Arista Wine and Spirits, Broomfield, CO"},
+  {name:"Biggie Wine & Liquor", pours:"cans", addr:"Biggie Wine and Liquor, Denver, CO"},
+  {name:"Union Wine & Spirits", pours:"cans", addr:"Union Wine and Spirits, Denver, CO"},
+  {name:"Aspen Park Wine & Spirits", hood:"Foothills", pours:"cans", addr:"Aspen Park Wine and Spirits, Conifer, CO"},
+  {name:"Colorado Beverage Company", pours:"cans", addr:"Colorado Beverage Company, Denver, CO"},
+  {name:"21st Amendment — Denver", hood:"Uptown, City Park & Park Hill", pours:"cans", addr:"21st Amendment Liquor, Denver, CO"},
+  {name:"Turnberry Liquors", hood:"North Metro", pours:"cans", addr:"Turnberry Liquors, Commerce City, CO"},
+  {name:"Golden Wine", hood:"Golden", pours:"cans", addr:"Golden Wine, Golden, CO"},
+  {name:"Foss Company", hood:"Golden", pours:"cans", addr:"Foss Company, Golden, CO", note:"Wine, spirits, beer & cigars since 1913"},
+  {name:"Lincoln Wine & Spirits", pours:"cans", addr:"Lincoln Wine and Spirits, Denver, CO"},
+  {name:"Roxy on Broadway", hood:"Broadway & Baker", pours:"draft", addr:"Roxy on Broadway, S Broadway, Denver, CO"},
+  {name:"17th St Liquors — Uptown", hood:"Uptown, City Park & Park Hill", pours:"cans", addr:"17th Street Liquors, Denver, CO"},
+  {name:"Skyline Spirits", pours:"cans", addr:"Skyline Spirits, CO"},
+  {name:"Denver Liquor Outlet", pours:"cans", addr:"Denver Liquor Outlet, Denver, CO"},
+  {name:"Dry Creek Discount Liquors", hood:"Littleton & Englewood", pours:"cans", addr:"Dry Creek Discount Liquors, Englewood, CO"},
+  {name:"Champa Liquors", hood:"Downtown & RiNo", pours:"cans", addr:"Champa Liquors, Denver, CO"},
+  {name:"Joy Wine & Spirits", hood:"Wash Park & SE Denver", pours:"cans", addr:"Joy Wine and Spirits, E 6th Ave, Denver, CO"},
+  {name:"Hugo's Colorado Beer & Spirits", pours:"cans", addr:"Hugo's Colorado Beer and Spirits, Denver, CO"},
+  {name:"Oneida Liquors", hood:"Uptown, City Park & Park Hill", pours:"cans", addr:"Oneida Liquors, Denver, CO"},
+];
+
+/* ========================================================================= */
+const $=id=>document.getElementById(id);
+function status(t,ms){const el=$('status');el.textContent=t;el.style.display='block';clearTimeout(el._t);if(ms)el._t=setTimeout(()=>el.style.display='none',ms);}
+
+let map,markers=[],userLoc=null,filter='all';
+const ALL=[HOME,...ACCOUNTS];
+
+function boot(){
+  if(typeof L==='undefined'){
+    if(!boot._t)boot._t=0;
+    if(boot._t<40){boot._t++;if(boot._t===4)status('Loading map…',0);setTimeout(boot,250);return;}
+    status('Map library failed to load — check connection and refresh.',0);renderList();return;
+  }
+  map=L.map('map',{scrollWheelZoom:true}).setView([HOME.lat,HOME.lng],11);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
+    attribution:'© OpenStreetMap contributors'}).addTo(map);
+  hydrate();
+}
+
+function pinIcon(spot){
+  const home=spot===HOME;
+  const c=home?'#293d22':'#f0553d';
+  const w=home?42:34, h=home?56:46;
+  const star='<path d="M17 10.6l1.9 3.9 4.3.6-3.1 3 .7 4.2-3.8-2-3.8 2 .7-4.2-3.1-3 4.3-.6z" fill="#eebf19"/>';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 34 46">
+    <path d="M17 1C8.7 1 2 7.7 2 16c0 10.6 12.2 26.4 14.1 28.7a1.2 1.2 0 0 0 1.8 0C19.8 42.4 32 26.6 32 16 32 7.7 25.3 1 17 1z"
+      fill="${c}" stroke="#e7eacd" stroke-width="2"/>
+    ${home?star:'<circle cx="17" cy="16" r="6.5" fill="#eebf19"/>'}
+  </svg>`;
+  return L.divIcon({html:svg,className:'',iconSize:[w,h],iconAnchor:[w/2,h-2],popupAnchor:[0,-h+6]});
+}
+
+function popupHtml(s){
+  const dir='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(s.addr);
+  const info='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name.replace(/ — /g,' ')+', '+s.addr);
+  const tags = s.pours==='both' ? '<span class="tag draft">Draft</span> <span class="tag cans">Cans</span>'
+    : s.pours==='draft' ? '<span class="tag draft">On draft</span>' : '<span class="tag cans">Cans</span>';
+  return `<div class="pp"><div class="pn">${s.name}</div>
+    <div class="pm">${s.type||({draft:'On draft',cans:'Cans to go',both:'Draft + cans'})[s.pours]||''} ${s.event?`<span class="evb">EVENT</span>`:''}${s.when?` <span class="whenl">${s.when}</span>`:''}${s.reg?`<span class="regb">${s.pours==='cans'?'REGULARLY STOCKED':'REGULAR ROTATION'}</span>`:''} · ${tags}</div>
+    ${s.note?`<div class="pm">${s.note}</div>`:''}
+    <div class="pm">${s.addr}</div>
+    <a href="${info}" target="_blank" rel="noopener">📞 Hours &amp; phone</a> &nbsp;·&nbsp; <a href="${dir}" target="_blank" rel="noopener">Directions →</a></div>`;
+}
+
+function show(spots){
+  markers.forEach(m=>map.removeLayer(m)); markers=[];
+  const pts=[];
+  for(const s of spots){
+    if(s.lat==null) continue;
+    const m=L.marker([s.lat,s.lng],{icon:pinIcon(s)}).addTo(map).bindPopup(popupHtml(s));
+    s._m=m; markers.push(m); pts.push([s.lat,s.lng]);
+  }
+  if(pts.length>1) map.fitBounds(pts,{padding:[46,46],maxZoom:13});
+}
+
+function dist(a,b){ // miles
+  const R=3958.8,d2r=Math.PI/180;
+  const dLat=(b.lat-a.lat)*d2r, dLng=(b.lng-a.lng)*d2r;
+  const q=Math.sin(dLat/2)**2+Math.cos(a.lat*d2r)*Math.cos(b.lat*d2r)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(q));
+}
+
+function visible(){
+  return ALL.filter(s=>filter==='all'||s.pours===filter||s.pours==='both');
+}
+
+const HOOD_ORDER=["This Weekend","Platt Park & S Pearl","Wash Park & SE Denver","Broadway & Baker",
+"Downtown & RiNo","Uptown, City Park & Park Hill","Highlands & North Denver","Arvada & Wheat Ridge",
+"Lakewood & Edgewater","Golden","Littleton & Englewood","South Metro","Aurora & Stanley",
+"North Metro","Broomfield & Westminster","Longmont","Foothills","Front Range"];
+function renderList(){
+  const spots=visible().slice();
+  if(userLoc){ spots.sort((x,y)=>dist(userLoc,x)-dist(userLoc,y)); }
+  else {
+    const gi=s=>{const i=HOOD_ORDER.indexOf(s.hood||"Front Range");return i<0?HOOD_ORDER.length-1:i;};
+    spots.sort((x,y)=>gi(x)-gi(y)||(y.reg?1:0)-(x.reg?1:0)||x.name.localeCompare(y.name));
+  }
+  let lastHood=null;
+  $('list').innerHTML=spots.map(s=>{
+    let hdr='';
+    if(!userLoc && s!==HOME){
+      const h=s.hood||'Front Range';
+      if(h!==lastHood){lastHood=h;hdr=`<div class="hoodh">${h}</div>`;}
+    }
+    return hdr + (s=>{
+    const home=s===HOME;
+    const tags = home?'<span class="tag home">Brewery</span>'
+      : s.pours==='both'?'<span class="tag draft">Draft</span><span class="tag cans">Cans</span>'
+      : s.pours==='draft'?'<span class="tag draft">Draft</span>':'<span class="tag cans">Cans</span>';
+    const d=userLoc&&s.lat!=null?`<span class="dist">${dist(userLoc,s).toFixed(1)} mi</span>`:'';
+    return `<div class="spot" data-n="${s.name}"><div class="nm">${s.name} ${tags} ${d}</div>
+      <div class="meta">${s.type||({draft:'On draft',cans:'Cans to go',both:'Draft + cans'})[s.pours]||''} ${s.event?`<span class="evb">EVENT</span>`:''}${s.when?` <span class="whenl">${s.when}</span>`:''}${s.reg?`<span class="regb">${s.pours==='cans'?'REGULARLY STOCKED':'REGULAR ROTATION'}</span>`:''} · ${s.addr}</div>${s.note?`<div class="meta">${s.note}</div>`:''}</div>`;
+    })(s);
+  }).join('') || '<div class="spot"><div class="meta">Account list loading soon — the taproom is always pouring.</div></div>';
+  document.querySelectorAll('.spot').forEach(el=>{
+    el.onclick=()=>{const s=ALL.find(x=>x.name===el.dataset.n);
+      if(s&&s._m){map.setView([s.lat,s.lng],15);s._m.openPopup();}};
+  });
+  $('listHd').textContent = `${spots.length} spot${spots.length===1?'':'s'}` + (filter!=='all'?` · ${filter}`:'') + (userLoc?' · nearest first':'');
+}
+
+/* geocode entries missing coords: Nominatim, 1.1s apart, cached per device */
+async function hydrate(){
+  const cache=JSON.parse(localStorage.getItem('ppb_geo')||'{}');
+  const need=ALL.filter(s=>s.lat==null);
+  for(const s of ALL){ if(s.lat==null&&cache[s.addr]){ s.lat=cache[s.addr][0]; s.lng=cache[s.addr][1]; } }
+  show(visible()); renderList();
+  const still=ALL.filter(s=>s.lat==null);
+  if(still.length){
+    status(`Locating ${still.length} spot${still.length>1?'s':''}…`,0);
+    for(const s of still){
+      try{
+        const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(s.addr),
+          {headers:{'Accept':'application/json'}});
+        const j=await r.json();
+        if(j[0]){ s.lat=+j[0].lat; s.lng=+j[0].lon; cache[s.addr]=[s.lat,s.lng]; localStorage.setItem('ppb_geo',JSON.stringify(cache)); }
+      }catch(e){}
+      await new Promise(r=>setTimeout(r,1100));
+    }
+    status('',1); show(visible()); renderList();
+  }
+}
+
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); filter=b.dataset.f;
+  show(visible()); renderList();
+});
+
+$('near').onclick=()=>{
+  if(!navigator.geolocation){status('Location not available in this browser.',2500);return;}
+  status('Finding you…',0);
+  navigator.geolocation.getCurrentPosition(p=>{
+    userLoc={lat:p.coords.latitude,lng:p.coords.longitude};
+    status('',1);
+    if(map){L.circleMarker([userLoc.lat,userLoc.lng],{radius:8,color:'#f0553d',fillColor:'#f0553d',fillOpacity:.85}).addTo(map);
+      map.setView([userLoc.lat,userLoc.lng],12);}
+    renderList();
+  },()=>status('Could not get your location.',2500),{enableHighAccuracy:false,timeout:8000});
+};
+
+(function(){
+  var d=new Date(), today=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  for(var i=ACCOUNTS.length-1;i>=0;i--){var a=ACCOUNTS[i];
+    if((a.until&&today>a.until)||(a.from&&today<a.from))ACCOUNTS.splice(i,1);}
+})();
+window.addEventListener('load',boot);
+</script>
+<script>
+(function(){
+  var srcs=['https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js',
+            'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'];
+  function tryLoad(i){
+    if(i>=srcs.length||window.L)return;
+    var s=document.createElement('script');
+    s.src=srcs[i];
+    s.onerror=function(){tryLoad(i+1)};
+    document.body.appendChild(s);
+  }
+  tryLoad(0);
+})();
+</script>
+</body>
+</html>
