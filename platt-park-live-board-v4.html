@@ -48,7 +48,7 @@
   .chip{
     font-family:'Archivo Black';font-size:21px;letter-spacing:1px;
     background:#293d22;color:#e7eacd;
-    padding:11px 18px;border-radius:4px;
+    padding:8px 18px;border-radius:4px;line-height:1.35;text-align:center;
     box-shadow:4px 4px 0 rgba(41,61,34,.25);
     font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:9px;
   }
@@ -336,6 +336,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
     <div class="s-item" id="s-cider"><div class="s-row"><span class="s-name">2 Towns BrightCider · Dry</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">2 Towns Spiced Apple Cider</span><span class="s-price">$9</span></div></div>
     <div class="s-item" id="s-seltzer"><div class="s-row"><span class="s-name">Boochcraft · Passion Fruit Blood Orange</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
+        <div class="s-item"><div class="s-row"><span class="s-name">Bravazzi Hard Italian Soda</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">Wine · Red / White / Rosé</span><span class="s-price">$9–11</span></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">Craftwell Draft Cocktail</span><span class="s-price">$12</span></div><div class="s-flavor">Peach Mojito</div></div>
     <div class="s-item frozen"><div class="s-row"><span class="s-name">Frozen Cocktails</span><span class="s-price">$12</span></div><div class="s-flavor" id="sFlavor">Mexican Firing Squad (pom marg) · Transfusion</div></div>
@@ -499,7 +500,7 @@ function render(s){
     liq.querySelector('.wave').style.fill=beer.colorTop;
     u.querySelector('.name').innerHTML=(beer.medal?'<span class="goldflag">GOLD</span>':'')+beer.name;
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?' <span class="p10">\u00b7 10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
+    u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?'<br><span class="p10">10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
@@ -636,7 +637,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.0715';
+window.__BUILD='2026-09-11.0745';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
