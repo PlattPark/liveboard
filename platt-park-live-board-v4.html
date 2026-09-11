@@ -291,9 +291,9 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
 /* ---- DYNAMIC DAY: the board breathes with Denver's sky ---- */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:55;
   transition:background-color 60s linear;background-color:rgba(0,0,0,0)}
-body.tod-dawn::before{background-color:rgba(243,178,148,.15)}
-body.tod-golden::before{background-color:rgba(236,168,58,.13)}
-body.tod-dusk::before{background-color:rgba(118,106,158,.15)}
+body.tod-dawn{background:#efdfc5}
+body.tod-golden{background:#eedcb0}
+body.tod-dusk{background:#dbd7cf}
 
 body.tod-night::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:56;
   background:radial-gradient(ellipse 115% 105% at 50% 40%, transparent 55%, rgba(10,18,12,.14) 100%)}
@@ -564,7 +564,7 @@ const SIM={beers:[
  {id:'astronaut-amber',name:'Astronaut Amber',style:'American Amber',abv:5.3,price10:4.75,price:7.5,rating:3.51,vessel:'tank10',vesselLabel:'10 BBL',color:'#a8542a',colorTop:'#c97648',remainingOz:37320,tappedAt:Date.now()-86400000*15},
  {id:'witbier',name:'Witbier',style:'Witbier / Blanche',abv:4.3,price10:4.75,price:7.5,rating:3.6,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#e6d9a0',colorTop:'#f3ecc4',remainingOz:1579,tappedAt:Date.now()-86400000*4},
  {id:'madagascar-dream',name:'Madagascar Dream',style:'Vanilla Cream · Nitro',abv:6.0,price10:5.0,price:8.0,rating:3.75,vessel:'tank10',vesselLabel:'10 BBL',color:'#c9973c',colorTop:'#e6bd6e',remainingOz:36872,tappedAt:Date.now()-86400000*21},
- {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'serve6',vesselLabel:'6 BBL',color:'#5a3a1c',colorTop:'#7d5527',remainingOz:4593,tappedAt:Date.now()-86400000*8},
+ {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'serve6',vesselLabel:'6 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:4593,tappedAt:Date.now()-86400000*8},
  {id:'watermelon-sour',name:'Watermelon Sour',style:'Berliner Weisse',abv:4.0,pourNote:'10oz',price:7.5,rating:3.94,vessel:'serve6',vesselLabel:'6 BBL',color:'#d6607a',colorTop:'#e88aa0',remainingOz:3966,tappedAt:Date.now()-86400000*11}
 ],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'watermelon-sour':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Prickly pear marg'}]};
 window.__scene='default';
@@ -654,7 +654,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.0545';
+window.__BUILD='2026-09-11.0615';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
