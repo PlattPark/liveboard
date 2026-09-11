@@ -333,10 +333,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
   <div class="sidecol">
 <div class="side" id="side">
     <div class="side-h">Also pouring</div>
-    <div class="s-item" id="s-cider"><div class="s-row"><span class="s-name">2 Towns BrightCider · Dry</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
+    <div class="s-item" id="s-cider"><div class="s-row"><span class="s-name">2 Towns BrightCider · Dry</span><span class="s-price">$9</span></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">2 Towns Spiced Apple Cider</span><span class="s-price">$9</span></div></div>
-    <div class="s-item" id="s-seltzer"><div class="s-row"><span class="s-name">Boochcraft · Passion Fruit Blood Orange</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
-        <div class="s-item"><div class="s-row"><span class="s-name">Bravazzi Hard Italian Soda</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
+    <div class="s-item" id="s-seltzer"><div class="s-row"><span class="s-name">Boochcraft · Passion Fruit Blood Orange</span><span class="s-price">$9</span></div></div>
+        <div class="s-item"><div class="s-row"><span class="s-name">Bravazzi Hard Italian Soda</span><span class="s-price">$9</span></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">Wine · Red / White / Rosé</span><span class="s-price">$9–11</span></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">Craftwell Draft Cocktail</span><span class="s-price">$12</span></div><div class="s-flavor">Peach Mojito</div></div>
     <div class="s-item frozen"><div class="s-row"><span class="s-name">Frozen Cocktails</span><span class="s-price">$12</span></div><div class="s-flavor" id="sFlavor">Mexican Firing Squad (pom marg) · Transfusion</div></div>
@@ -637,7 +637,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.0745';
+window.__BUILD='2026-09-11.0830';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
@@ -673,7 +673,7 @@ window.__BUILD='2026-09-11.0745';
 function festOverride(s){
   try{
     const d=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).format(new Date());
-    if(d==='2026-09-12'){
+    if(d==='2026-09-12' || new URLSearchParams(location.search).has('fest')){
       s.context=s.context||{};
       s.context.event={title:'South Pearl Oktoberfest',banner:'South Pearl Oktoberfest today \u00b7 Festbier + steins pouring til 10 \u00b7 real bathrooms, no lines'};
       s.context.eventPhase='run';
@@ -683,7 +683,7 @@ function festOverride(s){
 }
 (function(){ const _r=render; render=function(s){ return _r(festOverride(s)); }; })();
 
-(function(){ function isFest(){ try{ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).format(new Date())==='2026-09-12'; }catch(e){ return false; } }
+(function(){ function isFest(){ try{ if(new URLSearchParams(location.search).has('fest')) return true; return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).format(new Date())==='2026-09-12'; }catch(e){ return false; } }
   function enforce(){ if(!isFest()) return; var b=$('banner'); if(b && !b.classList.contains('show')){ b.innerHTML='<strong>South Pearl Oktoberfest</strong> Festbier + steins pouring til 10 \u00b7 real bathrooms, no lines'; b.classList.add('show','gold'); } }
   enforce(); setInterval(enforce, 15000); })();
 
