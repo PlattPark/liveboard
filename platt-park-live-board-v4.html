@@ -150,8 +150,8 @@
 
   .unit.low .tbody{box-shadow:0 0 0 3px #eebf19}
   .lowtag{position:absolute;top:44%;left:50%;transform:translateX(-50%) rotate(-4deg);z-index:4;display:none;
-    background:#eebf19;color:#293d22;font-family:'Archivo Black';font-size:15px;
-    letter-spacing:1.5px;padding:4px 10px;border-radius:3px;white-space:nowrap;text-transform:uppercase;
+    background:#eebf19;color:#293d22;font-family:'Archivo Black';font-size:13.5px;
+    letter-spacing:1.2px;padding:3px 8px;border-radius:3px;white-space:nowrap;text-transform:uppercase;max-width:none;
     box-shadow:3px 3px 0 rgba(41,61,34,.3)}
   .unit.low .lowtag{display:block}
   .unit.kicked .liquid{transform:translateY(101%) !important}
@@ -162,14 +162,14 @@
 
   .plate{margin-top:10px;text-align:center;min-height:118px;position:relative;z-index:2}
   .goldflag.sv{background:#cdd2da !important;color:#293d22}
-  .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:15px;letter-spacing:1.5px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+  .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
   .plate .name{
     font-family:'Anton',sans-serif;font-size:32px;letter-spacing:1px;line-height:.97;
     text-transform:uppercase;color:#293d22;
   }
-  body.scene-industry .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:15px;letter-spacing:1.5px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+  body.scene-industry .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
   body.scene-industry .plate .name{color:#e7eacd}
-  .plate .meta{color:#46683a;font-size:17px;font-weight:600;margin-top:1px}
+  .plate .meta{color:#293d22;font-size:22px;font-weight:700;margin-top:2px;line-height:1.15}
   body.scene-industry .plate .meta{color:#b9c49a}
   .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:6px}
   .plate .price{
@@ -269,8 +269,7 @@ header{position:relative}
 /* ---- JOURNAL EDITION: field-guide skin ---- */
 /* topo contours behind everything (decorative, tone-on-tone) */
 .stage::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.9;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'1920'%20height%3D'1080'%20viewBox%3D'0%200%201920%201080'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23293d22'%20stroke-opacity%3D'.16'%20stroke-width%3D'1.6'%3E%0A%3Cpath%20d%3D'M-40%2C240%20C160%2C190%20340%2C220%20470%2C320%20C560%2C390%20560%2C500%20470%2C580%20C360%2C675%20140%2C690%20-40%2C620'%2F%3E%0A%3Cpath%20d%3D'M-40%2C320%20C130%2C280%20280%2C305%20385%2C385%20C455%2C440%20455%2C525%20385%2C585%20C300%2C660%20120%2C672%20-40%2C615'%2F%3E%0A%3Cpath%20d%3D'M-40%2C400%20C100%2C370%20215%2C392%20295%2C450%20C348%2C492%20348%2C552%20295%2C598%20C230%2C655%2090%2C662%20-40%2C610'%2F%3E%0A%3Cpath%20d%3D'M-40%2C470%20C70%2C450%20155%2C468%20213%2C510%20C252%2C540%20252%2C582%20213%2C615%20C165%2C655%2060%2C660%20-40%2C600'%2F%3E%0A%3Cpath%20d%3D'M-40%2C120%20C300%2C60%20700%2C50%201050%2C95%20C1400%2C140%201720%2C230%201960%2C380'%2F%3E%0A%3Cpath%20d%3D'M-40%2C60%20C320%2C5%20760%2C-10%201120%2C40%20C1470%2C88%201760%2C180%201960%2C300'%2F%3E%0A%3Cpath%20d%3D'M440%2C1120%20C420%2C980%20520%2C860%20700%2C810%20C900%2C755%201170%2C775%201310%2C880%20C1420%2C965%201420%2C1080%201330%2C1120'%2F%3E%0A%3Cpath%20d%3D'M540%2C1120%20C530%2C1010%20610%2C915%20760%2C873%20C925%2C828%201140%2C845%201255%2C930%20C1340%2C995%201345%2C1080%201280%2C1120'%2F%3E%0A%3Cpath%20d%3D'M660%2C1120%20C655%2C1040%20715%2C970%20830%2C938%20C955%2C903%201115%2C918%201200%2C983%20C1260%2C1030%201262%2C1080%201215%2C1120'%2F%3E%0A%3Cpath%20d%3D'M560%2C270%20C610%2C205%20710%2C175%20800%2C195%20C890%2C215%20935%2C270%20920%2C340%20C905%2C410%20825%2C455%20730%2C445%20C635%2C435%20520%2C355%20560%2C270%20Z'%2F%3E%0A%3Cpath%20d%3D'M600%2C275%20C640%2C225%20720%2C205%20792%2C222%20C864%2C240%20898%2C285%20885%2C338%20C872%2C392%20808%2C425%20732%2C417%20C656%2C408%20565%2C330%20600%2C275%20Z'%2F%3E%0A%3Cpath%20d%3D'M640%2C282%20C670%2C245%20730%2C232%20785%2C246%20C838%2C260%20862%2C295%20852%2C333%20C842%2C372%20795%2C395%20738%2C388%20C680%2C380%20610%2C322%20640%2C282%20Z'%2F%3E%0A%3Cpath%20d%3D'M680%2C290%20C700%2C266%20742%2C258%20780%2C268%20C818%2C278%20832%2C302%20825%2C327%20C817%2C353%20785%2C368%20745%2C363%20C704%2C358%20660%2C318%20680%2C290%20Z'%2F%3E%0A%3Cpath%20d%3D'M716%2C300%20C728%2C286%20752%2C281%20774%2C287%20C796%2C294%20804%2C308%20799%2C323%20C794%2C338%20774%2C346%20751%2C342%20C728%2C338%20704%2C317%20716%2C300%20Z'%2F%3E%0A%3Cpath%20d%3D'M980%2C350%20C1020%2C300%201090%2C285%201155%2C305%20C1220%2C325%201250%2C375%201235%2C425%20C1220%2C475%201155%2C505%201085%2C495%20C1015%2C485%20940%2C405%20980%2C350%20Z'%2F%3E%0A%3Cpath%20d%3D'M1015%2C362%20C1045%2C325%201100%2C313%201150%2C329%20C1198%2C345%201220%2C382%201208%2C419%20C1196%2C457%201146%2C479%201092%2C471%20C1038%2C464%20985%2C402%201015%2C362%20Z'%2F%3E%0A%3Cpath%20d%3D'M1050%2C374%20C1070%2C350%201110%2C341%201146%2C353%20C1180%2C364%201196%2C390%201188%2C416%20C1179%2C443%201143%2C458%201105%2C452%20C1067%2C447%201030%2C406%201050%2C374%20Z'%2F%3E%0A%3Cpath%20d%3D'M1085%2C387%20C1097%2C373%201122%2C368%201144%2C375%20C1166%2C382%201175%2C398%201170%2C414%20C1164%2C431%201141%2C440%201118%2C436%20C1095%2C432%201073%2C408%201085%2C387%20Z'%2F%3E%0A%3Cpath%20d%3D'M890%2C270%20C925%2C252%20965%2C256%20987%2C276%20C975%2C300%20943%2C315%20911%2C310%20C885%2C306%20875%2C285%20890%2C270%20Z'%2F%3E%0A%3Cpath%20d%3D'M1380%2C-40%20C1330%2C120%201360%2C300%201480%2C430%20C1580%2C538%201740%2C600%201960%2C610'%2F%3E%0A%3Cpath%20d%3D'M1480%2C-40%20C1440%2C100%201468%2C255%201570%2C368%20C1660%2C465%201800%2C522%201960%2C532'%2F%3E%0A%3Cpath%20d%3D'M1580%2C-40%20C1550%2C80%201575%2C210%201660%2C305%20C1735%2C388%201850%2C438%201960%2C448'%2F%3E%0A%3Cpath%20d%3D'M1690%2C-40%20C1668%2C60%201688%2C168%201758%2C246%20C1818%2C314%201900%2C356%201960%2C362'%2F%3E%0A%3Cpath%20d%3D'M-40%2C880%20C120%2C850%20260%2C868%20350%2C930%20C300%2C990%20190%2C1015%2090%2C995%20C10%2C980%20-35%2C930%20-40%2C880'%2F%3E%0A%3Cpath%20d%3D'M-40%2C950%20C80%2C930%20180%2C945%20245%2C990%20C205%2C1032%20125%2C1048%2055%2C1032%20C0%2C1020%20-38%2C988%20-40%2C950'%2F%3E%0A%3Ctext%20x%3D'732'%20y%3D'314'%20font-family%3D'Barlow%2Csans-serif'%20font-size%3D'13'%20letter-spacing%3D'2'%20stroke%3D'none'%20fill%3D'%23293d22'%20fill-opacity%3D'.28'%20transform%3D'rotate(-8%20732%20314)'%3E14%2C259%3C%2Ftext%3E%0A%3Ctext%20x%3D'1102'%20y%3D'406'%20font-family%3D'Barlow%2Csans-serif'%20font-size%3D'12'%20letter-spacing%3D'2'%20stroke%3D'none'%20fill%3D'%23293d22'%20fill-opacity%3D'.28'%20transform%3D'rotate(6%201102%20406)'%3E13%2C911%3C%2Ftext%3E%0A%3C%2Fg%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-size:cover;background-position:center;
-  background-size:760px 560px}
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%271920%27%20height=%271080%27%20viewBox=%270%200%201920%201080%27%3E%3Cpath%20d=%27M0,114%20C60,110%20120,106%20170,104%20C230,100%20280,96%20330,92%20C370,89%20400,87%20428,86%20C446,86%20460,90%20478,96%20C500,104%20516,110%20530,108%20L538,96%20L546,109%20L556,94%20L564,110%20L574,92%20L582,111%20C600,113%20640,112%20700,113%20C900,115%201150,113%201400,114%20C1600,115%201780,114%201920,115%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.6%27%20stroke-opacity=%270.34%27/%3E%3Cline%20x1=%2730%27%20y1=%27117%27%20x2=%2724%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%2776%27%20y1=%27117%27%20x2=%2770%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27122%27%20y1=%27117%27%20x2=%27116%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27168%27%20y1=%27117%27%20x2=%27162%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27214%27%20y1=%27117%27%20x2=%27208%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27260%27%20y1=%27117%27%20x2=%27254%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27306%27%20y1=%27117%27%20x2=%27300%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27352%27%20y1=%27117%27%20x2=%27346%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27398%27%20y1=%27117%27%20x2=%27392%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27444%27%20y1=%27117%27%20x2=%27438%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27490%27%20y1=%27117%27%20x2=%27484%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27536%27%20y1=%27117%27%20x2=%27530%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27582%27%20y1=%27117%27%20x2=%27576%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27628%27%20y1=%27117%27%20x2=%27622%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27674%27%20y1=%27117%27%20x2=%27668%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27720%27%20y1=%27117%27%20x2=%27714%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27766%27%20y1=%27117%27%20x2=%27760%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27812%27%20y1=%27117%27%20x2=%27806%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27858%27%20y1=%27117%27%20x2=%27852%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27904%27%20y1=%27117%27%20x2=%27898%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27950%27%20y1=%27117%27%20x2=%27944%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%27996%27%20y1=%27117%27%20x2=%27990%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271042%27%20y1=%27117%27%20x2=%271036%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271088%27%20y1=%27117%27%20x2=%271082%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271134%27%20y1=%27117%27%20x2=%271128%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271180%27%20y1=%27117%27%20x2=%271174%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271226%27%20y1=%27117%27%20x2=%271220%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271272%27%20y1=%27117%27%20x2=%271266%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271318%27%20y1=%27117%27%20x2=%271312%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271364%27%20y1=%27117%27%20x2=%271358%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271410%27%20y1=%27117%27%20x2=%271404%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271456%27%20y1=%27117%27%20x2=%271450%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271502%27%20y1=%27117%27%20x2=%271496%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271548%27%20y1=%27117%27%20x2=%271542%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271594%27%20y1=%27117%27%20x2=%271588%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271640%27%20y1=%27117%27%20x2=%271634%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271686%27%20y1=%27117%27%20x2=%271680%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271732%27%20y1=%27117%27%20x2=%271726%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271778%27%20y1=%27117%27%20x2=%271772%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271824%27%20y1=%27117%27%20x2=%271818%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Cline%20x1=%271870%27%20y1=%27117%27%20x2=%271864%27%20y2=%27123%27%20stroke=%27%23293d22%27%20stroke-width=%271%27%20stroke-opacity=%27.16%27/%3E%3Ctext%20x=%27428%27%20y=%2776%27%20text-anchor=%27middle%27%20font-weight=%27700%27%20font-family=%27Barlow,sans-serif%27%20font-size=%2710.5%27%20letter-spacing=%272%27%20fill=%27%23293d22%27%20fill-opacity=%270.46%27%3E%E2%96%B3%20MT%20MORRISON%20%C2%B7%207,881%3C/text%3E%3Ctext%20x=%27558%27%20y=%2780%27%20text-anchor=%27middle%27%20font-family=%27Barlow,sans-serif%27%20font-size=%279.5%27%20letter-spacing=%273%27%20fill=%27%23293d22%27%20fill-opacity=%270.4%27%3ERED%20ROCKS%3C/text%3E%3Ctext%20x=%271240%27%20y=%27105%27%20font-family=%27Barlow,sans-serif%27%20font-size=%279%27%20letter-spacing=%273%27%20fill=%27%23293d22%27%20fill-opacity=%270.3%27%3EELEVATION%20PROFILE%20%C2%B7%20BEAR%20CREEK%20CANYON%20TRAIL%3C/text%3E%3Cpath%20d=%27M618,1403%20A1050,1050%200%200%200%20-190,535%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.0%27%20stroke-opacity=%270.15%27/%3E%3Cpath%20d=%27M826,1372%20A1260,1260%200%200%200%20-144,331%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.6%27%20stroke-opacity=%270.22%27/%3E%3Cpath%20d=%27M1043,1339%20A1480,1480%200%200%200%20-96,116%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.0%27%20stroke-opacity=%270.15%27/%3E%3Cpath%20d=%27M1271,1304%20A1710,1710%200%200%200%20-45,-108%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.6%27%20stroke-opacity=%270.22%27/%3E%3Ctext%20x=%27630%27%20y=%27760%27%20font-family=%27Georgia,serif%27%20font-size=%2710%27%20letter-spacing=%271.5%27%20fill=%27%23293d22%27%20fill-opacity=%270.34%27%20transform=%27rotate(-24%20630%20760)%27%3E5,420%3C/text%3E%3Ctext%20x=%271490%27%20y=%27652%27%20font-family=%27Georgia,serif%27%20font-size=%2710%27%20letter-spacing=%271.5%27%20fill=%27%23293d22%27%20fill-opacity=%270.34%27%20transform=%27rotate(-14%201490%20652)%27%3E5,310%3C/text%3E%3Ctext%20x=%27940%27%20y=%27158%27%20font-family=%27Georgia,serif%27%20font-size=%2710%27%20letter-spacing=%271.5%27%20fill=%27%23293d22%27%20fill-opacity=%270.3%27%20transform=%27rotate(-8%20940%20158)%27%3E5,560%3C/text%3E%3Cpath%20d=%27M300,1080%20C640,1010%201020,900%201380,800%20C1460,778%201515,762%201548,752%27%20fill=%27none%27%20stroke=%27%23293d22%27%20stroke-width=%271.3%27%20stroke-opacity=%270.22%27%20stroke-dasharray=%272,7%27/%3E%3Ctext%20x=%27700%27%20y=%27995%27%20font-family=%27Barlow,sans-serif%27%20font-size=%278.5%27%20letter-spacing=%274%27%20fill=%27%23293d22%27%20fill-opacity=%270.28%27%20transform=%27rotate(-10%20700%20995)%27%3ETRAIL%3C/text%3E%3C/svg%3E");background-repeat:no-repeat;background-size:cover;background-position:center}
 /* passport cancellation stamp in the header quiet zone */
 .stamp{position:absolute;left:840px;top:-4px;width:200px;height:200px;opacity:.10;z-index:0;transform:rotate(-9deg);pointer-events:none;z-index:0}
 /* elevation tag under the address */
@@ -305,6 +304,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
 #odo{display:inline-block}
 
 
+
+/* medal plaques: hung on the steel, where medals live */
+.tbody{position:relative}
+.tplaque{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%) rotate(-2deg);
+  background:#eebf19;color:#293d22;font-family:'Barlow';font-weight:800;font-size:11.5px;
+  letter-spacing:.8px;text-align:center;line-height:1.25;padding:4px 9px;border-radius:3px;
+  max-width:86%;box-shadow:2px 2px 0 rgba(41,61,34,.35), inset 0 0 0 1.5px rgba(41,61,34,.25);z-index:3}
+.tplaque.sv{background:#b9c0ca;box-shadow:2px 2px 0 rgba(41,61,34,.45), inset 0 0 0 1.5px rgba(41,61,34,.4)}
+
+/* rail v2: fixed frame, crawling wire */
+.rail .cell:nth-child(1),.rail .cell:nth-child(2){flex:0 0 auto}
+.rail .cell:nth-child(4){flex:1 1 0;min-width:0}
+#railMsg{-webkit-mask-image:linear-gradient(90deg,transparent,black 4%,black 96%,transparent);mask-image:linear-gradient(90deg,transparent,black 4%,black 96%,transparent)}
+.wireStrip{display:inline-flex;white-space:nowrap;will-change:transform;animation:wcrawl var(--wd,80s) linear infinite}
+.wireStrip .wi{padding-right:64px;font-size:17.5px}
+@keyframes wcrawl{to{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -443,7 +458,7 @@ function render(s){
 
   $('wingCell').style.display=(ev&&ev.wingCounter&&phase==='run')?'flex':'none';
   $('wings').textContent=(s.wingsToday||0).toLocaleString();
-  $('most').textContent=s.mostPoured?`${s.mostPoured.name} · ${s.mostPoured.pouredTodayPints} pt`:(window.__LIVE?'—':'crowlers from $12');
+  if(s.mostPoured){$('most').textContent=`${s.mostPoured.name} · ${s.mostPoured.pouredTodayPints} pt`;}else if(window.__LIVE){$('most').textContent='—';}
   const _mk=$('mostK'); if(_mk) _mk.textContent=window.__LIVE?'Most poured today':'To go';
 
   const floor=$('floor');
@@ -491,14 +506,15 @@ function render(s){
     const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3600000;
     u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(beer.medal?' gold':'')+(fresh&&!beer.kicked?' justtapped':'');
     u.querySelector('.spotcap').textContent=NOTES[beer.id]||'';
-    u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? 'Almost gone' : 'Running low';
+    var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
     u.querySelector('.size').textContent=beer.vesselLabel;
     const liq=u.querySelector('.liquid');
     const shown=Math.max(0,beer.pct*0.94);
     liq.style.transform=`translateY(${(1-shown)*100}%)`;
     liq.style.background=`linear-gradient(${beer.colorTop},${beer.color})`;
     liq.querySelector('.wave').style.fill=beer.colorTop;
-    u.querySelector('.name').innerHTML=(beer.medal?'<span class="goldflag'+(beer.medal==='silver'?' sv':'')+'">'+(beer.medal==='silver'?'SILVER':'GOLD')+'</span>':'')+beer.name;
+    u.querySelector('.name').innerHTML=beer.name;
+    (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?'<br><span class="p10">10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
@@ -538,18 +554,18 @@ function snow(on){
 const CAP={tank20:79360,tank10:39680,serve6:5280,'keg-half':1984};
 const SIM={beers:[
  {id:'oktoberfest',name:'Oktoberfest',style:'Märzen',abv:5.4,price10:4.75,price:7.5,rating:3.63,vessel:'tank20',vesselLabel:'20 BBL',tall:true,featured:true,color:'#c77a1e',colorTop:'#e8a53a',remainingOz:67456,tappedAt:Date.now()-86400000*3},
- {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
- {id:'nutorious',name:'Nutorious',style:'Pistachio Cream Ale',abv:6.0,price10:5.0,price:8.5,rating:3.88,vessel:'tank10',vesselLabel:'10 BBL',medal:'gold',color:'#b7893f',colorTop:'#d4a95c',remainingOz:4999,tappedAt:Date.now()-86400000*18},
+ {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',medalText:'STATE FAIR SILVER',color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
+ {id:'nutorious',name:'Nutorious',style:'Pistachio Cream Ale',abv:6.0,price10:5.0,price:8.5,rating:3.88,vessel:'tank10',vesselLabel:'10 BBL',medal:'gold',medalText:'US OPEN GOLD',color:'#b7893f',colorTop:'#d4a95c',remainingOz:4999,tappedAt:Date.now()-86400000*18},
  {id:'tropical-snow-dance',name:'Tropical Snow Dance',style:'West Coast IPA',abv:6.9,price10:5.25,price:8.5,rating:3.74,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#d69a2b',colorTop:'#eebd55',remainingOz:19840,tappedAt:Date.now()-86400000*12},
- {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
+ {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',medalText:'STATE FAIR SILVER',color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
  {id:'nadare',name:'Nadare',style:'Japanese Rice Lager',abv:5.2,price10:4.75,price:7.5,rating:3.37,vessel:'tank10',vesselLabel:'10 BBL',color:'#e8d58a',colorTop:'#f5e9b3',remainingOz:32140,tappedAt:Date.now()-86400000*2},
  {id:'pacific-detour',name:'Pacific Detour',style:'Pale Ale',abv:4.6,price10:5.0,price:8.0,rating:3.69,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#d3a334',colorTop:'#e9c266',remainingOz:357,tappedAt:Date.now()-86400000*1},
  {id:'astronaut-amber',name:'Astronaut Amber',style:'American Amber',abv:5.3,price10:4.75,price:7.5,rating:3.51,vessel:'tank10',vesselLabel:'10 BBL',color:'#a8542a',colorTop:'#c97648',remainingOz:31347,tappedAt:Date.now()-86400000*15},
- {id:'witbier',name:'Witbier',style:'Witbier / Blanche',abv:4.3,price10:4.75,price:7.5,rating:3.6,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#e6d9a0',colorTop:'#f3ecc4',remainingOz:1904,tappedAt:Date.now()-86400000*4},
+ {id:'witbier',name:'Witbier',style:'Witbier / Blanche',abv:4.3,price10:4.75,price:7.5,rating:3.6,vessel:'tank10',vesselLabel:'10 BBL',color:'#e6d9a0',colorTop:'#f3ecc4',remainingOz:1904,tappedAt:Date.now()-86400000*4},
  {id:'chela',name:'Chela Morena',style:'Mexican Dark Lager',abv:4.9,price10:4.5,price:7.0,rating:3.74,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#6e4a2a',colorTop:'#8a5f38',remainingOz:1091,tappedAt:Date.now()-86400000*6},
  {id:'madagascar-dream',name:'Madagascar Dream',style:'Vanilla Cream · Nitro',abv:6.0,price10:5.0,price:8.0,rating:3.75,vessel:'tank10',vesselLabel:'10 BBL',color:'#c9973c',colorTop:'#e6bd6e',remainingOz:19840,tappedAt:Date.now()-86400000*21},
- {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'serve6',vesselLabel:'6 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:1267,tappedAt:Date.now()-86400000*8},
- {id:'watermelon-sour',name:'Watermelon Sour',style:'Berliner Weisse',abv:4.0,pourNote:'10oz',price:7.5,rating:3.94,vessel:'serve6',vesselLabel:'6 BBL',color:'#d6607a',colorTop:'#e88aa0',remainingOz:237,tappedAt:Date.now()-86400000*11}
+ {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'tank10',vesselLabel:'10 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:1267,tappedAt:Date.now()-86400000*8},
+ {id:'watermelon-sour',name:'Watermelon Sour',style:'Berliner Weisse',abv:4.0,pourNote:'10oz',price:7.5,rating:3.94,vessel:'tank10',vesselLabel:'10 BBL',color:'#d6607a',colorTop:'#e88aa0',remainingOz:237,tappedAt:Date.now()-86400000*11}
 ],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'watermelon-sour':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad<br>Transfusion'}]};
 window.__scene='default';
 const NEXT={id:'fresh-hop-pale',name:'Fresh Hop Pale',style:'Wet Hop Pale Ale',abv:5.5,price:8.0,rating:0,vessel:'tank10',vesselLabel:'10 BBL',color:'#b8cf5e',colorTop:'#d4e88a',remainingOz:39680,tappedAt:Date.now()};
@@ -586,7 +602,7 @@ function payload(){
 
 function simulate(){ /* showcase heartbeat: one sim pint at a time, until Monday's real pours take over */
   // materialize each tank's volume once, so pours subtract from real numbers
-  const REAL_LEVELS={"oktoberfest": 0.85, "plattmosphere": 0.12, "tropical-snow-dance": 0.261, "platty-lite": 0.96, "nutorious": 0.96, "nadare": 0.826, "astronaut-amber": 0.823, "madagascar-dream": 0.5, "kakou": 0.25, "watermelon-sour": 0.082, "pacific-detour": 0.6, "witbier": 0.96}; // Greg's Mon 9/8 inventory − his burn rates × 3.6 days (Square: this week ran 1.00× normal) + Jules's Wed notes
+  const REAL_LEVELS={"oktoberfest": 0.85, "plattmosphere": 0.12, "tropical-snow-dance": 0.261, "platty-lite": 0.96, "nutorious": 0.96, "nadare": 0.826, "astronaut-amber": 0.823, "madagascar-dream": 0.5, "kakou": 0.16, "watermelon-sour": 0.05, "pacific-detour": 0.6, "witbier": 0.64}; // Greg's Mon 9/8 inventory − his burn rates × 3.6 days (Square: this week ran 1.00× normal) + Jules's Wed notes
   try{ const snap=payload(); snap.beers.forEach(pb=>{ const sb=SIM.beers.find(x=>x.id===pb.id); if(!sb) return;
     if(REAL_LEVELS[pb.id]!==undefined) sb.remainingOz=Math.round(REAL_LEVELS[pb.id]*pb.capacityOz);
     else if(sb.remainingOz==null||isNaN(sb.remainingOz)) sb.remainingOz=pb.remainingOz; }); }catch(e){}
@@ -639,7 +655,8 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 .rail{position:absolute !important;left:0;right:0;bottom:0;margin-top:0 !important}
 
 /* banner day: the floor breathes in so every chip stays above the rail */
-body.bn .stage{transform:scale(.912);transform-origin:top center}
+.stage{transform:scale(.963);transform-origin:top center}
+body.bn .stage{transform:scale(.878)}
 
 /* chela: last-keg sash, green so the fest sash stays unique */
 #u-chela .spotcap,#u-pacific-detour .spotcap{display:block;background:#46683a}
@@ -648,7 +665,7 @@ body.bn .stage{transform:scale(.912);transform-origin:top center}
 .floor.dense{gap:6px 10px}
 .floor.dense .unit{min-width:0}
 .floor.dense .name{font-size:19px;letter-spacing:0}
-.floor.dense .meta{font-size:12px}
+.floor.dense .meta{font-size:15px}
 .floor.dense .price{font-size:13.5px;padding:3px 8px;line-height:1.2}
 .floor.dense .tbody{height:150px}
 .floor.dense .unit.tall .tbody{height:186px}
@@ -673,7 +690,7 @@ body.bn .stage{transform:scale(.912);transform-origin:top center}
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.2345';
+window.__BUILD='2026-09-11.2830';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
@@ -730,16 +747,22 @@ function festOverride(s){
   window.__rotNow=function(){};
 
   // rail cell cycles true facts
-  const FACTS=[
+  const DAY=[
+    ['Weekend','breakfast at Gates \u00b7 8am'],
+    ['Tonight','industry night \u00b7 MNF on the big screen'],
+    ['Tonight','trivia 7pm \u00b7 bring a team'],
+    ['Tonight','wing wednesday \u00b7 dozen for $12'],
     ['To go','crowlers from $12 \u00b7 filled at the bar'],
-    ['To go','4-packs \u00b7 canned in the brewery'],
-    ['To go','Gates Deli sandwiches \u00b7 sidewalk window']
+    ['To go','crowlers from $12 \u00b7 filled at the bar'],
+    ['Weekend','breakfast at Gates \u00b7 sat + sun 8am']
   ];
+  const FACTS=[DAY[new Date().getDay()]];
   let fi=0;
   function rotFact(){ if(window.__LIVE) return;
     const k=$('mostK'), v=$('most');
     if(k&&v){ const f=FACTS[fi%FACTS.length]; k.textContent=f[0]; v.textContent=f[1]; fi++; }
   }
+  rotFact(); /*boot*/
   window.__factNow=rotFact;
   rotFact(); setInterval(rotFact,18000);
 })();
@@ -755,6 +778,17 @@ function festOverride(s){
     'Nutorious \u00b7 <em>US Open GOLD 2026</em> \u00b7 bronze 2025 \u00b7 we got better',
     'Platty Lite + Plattmosphere \u00b7 Colorado State Fair <em>SILVER</em> 2026 \u00b7 both pouring now',
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
+    'fresh Platty Lite racked this week \u00b7 the 20 bbl is full',
+    'Nutorious refilled friday \u00b7 the gold-medal beer is not running out this weekend',
+    'Plattmosphere: next batch already in the fermenter \u2014 19 bbls on the way',
+    'Chela Morena \u00b7 last GABF keg pouring \u00b7 fresh batch next week',
+    'Watermelon Sour \u00b7 last pours of the season',
+    'Pacific Detour \u00b7 final kegs \u2014 when it\u2019s gone, it\u2019s gone',
+    'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
+    '5280 put the Italian Job on its best-sandwiches-in-Denver list',
+    'Westword Best of Denver 2020 \u00b7 best walk-up beer + sandwiches',
+    'kids eat too \u00b7 dino nuggs or a Vienna dog \u00b7 goldfish, apple slices, capri-sun',
+
     'K\u0100KOU pours like a stout, drinks like a vacation',
     'pint <em>#1,000,000</em> poured Thanksgiving 2025 \u00b7 now pouring million two',
     'crowlers to go \u00b7 from <em>$12</em> \u00b7 sealed at the bar',
@@ -762,27 +796,21 @@ function festOverride(s){
   ];
   let liveItems=[];
   window.__wirePour=function(name){ liveItems.unshift('<span class="wi pour">just poured \u00b7 '+name+'</span>'); liveItems=liveItems.slice(0,6); buildWire(); };
-  let wIdx=0;
   function wireItems(){ return [...liveItems, ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
-  function showWire(){
+  function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;
-    el.innerHTML=items[wIdx%items.length];
-    const w=el.querySelector('.wi');
-    if(w){ /* fit, never clip: step the type down until the line fits its cell */
-      let fs=19; w.style.fontSize=fs+'px';
-      while(w.scrollWidth>el.clientWidth-4 && fs>13.5){ fs-=0.5; w.style.fontSize=fs+'px'; }
-      w.classList.add('fading'); requestAnimationFrame(()=>requestAnimationFrame(()=>w.classList.remove('fading'))); }
+    const half=items.join('');
+    el.innerHTML='<span class="wireStrip">'+half+half+'</span>';
+    const strip=el.querySelector('.wireStrip');
+    requestAnimationFrame(function(){
+      const w=strip.scrollWidth/2;
+      strip.style.setProperty('--wd',(w/52).toFixed(1)+'s');
+    });
     const k=$('railK'); if(k) k.textContent='The wire';
   }
-  function buildWire(){ showWire(); }
-  showWire();
-  setInterval(function(){
-    const el=$('railMsg'); const w=el&&el.querySelector('.wi');
-    if(w) w.classList.add('fading');
-    setTimeout(function(){ wIdx++; showWire(); },520);
-  },7000);
-  window.__buildWire=buildWire; window.__wireNext=function(){wIdx++;showWire();};
+  buildWire();
+  window.__buildWire=buildWire; window.__wireNext=function(){};
 })();
 
 
