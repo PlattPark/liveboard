@@ -161,6 +161,7 @@
     border:3px solid #ff5a3a;padding:4px 12px;transform:rotate(-8deg);letter-spacing:2px;border-radius:3px}
 
   .plate{margin-top:10px;text-align:center;min-height:118px;position:relative;z-index:2}
+  .goldflag.sv{background:#cdd2da !important;color:#293d22}
   .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:15px;letter-spacing:1.5px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
   .plate .name{
     font-family:'Anton',sans-serif;font-size:32px;letter-spacing:1px;line-height:.97;
@@ -376,7 +377,7 @@ const NOTES = {
   'tropical-snow-dance':'juicy, then gone',
   'platty-lite':'the all-day lager',
   'nadare':'crisp as a lift line',
-  'pacific-detour':'easy-going pale',
+  'pacific-detour':'final kegs',
   'astronaut-amber':'toasty and toasted',
   'witbier':'sunshine in a glass',
   'madagascar-dream':'vanilla on nitro velvet',
@@ -497,7 +498,7 @@ function render(s){
     liq.style.transform=`translateY(${(1-shown)*100}%)`;
     liq.style.background=`linear-gradient(${beer.colorTop},${beer.color})`;
     liq.querySelector('.wave').style.fill=beer.colorTop;
-    u.querySelector('.name').innerHTML=(beer.medal?'<span class="goldflag">GOLD</span>':'')+beer.name;
+    u.querySelector('.name').innerHTML=(beer.medal?'<span class="goldflag'+(beer.medal==='silver'?' sv':'')+'">'+(beer.medal==='silver'?'SILVER':'GOLD')+'</span>':'')+beer.name;
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?'<br><span class="p10">10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
@@ -537,10 +538,10 @@ function snow(on){
 const CAP={tank20:79360,tank10:39680,serve6:5280,'keg-half':1984};
 const SIM={beers:[
  {id:'oktoberfest',name:'Oktoberfest',style:'Märzen',abv:5.4,price10:4.75,price:7.5,rating:3.63,vessel:'tank20',vesselLabel:'20 BBL',tall:true,featured:true,color:'#c77a1e',colorTop:'#e8a53a',remainingOz:67456,tappedAt:Date.now()-86400000*3},
- {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
+ {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
  {id:'nutorious',name:'Nutorious',style:'Pistachio Cream Ale',abv:6.0,price10:5.0,price:8.5,rating:3.88,vessel:'tank10',vesselLabel:'10 BBL',medal:'gold',color:'#b7893f',colorTop:'#d4a95c',remainingOz:4999,tappedAt:Date.now()-86400000*18},
  {id:'tropical-snow-dance',name:'Tropical Snow Dance',style:'West Coast IPA',abv:6.9,price10:5.25,price:8.5,rating:3.74,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#d69a2b',colorTop:'#eebd55',remainingOz:19840,tappedAt:Date.now()-86400000*12},
- {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
+ {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
  {id:'nadare',name:'Nadare',style:'Japanese Rice Lager',abv:5.2,price10:4.75,price:7.5,rating:3.37,vessel:'tank10',vesselLabel:'10 BBL',color:'#e8d58a',colorTop:'#f5e9b3',remainingOz:32140,tappedAt:Date.now()-86400000*2},
  {id:'pacific-detour',name:'Pacific Detour',style:'Pale Ale',abv:4.6,price10:5.0,price:8.0,rating:3.69,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#d3a334',colorTop:'#e9c266',remainingOz:357,tappedAt:Date.now()-86400000*1},
  {id:'astronaut-amber',name:'Astronaut Amber',style:'American Amber',abv:5.3,price10:4.75,price:7.5,rating:3.51,vessel:'tank10',vesselLabel:'10 BBL',color:'#a8542a',colorTop:'#c97648',remainingOz:31347,tappedAt:Date.now()-86400000*15},
@@ -585,7 +586,7 @@ function payload(){
 
 function simulate(){ /* showcase heartbeat: one sim pint at a time, until Monday's real pours take over */
   // materialize each tank's volume once, so pours subtract from real numbers
-  const REAL_LEVELS={"oktoberfest": 0.85, "plattmosphere": 0.12, "tropical-snow-dance": 0.261, "platty-lite": 0.098, "nutorious": 0.133, "nadare": 0.826, "astronaut-amber": 0.823, "madagascar-dream": 0.5, "kakou": 0.25, "watermelon-sour": 0.082, "pacific-detour": 0.34, "witbier": 0.96}; // Greg's Mon 9/8 inventory − his burn rates × 3.6 days (Square: this week ran 1.00× normal) + Jules's Wed notes
+  const REAL_LEVELS={"oktoberfest": 0.85, "plattmosphere": 0.12, "tropical-snow-dance": 0.261, "platty-lite": 0.96, "nutorious": 0.96, "nadare": 0.826, "astronaut-amber": 0.823, "madagascar-dream": 0.5, "kakou": 0.25, "watermelon-sour": 0.082, "pacific-detour": 0.6, "witbier": 0.96}; // Greg's Mon 9/8 inventory − his burn rates × 3.6 days (Square: this week ran 1.00× normal) + Jules's Wed notes
   try{ const snap=payload(); snap.beers.forEach(pb=>{ const sb=SIM.beers.find(x=>x.id===pb.id); if(!sb) return;
     if(REAL_LEVELS[pb.id]!==undefined) sb.remainingOz=Math.round(REAL_LEVELS[pb.id]*pb.capacityOz);
     else if(sb.remainingOz==null||isNaN(sb.remainingOz)) sb.remainingOz=pb.remainingOz; }); }catch(e){}
@@ -641,7 +642,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 body.bn .stage{transform:scale(.912);transform-origin:top center}
 
 /* chela: last-keg sash, green so the fest sash stays unique */
-#u-chela .spotcap{display:block;background:#46683a}
+#u-chela .spotcap,#u-pacific-detour .spotcap{display:block;background:#46683a}
 
 /* dense mode: wakes at 15+ taps so the board survives a fuller wall */
 .floor.dense{gap:6px 10px}
@@ -672,7 +673,7 @@ body.bn .stage{transform:scale(.912);transform-origin:top center}
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.1600';
+window.__BUILD='2026-09-11.2345';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
@@ -752,6 +753,8 @@ function festOverride(s){
     'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
     'industry night mondays \u00b7 Monday Night Football on the big screen',
     'Nutorious \u00b7 <em>US Open GOLD 2026</em> \u00b7 bronze 2025 \u00b7 we got better',
+    'Platty Lite + Plattmosphere \u00b7 Colorado State Fair <em>SILVER</em> 2026 \u00b7 both pouring now',
+    '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'K\u0100KOU pours like a stout, drinks like a vacation',
     'pint <em>#1,000,000</em> poured Thanksgiving 2025 \u00b7 now pouring million two',
     'crowlers to go \u00b7 from <em>$12</em> \u00b7 sealed at the bar',
