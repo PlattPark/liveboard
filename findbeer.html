@@ -317,12 +317,23 @@ async function hydrate(){
   if(still.length){
     status(`Locating ${still.length} spot${still.length>1?'s':''}…`,0);
     for(const s of still){
+      let hit=null;
       try{
         const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(s.addr),
           {headers:{'Accept':'application/json'}});
         const j=await r.json();
-        if(j[0]){ s.lat=+j[0].lat; s.lng=+j[0].lon; cache[s.addr]=[s.lat,s.lng]; localStorage.setItem('ppb_geo',JSON.stringify(cache)); }
+        if(j[0]) hit=[+j[0].lat,+j[0].lon];
       }catch(e){}
+      if(!hit){
+        try{
+          const r2=await fetch('https://photon.komoot.io/api/?limit=1&lat=39.7&lon=-104.99&q='+encodeURIComponent(s.addr));
+          const j2=await r2.json();
+          const f=(j2.features||[])[0];
+          if(f&&f.geometry) hit=[f.geometry.coordinates[1],f.geometry.coordinates[0]];
+        }catch(e){}
+      }
+      if(hit){ s.lat=hit[0]; s.lng=hit[1]; cache[s.addr]=hit; localStorage.setItem('ppb_geo',JSON.stringify(cache));
+        show(visible()); renderList(); }
       await new Promise(r=>setTimeout(r,1100));
     }
     status('',1); show(visible()); renderList();
