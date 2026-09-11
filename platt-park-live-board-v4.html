@@ -333,11 +333,12 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
   <div class="sidecol">
 <div class="side" id="side">
     <div class="side-h">Also pouring</div>
-    <div class="s-item" id="s-cider"><div class="s-row"><span class="s-name">Cider · Dry / Fruited</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
-    <div class="s-item" id="s-seltzer"><div class="s-row"><span class="s-name">JuneShine Kombucha</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
+    <div class="s-item" id="s-cider"><div class="s-row"><span class="s-name">2 Towns BrightCider · Dry</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
+    <div class="s-item"><div class="s-row"><span class="s-name">2 Towns Spiced Apple Cider</span><span class="s-price">$9</span></div></div>
+    <div class="s-item" id="s-seltzer"><div class="s-row"><span class="s-name">Boochcraft · Passion Fruit Blood Orange</span><span class="s-price">$9</span></div><div class="s-bar"><i></i></div></div>
     <div class="s-item"><div class="s-row"><span class="s-name">Wine · Red / White / Rosé</span><span class="s-price">$9–11</span></div></div>
-    <div class="s-item"><div class="s-row"><span class="s-name">House Marg</span><span class="s-price">$9.50</span></div></div>
-    <div class="s-item frozen"><div class="s-row"><span class="s-name">Frozen Cocktail</span><span class="s-price">$12</span></div><div class="s-flavor" id="sFlavor">Prickly pear marg</div></div>
+    <div class="s-item"><div class="s-row"><span class="s-name">Craftwell Draft Cocktail</span><span class="s-price">$12</span></div><div class="s-flavor">Peach Mojito</div></div>
+    <div class="s-item frozen"><div class="s-row"><span class="s-name">Frozen Cocktails</span><span class="s-price">$12</span></div><div class="s-flavor" id="sFlavor">Mexican Firing Squad (pom marg) · Transfusion</div></div>
     <div class="s-foot">Full bar · NA options too</div>
     <div class="s-foot">Crowlers from $12 · 4-packs to go</div>
   </div>
@@ -547,7 +548,7 @@ const SIM={beers:[
  {id:'madagascar-dream',name:'Madagascar Dream',style:'Vanilla Cream · Nitro',abv:6.0,price10:5.0,price:8.0,rating:3.75,vessel:'tank10',vesselLabel:'10 BBL',color:'#c9973c',colorTop:'#e6bd6e',remainingOz:36872,tappedAt:Date.now()-86400000*21},
  {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'serve6',vesselLabel:'6 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:4593,tappedAt:Date.now()-86400000*8},
  {id:'watermelon-sour',name:'Watermelon Sour',style:'Berliner Weisse',abv:4.0,pourNote:'10oz',price:7.5,rating:3.94,vessel:'serve6',vesselLabel:'6 BBL',color:'#d6607a',colorTop:'#e88aa0',remainingOz:3966,tappedAt:Date.now()-86400000*11}
-],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'watermelon-sour':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Prickly pear marg'}]};
+],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'watermelon-sour':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad (pom marg) · Transfusion'}]};
 window.__scene='default';
 const NEXT={id:'fresh-hop-pale',name:'Fresh Hop Pale',style:'Wet Hop Pale Ale',abv:5.5,price:8.0,rating:0,vessel:'tank10',vesselLabel:'10 BBL',color:'#b8cf5e',colorTop:'#d4e88a',remainingOz:39680,tappedAt:Date.now()};
 function payload(){
@@ -635,7 +636,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.0630';
+window.__BUILD='2026-09-11.0715';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
@@ -688,14 +689,9 @@ function festOverride(s){
 /* ---- SHOWCASE LIFE: motion and rotation, every word true ---- */
 (function(){
   if(window.__SHOWLIFE) return; window.__SHOWLIFE=true;
-  // spotlight hops tank to tank; each sash line is a real fact
-  let ri=1;
-  function rotFeat(){ if(window.__LIVE) return;
-    SIM.beers.forEach((b,ix)=>b.featured=(ix===ri%SIM.beers.length));
-    ri++; render(payload());
-  }
-  window.__rotNow=rotFeat;
-  setInterval(rotFeat,120000);  // slow tour: one graceful hop per glance
+  // spotlight is stationary: the sun lives on the fest beer, full stop
+  window.__rotNow=function(){};
+
   // rail cell cycles true facts
   const FACTS=[
     ['House medal','Nutorious · US Open Gold 2026'],
