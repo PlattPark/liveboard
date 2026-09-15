@@ -559,14 +559,12 @@ const SIM={beers:[
  {id:'tropical-snow-dance',name:'Tropical Snow Dance',style:'West Coast IPA',abv:6.9,price10:5.25,price:8.5,rating:3.74,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#d69a2b',colorTop:'#eebd55',remainingOz:19840,tappedAt:Date.now()-86400000*12},
  {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',medalText:'STATE FAIR SILVER',color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
  {id:'nadare',name:'Nadare',style:'Japanese Rice Lager',abv:5.2,price10:4.75,price:7.5,rating:3.37,vessel:'tank10',vesselLabel:'10 BBL',color:'#e8d58a',colorTop:'#f5e9b3',remainingOz:32140,tappedAt:Date.now()-86400000*2},
- {id:'pacific-detour',name:'Pacific Detour',style:'Pale Ale',abv:4.6,price10:5.0,price:8.0,rating:3.69,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#d3a334',colorTop:'#e9c266',remainingOz:357,tappedAt:Date.now()-86400000*1},
  {id:'astronaut-amber',name:'Astronaut Amber',style:'American Amber',abv:5.3,price10:4.75,price:7.5,rating:3.51,vessel:'tank10',vesselLabel:'10 BBL',color:'#a8542a',colorTop:'#c97648',remainingOz:31347,tappedAt:Date.now()-86400000*15},
  {id:'witbier',name:'Witbier',style:'Witbier / Blanche',abv:4.3,price10:4.75,price:7.5,rating:3.6,vessel:'tank10',vesselLabel:'10 BBL',color:'#e6d9a0',colorTop:'#f3ecc4',remainingOz:1904,tappedAt:Date.now()-86400000*4},
  {id:'chela',name:'Chela Morena',style:'Mexican Dark Lager',abv:4.9,price10:4.5,price:7.0,rating:3.74,vessel:'keg-half',vesselLabel:'1/2 BBL',color:'#6e4a2a',colorTop:'#8a5f38',remainingOz:1091,tappedAt:Date.now()-86400000*6},
  {id:'madagascar-dream',name:'Madagascar Dream',style:'Vanilla Cream · Nitro',abv:6.0,price10:5.0,price:8.0,rating:3.75,vessel:'tank10',vesselLabel:'10 BBL',color:'#c9973c',colorTop:'#e6bd6e',remainingOz:19840,tappedAt:Date.now()-86400000*21},
  {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'tank10',vesselLabel:'10 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:1267,tappedAt:Date.now()-86400000*8},
- {id:'watermelon-sour',name:'Watermelon Sour',style:'Berliner Weisse',abv:4.0,pourNote:'10oz',price:7.5,rating:3.94,vessel:'tank10',vesselLabel:'10 BBL',color:'#d6607a',colorTop:'#e88aa0',remainingOz:237,tappedAt:Date.now()-86400000*11}
-],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'watermelon-sour':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad<br>Transfusion'}]};
+],poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'chela':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad<br>Transfusion'}]};
 window.__scene='default';
 const NEXT={id:'fresh-hop-pale',name:'Fresh Hop Pale',style:'Wet Hop Pale Ale',abv:5.5,price:8.0,rating:0,vessel:'tank10',vesselLabel:'10 BBL',color:'#b8cf5e',colorTop:'#d4e88a',remainingOz:39680,tappedAt:Date.now()};
 function payload(){
@@ -606,7 +604,7 @@ function simulate(){ /* showcase heartbeat: one sim pint at a time, until Monday
   try{ const snap=payload(); snap.beers.forEach(pb=>{ const sb=SIM.beers.find(x=>x.id===pb.id); if(!sb) return;
     if(REAL_LEVELS[pb.id]!==undefined) sb.remainingOz=Math.round(REAL_LEVELS[pb.id]*pb.capacityOz);
     else if(sb.remainingOz==null||isNaN(sb.remainingOz)) sb.remainingOz=pb.remainingOz; }); }catch(e){}
-  const popular=['oktoberfest','plattmosphere','platty-lite','tropical-snow-dance','oktoberfest','nutorious','watermelon-sour','astronaut-amber','oktoberfest','kakou','madagascar-dream','nadare','chela'];
+  const popular=['oktoberfest','plattmosphere','platty-lite','tropical-snow-dance','oktoberfest','nutorious','chela','astronaut-amber','oktoberfest','kakou','madagascar-dream','nadare','chela'];
   function pour(){
     const id=popular[Math.floor(Math.random()*popular.length)];
     const beer=SIM.beers.find(b=>b.id===id);
@@ -637,14 +635,14 @@ setInterval(()=>{ document.body.classList.toggle('dusk', new Date().getHours()>=
     <button class="sc" data-s="preopen">Pre-open morning</button>
     <button class="sc" data-s="goodnight">Goodnight (close)</button>
     <hr style="border:none;border-top:2px solid rgba(41,61,34,.2);margin:4px 0;width:100%">
-    <button id="kickBtn" class="sc">▶ Empty the Watermelon Sour</button>
+    <button id="kickBtn" class="sc">▶ Empty the Chela Morena</button>
   </div>
 </div>
 <style>.sc{background:none;border:2px solid rgba(41,61,34,.35);border-radius:4px;color:#293d22;padding:7px 10px;font-family:Barlow;font-weight:600;font-size:14px;cursor:pointer;text-align:left}.sc:hover{border-color:#ff5a3a;color:#ff5a3a}</style>
 <script>
 document.getElementById('gearBtn').onclick=()=>{const p=document.getElementById('panel');p.style.display=p.style.display==='none'?'flex':'none'};
 document.querySelectorAll('.sc[data-s]').forEach(b=>b.onclick=()=>{window.__scene=b.dataset.s;render(payload());});
-document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==='watermelon-sour');if(w)w.remainingOz=17;};
+document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==='chela');if(w)w.remainingOz=17;};
 </script>
 
 <style id="fitcss">
@@ -781,9 +779,7 @@ function festOverride(s){
     'fresh Platty Lite racked this week \u00b7 the 20 bbl is full',
     'Nutorious refilled friday \u00b7 the gold-medal beer is not running out this weekend',
     'Plattmosphere: next batch already in the fermenter \u2014 19 bbls on the way',
-    'Chela Morena \u00b7 last GABF keg pouring \u00b7 fresh batch next week',
-    'Watermelon Sour \u00b7 last pours of the season',
-    'Pacific Detour \u00b7 final kegs \u2014 when it\u2019s gone, it\u2019s gone',
+    'Chela Morena \u00b7 Mexican dark lager \u00b7 now pouring',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
     '5280 put the Italian Job on its best-sandwiches-in-Denver list',
     'Westword Best of Denver 2020 \u00b7 best walk-up beer + sandwiches',
