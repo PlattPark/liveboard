@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Taps — Platt Park</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--coral:#f0553d;--forest:#293d22;--ink:#131f0f;--gold:#eebf19;--cream:#e7eacd;--olive:#5a8142;--sage:#dfe6cf}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--forest);color:var(--cream);font-family:'Barlow',system-ui,sans-serif;padding:0 0 90px;font-size:17px}
+header{padding:18px 16px 14px;border-bottom:1px solid rgba(231,234,205,.15);position:sticky;top:0;background:var(--forest);z-index:20}
+h1{font-family:'Archivo Black',sans-serif;font-size:22px;color:var(--coral);text-transform:uppercase;letter-spacing:.01em}
+.sub{font-size:13px;color:var(--olive);margin-top:3px}
+.wrap{padding:14px 12px}
+.beer{background:rgba(231,234,205,.06);border:1px solid rgba(231,234,205,.14);border-radius:13px;padding:13px 14px;margin-bottom:10px}
+.beer.off{opacity:.42}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.nm{font-family:'Archivo Black',sans-serif;font-size:17px;line-height:1.15}
+.meta{font-size:13px;color:var(--olive);margin-top:3px}
+.pill{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:5px;background:var(--gold);color:var(--forest);white-space:nowrap}
+.pill.low{background:var(--coral);color:#fff}
+.acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+button{font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;border:none;border-radius:9px;padding:11px 14px;cursor:pointer;flex:1;min-width:88px}
+.b86{background:var(--coral);color:#fff}
+.blow{background:rgba(238,191,25,.18);color:var(--gold);border:1px solid rgba(238,191,25,.4)}
+.bback{background:var(--olive);color:#fff}
+.lvl{margin-top:10px}
+.lvl input{width:100%;accent-color:var(--gold)}
+.lvlrow{display:flex;justify-content:space-between;font-size:12px;color:var(--olive);margin-top:3px}
+h2{font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:22px 4px 10px}
+.bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink);border-top:1px solid rgba(231,234,205,.15);padding:11px 12px;display:flex;gap:9px;align-items:center}
+.bar button{flex:1;padding:14px}
+.save{background:var(--gold);color:var(--forest)}
+.save:disabled{background:rgba(231,234,205,.15);color:var(--olive)}
+.status{font-size:12px;color:var(--olive);padding:0 4px;min-width:82px;text-align:right}
+.tok{padding:16px;background:rgba(240,85,61,.1);border:1px solid var(--coral);border-radius:11px;margin:14px 12px}
+.tok input{width:100%;padding:11px;border-radius:7px;border:1px solid rgba(231,234,205,.3);background:var(--ink);color:var(--cream);font-family:monospace;font-size:14px;margin-top:9px}
+.tok p{font-size:13px;color:var(--cream);line-height:1.45}
+.hint{font-size:12px;color:var(--olive);margin-top:8px;line-height:1.4}
+.empty{color:var(--olive);font-size:14px;padding:8px 4px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Taps</h1>
+  <div class="sub" id="sub">loading…</div>
+</header>
+
+<div id="tokbox" class="tok" style="display:none">
+  <p><strong>One-time setup.</strong> Paste a GitHub token with <code>repo</code> access. It's stored on this phone only and never leaves it except to save changes.</p>
+  <input id="tok" type="password" placeholder="ghp_…" autocomplete="off">
+  <div class="hint">github.com → Settings → Developer settings → Personal access tokens</div>
+</div>
+
+<div class="wrap">
+  <div id="on"></div>
+  <h2>Recently off</h2>
+  <div id="off"></div>
+</div>
+
+<div class="bar">
+  <div class="status" id="status"></div>
+  <button class="save" id="save" disabled>Save changes</button>
+</div>
+
+<script>
+const REPO='PlattPark/liveboard', FILE='beers.json';
+const VESSELS={'1/2 BBL':1984,'1 BBL':3968,'10 BBL':39680,'20 BBL':79360};
+let data=null, sha=null, dirty=false;
+
+const $=id=>document.getElementById(id);
+const tok=()=>localStorage.getItem('ppb_gh')||'';
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>{const v=Number(n);return '$'+(v%1===0?v.toFixed(0):v.toFixed(2));};
+const pct=b=>{const cap=VESSELS[b.vesselLabel]||39680;return Math.max(0,Math.min(100,Math.round((b.remainingOz/cap)*100)));};
+
+function setStatus(t,c){$('status').textContent=t;$('status').style.color=c||'var(--olive)';}
+function markDirty(){dirty=true;$('save').disabled=false;setStatus('unsaved');}
+
+async function load(){
+  try{
+    const r=await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}?t=`+Date.now(),
+      {headers:tok()?{Authorization:'Bearer '+tok()}:{}} );
+    if(!r.ok) throw new Error(r.status);
+    const j=await r.json();
+    sha=j.sha;
+    data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    data.recent=data.recent||[];
+    render();
+    $('sub').textContent=`${data.beers.length} pouring · updated ${(data.updated||'').slice(0,10)}`;
+  }catch(e){
+    $('sub').textContent='could not load beers.json ('+e.message+')';
+  }
+}
+
+function render(){
+  $('sub').textContent=`${data.beers.length} pouring · updated ${(data.updated||'').slice(0,10)}`;
+  $('on').innerHTML = data.beers.map((b,i)=>{
+    const p=pct(b), low=p<25;
+    return `<div class="beer">
+      <div class="top">
+        <div>
+          <div class="nm">${esc(b.name)}</div>
+          <div class="meta">${esc(b.style||'')} · ${esc(b.abv||'')}% · ${money(b.price)}</div>
+        </div>
+        <span class="pill ${low?'low':''}">${esc(b.vesselLabel||'')}</span>
+      </div>
+      <div class="lvl">
+        <input type="range" min="0" max="100" value="${p}" oninput="setLevel(${i},this.value)">
+        <div class="lvlrow"><span>${p}% left</span><span>${low?'running low':''}</span></div>
+      </div>
+      <div class="acts">
+        <button class="b86" onclick="kick(${i})">86 it</button>
+        <button class="blow" onclick="lastKeg(${i})">Last keg</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">Nothing pouring.</div>';
+
+  $('off').innerHTML = data.recent.map((b,i)=>`
+    <div class="beer off">
+      <div class="top">
+        <div><div class="nm">${esc(b.name)}</div>
+        <div class="meta">off since ${esc(b.offSince||'—')}</div></div>
+      </div>
+      <div class="acts"><button class="bback" onclick="restore(${i})">Back on</button></div>
+    </div>`).join('') || '<div class="empty">Nothing recently off.</div>';
+}
+
+function setLevel(i,v){
+  const b=data.beers[i], cap=VESSELS[b.vesselLabel]||39680;
+  b.remainingOz=Math.round(cap*(v/100));
+  markDirty(); render();
+}
+function kick(i){
+  const b=data.beers[i];
+  if(!confirm('86 '+b.name+'?')) return;
+  b.offSince=new Date().toISOString().slice(0,10);
+  data.recent.unshift(b); data.recent=data.recent.slice(0,12);
+  data.beers.splice(i,1); markDirty(); render();
+}
+function lastKeg(i){
+  const b=data.beers[i];
+  b.vessel='keg-half'; b.vesselLabel='1/2 BBL';
+  b.remainingOz=Math.min(b.remainingOz,Math.round(1984*0.55));
+  markDirty(); render();
+}
+function restore(i){
+  const b=data.recent[i];
+  delete b.offSince;
+  data.beers.push(b); data.recent.splice(i,1); markDirty(); render();
+}
+
+$('save').onclick=async()=>{
+  if(!tok()){ $('tokbox').style.display='block'; $('tok').focus(); return; }
+  $('save').disabled=true; setStatus('saving…');
+  data.updated=new Date().toISOString();
+  data.updatedBy='admin page';
+  const body=JSON.stringify(data,null,1);
+  try{
+    const r=await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`,{
+      method:'PUT',
+      headers:{Authorization:'Bearer '+tok(),'Content-Type':'application/json'},
+      body:JSON.stringify({message:'taps: update from admin page',
+        content:btoa(unescape(encodeURIComponent(body))), sha:sha})});
+    if(!r.ok) throw new Error((await r.json()).message||r.status);
+    const j=await r.json(); sha=j.content.sha;
+    dirty=false; setStatus('saved ✓','var(--gold)');
+    setTimeout(()=>setStatus('board updates within 60s'),1600);
+  }catch(e){
+    setStatus('failed','var(--coral)');
+    alert('Save failed: '+e.message+'\n\nIf this says 401 or 403, the token is wrong or expired.');
+    $('save').disabled=false;
+  }
+};
+
+$('tok').onchange=e=>{
+  localStorage.setItem('ppb_gh',e.target.value.trim());
+  $('tokbox').style.display='none';
+  load();
+};
+
+window.onbeforeunload=()=>dirty?'You have unsaved changes.':null;
+
+if(!tok()) $('tokbox').style.display='block';
+load();
+</script>
+</body>
+</html>
