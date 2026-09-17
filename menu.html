@@ -186,8 +186,11 @@ h2 .h2art{height:30px;width:auto;vertical-align:-8px;margin-left:8px}
       if(!el) return;
       var html = d.beers.map(row).join('');
       // keep the pitcher row, which isn't a tap
-      var keep = el.innerHTML.match(/<div class="it">(?:(?!<div class="it">)[\s\S])*?Pitcher[\s\S]*?<\/div><\/div>/);
-      el.innerHTML = html + (keep ? keep[0] : '');
+      var keep = '';
+      el.querySelectorAll('.it').forEach(function(row){
+        if(/pitcher/i.test(row.textContent)) keep += row.outerHTML;
+      });
+      el.innerHTML = html + keep;
     })
     .catch(function(){ /* fallback rows already on the page */ });
 })();
