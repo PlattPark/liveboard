@@ -165,6 +165,9 @@ $('save').onclick=async()=>{
       headers:{Authorization:'Bearer '+tok(),'Content-Type':'application/json'},
       body:JSON.stringify({message:'taps: update from admin page',
         content:btoa(unescape(encodeURIComponent(body))), sha:sha})});
+    if(r.status===409||r.status===422){
+      throw new Error('Someone else changed the taps while this was open (probably Computa). Reload the page and redo your change.');
+    }
     if(!r.ok) throw new Error((await r.json()).message||r.status);
     const j=await r.json(); sha=j.content.sha;
     dirty=false; setStatus('saved ✓','var(--gold)');
@@ -183,6 +186,8 @@ $('tok').onchange=e=>{
 };
 
 window.onbeforeunload=()=>dirty?'You have unsaved changes.':null;
+// coming back to the tab after a while: refresh unless there's unsaved work
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && !dirty) load(); });
 
 if(!tok()) $('tokbox').style.display='block';
 load();
