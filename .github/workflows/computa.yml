@@ -1,8 +1,8 @@
 name: Computa
 
-# Runs Computa every 5 minutes with no hardware. Reads #bar-only,
-# updates beers.json, replies in Slack. State files are committed back
-# so each run picks up where the last one left off.
+# Runs Computa every 5 minutes with no hardware. Reads #bar-only and
+# #brew-x-bar, updates beers.json, replies in Slack. State files are
+# committed back so each run picks up where the last one left off.
 #
 # Setup (once): Settings -> Secrets and variables -> Actions -> New secret
 #   SLACK_BOT_TOKEN = the xoxb- token from the Computa app
@@ -37,7 +37,11 @@ jobs:
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
-          git add -A computa_state.json computa_queue.json computa_health.json 2>/dev/null || true
+          # add each state file only if it exists - a single missing
+          # pathspec makes git add abort the whole command
+          for f in computa_state.json computa_queue.json computa_health.json; do
+            [ -f "$f" ] && git add "$f"
+          done
           if git diff --cached --quiet; then
             echo "no state change"; exit 0
           fi
