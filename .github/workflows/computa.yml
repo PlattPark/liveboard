@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
-          git add -A computa_state.json computa_queue.json 2>/dev/null || true
+          git add -A computa_state.json computa_queue.json computa_health.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no state change"; exit 0
           fi
