@@ -1,0 +1,47 @@
+name: Computa
+
+# Runs Computa every 5 minutes with no hardware. Reads #bar-only,
+# updates beers.json, replies in Slack. State files are committed back
+# so each run picks up where the last one left off.
+#
+# Setup (once): Settings -> Secrets and variables -> Actions -> New secret
+#   SLACK_BOT_TOKEN = the xoxb- token from the Computa app
+# GITHUB_TOKEN is provided automatically - no PAT needed here.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:        # "Run workflow" button for manual tests
+
+permissions:
+  contents: write
+
+concurrency:
+  group: computa
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Computa once
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 computa.py
+
+      - name: Persist state
+        run: |
+          git config user.name  "computa"
+          git config user.email "computa@plattparkbrewing.com"
+          git add -A computa_state.json computa_queue.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no state change"; exit 0
+          fi
+          git commit -m "computa: state"
+          # computa.py may have already committed beers.json via the API
+          git pull --rebase --autostash origin main
+          git push
