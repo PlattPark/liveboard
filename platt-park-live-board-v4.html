@@ -580,7 +580,7 @@ const SIM={beers:[
 
    >> EDIT beers.json TO CHANGE WHAT'S POURING. Never edit this file. */
 const FALLBACK_BEERS = SIM.beers.slice();
-let _tapStamp = null;
+let _tapFp = null;   // fingerprint of the beer list we booted with
 
 (function bootTaps(){
   try{
@@ -594,15 +594,33 @@ let _tapStamp = null;
         d.beers.forEach(function(b){
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
+        _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
         SIM.beers  = d.beers;
-        _tapStamp  = d.updated || null;
+        // remember the last good list so an outage shows something recent,
+        // not whatever was compiled into this file months ago
+        try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
         console.log('[taps] booted with ' + d.beers.length + ' beers from beers.json');
         return;
       }
     }
     throw new Error('HTTP ' + x.status);
   }catch(e){
-    console.warn('[taps] beers.json unavailable, using built-in list:', e.message);
+    console.warn('[taps] beers.json unavailable:', e.message);
+    // 1st fallback: the last list this browser successfully loaded
+    try{
+      const cached = localStorage.getItem('ppb_taps');
+      if(cached){
+        const d = JSON.parse(cached);
+        if(d && Array.isArray(d.beers) && d.beers.length){
+          d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
+          SIM.beers = d.beers;
+          console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
+          return;
+        }
+      }
+    }catch(_){}
+    // 2nd fallback: whatever was compiled into this file
+    console.warn('[taps] no cache either — using built-in list');
     SIM.beers = FALLBACK_BEERS.slice();
   }
 })();
@@ -613,10 +631,13 @@ async function checkTaps(){
     if(!r.ok) return;
     const d = await r.json();
     if(!d || !Array.isArray(d.beers) || !d.beers.length) return;
-    if(_tapStamp && d.updated && d.updated !== _tapStamp){
+    const fp = (await r.clone().text()).length + ':' + JSON.stringify(d.beers).length;
+    if(_tapFp && fp !== _tapFp){
       console.log('[taps] change detected — reloading');
       location.reload();
     }
+    // booted on fallback, file now reachable: adopt it
+    if(!_tapFp){ console.log('[taps] beers.json now reachable — reloading'); location.reload(); }
   }catch(e){ /* offline: keep showing what we have */ }
 }
 setInterval(checkTaps, 60000);
