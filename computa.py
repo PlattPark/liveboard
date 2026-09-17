@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 computa.py - Platt Park Brewing
-Slack #bar-only -> beers.json -> GitHub -> live board + menu
+Slack #bar-only + #brew-x-bar -> beers.json -> GitHub -> live board + menu
 
 THE CHAIN
   bartender types "86 chela"
@@ -41,7 +41,11 @@ except ImportError:
     newbeer = None
 from datetime import datetime, timezone
 
-CHANNEL    = "C0B3E5GF6UR"
+CHANNELS = {                       # every channel Computa listens in
+    "C0B3E5GF6UR": "bar-only",     # bartenders: 86s, last keg, back on
+    "C0AQ68G7DRB": "brew-x-bar",   # brewers (Jules, Greg): new beers
+}
+ALERT_CHANNEL = "C0B3E5GF6UR"      # where health warnings go
 REPO       = "PlattPark/liveboard"
 BEERS_PATH = "beers.json"
 STATE_PATH = "computa_state.json"
@@ -113,7 +117,7 @@ def health(status):
     now = datetime.now().isoformat(timespec="seconds")
     if status == "ok":
         if h.get("alerted"):
-            slack("chat.postMessage", channel=CHANNEL,
+            slack("chat.postMessage", channel=ALERT_CHANNEL,
                   text=":white_check_mark: Computa is back and caught up.")
         h = {"fails": 0, "alerted": False, "last_ok": now}
     else:
@@ -121,9 +125,9 @@ def health(status):
         h["last_error"] = status
         h["last_fail"] = now
         if h["fails"] >= ALERT_AFTER and not h.get("alerted"):
-            slack("chat.postMessage", channel=CHANNEL,
+            slack("chat.postMessage", channel=ALERT_CHANNEL,
                   text=":warning: Computa can't reach GitHub (%s). Board and menu won't "
-                       "update until it's fixed - Colby, check the Computa log. "
+                       "update until it's fixed - Colby, check the Beelink. "
                        "I'll say when it's back." % status)
             h["alerted"] = True
     if not DRY:
@@ -159,8 +163,10 @@ KICKED_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:just\s+)?(?:is\s+|
 BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:back|on again|back on|pouring again)\b", re.I)
 LASTKEG_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:on\s+)?(?:its\s+)?"
                         r"(?:last\s+keg|almost\s+out|running\s+low|is\s+low|nearly\s+out)\b", re.I)
-FLAVOR_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,32}?)\s+is\s+(?:now\s+)?(?:a\s+)?(?P<flavor>.{2,40}?)"
-                        r"(?:\s+(?:now|flavor|flavour))?[.!]?\s*$", re.I)
+# "boochcraft is now kiwi citrus" - the "now" is required. Without it, every
+# tank update in #brew-x-bar ("tank 3 is fermenting") would read as a flavor change.
+FLAVOR_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,32}?)\s+is\s+now\s+(?:a\s+)?(?P<flavor>.{2,40}?)"
+                        r"(?:\s+(?:flavor|flavour))?[.!]?\s*$", re.I)
 ADD_RE     = re.compile(r"\b(?:add|new|put|throw)\b\s+(?:on\s+|in\s+)?(?P<item>.{2,60}?)"
                         r"(?:\s+(?:to|on)\s+the\s+(?P<section>[\w \-]+?))?[.!]?\s*$", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
@@ -220,7 +226,7 @@ def match_beer(item, pool):
     return m[0] if len(m) == 1 else None
 
 
-def handle(msg, data, queue):
+def handle(msg, data, queue, channel):
     p = parse(msg.get("text", ""))
     if not p:
         return None
@@ -307,7 +313,7 @@ def handle(msg, data, queue):
                  % (item, (" -> " + extra) if extra else "", need))
 
     print("  [%s] %s -> %s" % (action, item if isinstance(item, str) else item.get("name"), change or "queued"))
-    return change, (ts, reply) if reply else None
+    return change, (channel, ts, reply) if reply else None
 
 
 def load_json(path, default):
@@ -323,19 +329,36 @@ def load_json(path, default):
 def run_once():
     state = load_json(STATE_PATH, None)
     queue = load_json(QUEUE_PATH, [])
+    now_ts = "%.6f" % time.time()
+
+    # First run: mark every channel as read from NOW. Never replay history -
+    # the channels have weeks of old 86s and Computa would act on all of them.
     if state is None or "last_ts" not in state:
-        # First run: mark the channel as read from NOW. Never replay history -
-        # the channel has weeks of old 86s and Computa would act on all of them.
-        state = {"last_ts": "%.6f" % time.time(), "started": datetime.now().isoformat(timespec="seconds")}
+        state = {"last_ts": {cid: now_ts for cid in CHANNELS},
+                 "started": datetime.now().isoformat(timespec="seconds")}
         if not DRY:
             json.dump(state, open(STATE_PATH, "w"), indent=1)
-        print("first run - watching from now on, old messages ignored")
+        print("first run - watching %s from now on, old messages ignored"
+              % ", ".join("#" + n for n in CHANNELS.values()))
         return
+    # older state files stored one channel's stamp as a bare string
+    if isinstance(state["last_ts"], str):
+        state["last_ts"] = {cid: state["last_ts"] for cid in CHANNELS}
+    for cid in CHANNELS:                       # a channel added later starts from now
+        state["last_ts"].setdefault(cid, now_ts)
 
-    r = slack("conversations.history", channel=CHANNEL, oldest=state["last_ts"], limit=50)
-    msgs = [m for m in sorted(r.get("messages", []), key=lambda m: float(m["ts"]))
-            if m["ts"] != state["last_ts"] and not m.get("bot_id")
-            and m.get("type") == "message" and not m.get("subtype")]
+    # gather new messages from every channel, tagged with where they came from
+    msgs = []
+    for cid, cname in CHANNELS.items():
+        r = slack("conversations.history", channel=cid, oldest=state["last_ts"][cid], limit=50)
+        if not r.get("ok"):
+            print("  ! can't read #%s (%s) - is Computa invited there?" % (cname, r.get("error")))
+            continue
+        for m in r.get("messages", []):
+            if (m["ts"] != state["last_ts"][cid] and not m.get("bot_id")
+                    and m.get("type") == "message" and not m.get("subtype")):
+                msgs.append((cid, m))
+    msgs.sort(key=lambda cm: float(cm[1]["ts"]))
     if not msgs:
         print("no new messages"); return
 
@@ -346,8 +369,8 @@ def run_once():
         health("bad_json")
         return
     changes, replies = [], []
-    for m in msgs:
-        r = handle(m, data, queue)
+    for cid, m in msgs:
+        r = handle(m, data, queue, cid)
         if not r:
             continue
         change, rep = r
@@ -370,11 +393,12 @@ def run_once():
             return
         print("committed: " + "; ".join(changes))
 
-    for ts_, text in replies:
+    for cid, ts_, text in replies:
         if not DRY:
-            slack("chat.postMessage", channel=CHANNEL, thread_ts=ts_, text=text)
+            slack("chat.postMessage", channel=cid, thread_ts=ts_, text=text)
 
-    state["last_ts"] = max([state["last_ts"]] + [m["ts"] for m in msgs], key=float)
+    for cid, m in msgs:
+        state["last_ts"][cid] = max(state["last_ts"][cid], m["ts"], key=float)
     if not DRY:
         json.dump(state, open(STATE_PATH, "w"), indent=1)
         json.dump(queue, open(QUEUE_PATH, "w"), indent=1, ensure_ascii=False)
