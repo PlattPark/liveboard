@@ -1,1 +1,14 @@
-[]
+[
+ {
+  "ts": "1789671140.417719",
+  "action": "remove_unmatched",
+  "item": "* (anyone)",
+  "text": "*Computa is live.* It reads this channel and #bar-only and updates the tap board and the menu on its own. Jules just used it — 86'd Chela at 12:46, it replied at 12:47, off the board a minute later. No more waiting on me.\n\nJust talk normally. It understands:\n\n*NEW BEER* (brewers)\n`New beer: Fresh Hop Pale — West Coast Pale Ale, 5.8%, piney and bright`\n`Just tapped Sun Shower, a 4.6% berliner with raspberry`\n→ Goes on the board and menu right away with colour, price and tank filled in. It replies with what it assumed — correct it in the thread.\n\n*86* (anyone)\n`86 chela`  ·  `chela kicked`  ·  `chela blew`\n→ Off the board and menu in a few minutes.\n\n*BACK ON*\n`chela is back on`\n→ Restores it with everything it had. (Jules — that's the one for tomorrow AM.)\n\n*LAST KEG*\n`chela is on last keg`\n→ LAST KEG sash goes up on the board.\n\n*FLAVOR SWAP*\n`boochcraft is now kiwi citrus`\n\nIt replies in-thread when something lands, so you know. If it can't work something out it says so and flags me. Takes about 5 minutes to show on the board.\n\nTank updates, gravity readings, kegging chatter — it ignores all of that. Only the phrases above. And \"add X\" on its own just gets logged for me; use *New beer:* if you want it published. *Sent using* <@U0AQE5QBJ4U>"
+ },
+ {
+  "ts": "1789671146.955429",
+  "action": "remove_unmatched",
+  "item": "chela`  ·  `chela kicked`  →  it's off",
+  "text": "*Computa is live.* You've been talking to it for months — it finally listens. Post like you already do and the board and menu update on their own in about 5 minutes:\n\n`86 chela`  ·  `chela kicked`  →  it's off\n`chela is back on`  →  it's back\n`chela is on last keg`  →  LAST KEG sash goes up\n`boochcraft is now kiwi citrus`  →  flavor line swaps\n\nIt replies in the thread so you know it landed. If it can't match the name, it says so and flags me. Sinks and open tabs still go to a human.\n\nFirst real one already happened: Jules 86'd Chela at 12:46 today. New batch is on tomorrow AM — whoever taps it, `chela is back on` and it reappears with everything intact. *Sent using* <@U0AQE5QBJ4U>"
+ }
+]
