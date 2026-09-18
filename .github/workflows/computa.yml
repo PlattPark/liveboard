@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Poll Slack every 90s for ~5.5 hours
+      - name: Poll Slack every 30s for ~5.5 hours
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +66,7 @@ jobs:
             echo "--- cycle $n $(date -u +%H:%M:%S) ---"
             python3 computa.py || echo "cycle failed - continuing"
             persist || echo "persist failed - continuing"
-            sleep 90
+            sleep 30
           done
           echo "loop done after $n cycles"
 
