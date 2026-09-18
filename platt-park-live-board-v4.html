@@ -795,6 +795,8 @@ window.__BUILD='2026-09-11.2845';
           if(d&&d.current){
             deg.textContent=Math.round(d.current.temperature_2m)+'°';
             ico.textContent=WMO[d.current.weather_code]||'';
+            window.__wx={temp:d.current.temperature_2m,code:d.current.weather_code,word:WMO[d.current.weather_code]||''};
+            if(window.__autoScene) window.__autoScene();   // let the scene react (snow, heat)
           }
         }).catch(function(){});
     }catch(e){}
@@ -815,6 +817,51 @@ function festOverride(s){
   return s;
 }
 (function(){ const _r=render; render=function(s){ return _r(festOverride(s)); }; })();
+
+/* ---- AUTO SCENES: the clock, the calendar and live weather pick the scene.
+   Nothing invented: hours and specials are the real ones, weather is Open-Meteo.
+   A preview button still wins while someone is demoing (window.__scene != default). ---- */
+(function(){
+  const OPEN=11, CLOSE=22;                  // business day, America/Denver, every day
+  const SNOW=[71,73,75,77,85,86], HOT_F=90; // WMO snow codes; "hot" from 90°F
+  function denver(){
+    const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'2-digit',hourCycle:'h23'})
+      .formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{});
+    return {dow:p.weekday, t:(parseInt(p.hour,10)%24)+parseInt(p.minute,10)/60};
+  }
+  function auto(){
+    const {dow,t}=denver(), ctx={}, w=window.__wx;
+    if(t<OPEN) ctx.curtain='preopen'; else if(t>=CLOSE) ctx.curtain='goodnight';
+    if(!ctx.curtain){
+      if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'Everything, all day, food included \u00b7 clock-out slip, schedule or work shirt gets you in'}; ctx.eventPhase='run'; }
+      else if(dow==='Tue'){ const live=(t>=19&&t<21);
+        ctx.event={title:'Trivia Tuesday',promo:'Team Trivia tonight \u00b7 7pm',banner:'Team Trivia \u00b7 happening now'}; ctx.eventPhase=live?'run':'promote'; }
+      else if(dow==='Wed'){ ctx.event={title:'Wing Wednesday',banner:'A dozen wings for $12 \u00b7 every other day it\u2019s seven',wingCounter:false}; ctx.eventPhase='run'; }
+    }
+    let scene='default', banner;
+    if(w && SNOW.includes(w.code)){ scene='snow'; banner='Snow day. Nitro pours lead the board.'; }
+    else if(w && w.temp>=HOT_F){ scene='hot'; banner='Scorcher. Lagers and frozen cocktails up top.'; }
+    return {weather:{scene,icon:'',label:w?Math.round(w.temp)+'\u00b0':'',banner},context:ctx};
+  }
+  const _r=render;
+  render=function(s){
+    if(window.__scene==='default'){ const a=auto(); s.weather=a.weather; s.context=Object.assign({},s.context,a.context); }
+    const out=_r(s);
+    // the real weather always wins over any scene's placeholder text
+    if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
+      if(d) d.textContent=Math.round(window.__wx.temp)+'\u00b0';
+      if(i && !/scene-/.test(document.body.className)) i.textContent=window.__wx.word||i.textContent; }
+    return out;
+  };
+  let sig='';
+  window.__autoScene=function(force){
+    if(window.__scene!=='default') return;
+    const a=JSON.stringify(auto());
+    if(force || a!==sig){ sig=a; try{ render(payload()); }catch(e){} }
+  };
+  window.__autoScene(true);                 // apply now (boot render ran before this hook)
+  setInterval(function(){ window.__autoScene(); }, 60000);
+})();
 
 (function(){ function isFest(){ try{ if(new URLSearchParams(location.search).has('fest')) return true; return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).format(new Date())==='2026-09-12'; }catch(e){ return false; } }
   function enforce(){ if(!isFest()) return; var b=$('banner'); if(b && !b.classList.contains('show')){ b.innerHTML='<strong>South Pearl Oktoberfest</strong> Festbier + steins pouring til 10 \u00b7 real bathrooms, no lines'; b.classList.add('show','gold');document.body.classList.add('bn'); } }
