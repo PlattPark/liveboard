@@ -72,8 +72,15 @@ jobs:
           if [ -z "$GH_PAT" ]; then
             echo "no GH_PAT secret - relying on the cron backup to restart"; exit 0
           fi
-          curl -sS -o /dev/null -w "dispatch -> HTTP %{http_code}\n" -X POST \
-            -H "Authorization: Bearer $GH_PAT" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/PlattPark/liveboard/dispatches \
-            -d '{"event_type":"computa-next"}'
+          # three tries, 30s apart - a single GitHub hiccup must not break the chain
+          for try in 1 2 3; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer $GH_PAT" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/PlattPark/liveboard/dispatches \
+              -d '{"event_type":"computa-next"}')
+            echo "dispatch try $try -> HTTP $code"
+            [ "$code" = "204" ] && exit 0
+            sleep 30
+          done
+          echo "handoff failed 3x - the Beelink keepalive or cron backup will restart the chain"
