@@ -1,17 +1,27 @@
 name: Computa
 
-# Runs Computa every 5 minutes with no hardware. Reads #bar-only and
-# #brew-x-bar, updates beers.json, replies in Slack. State files are
-# committed back so each run picks up where the last one left off.
+# HOW THIS RUNS
+#   GitHub throttles 5-minute crons on free repos to a run every few hours,
+#   which the crew noticed on day two. So instead: each run polls Slack every
+#   90 seconds for ~5.5 hours, then hands off to the next run. Four runs a
+#   day, continuous coverage, 90-second replies.
 #
-# Setup (once): Settings -> Secrets and variables -> Actions -> New secret
-#   SLACK_BOT_TOKEN = the xoxb- token from the Computa app
-# GITHUB_TOKEN is provided automatically - no PAT needed here.
+#   The handoff needs a token that can fire repository_dispatch - the
+#   Actions-provided GITHUB_TOKEN is not allowed to start new runs. Secret
+#   GH_PAT = the computa-liveboard fine-grained token (Contents write is enough).
+#   Without GH_PAT the run still does its 5.5 hours; the cron backup restarts
+#   it within a few hours. With it, the chain never breaks.
+#
+#   Concurrency keeps one run at a time and one queued; a cron backup that
+#   fires mid-chain is simply cancelled by the next handoff, so there is
+#   never a second chain.
 
 on:
+  repository_dispatch:
+    types: [computa-next]        # the handoff
   schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:        # "Run workflow" button for manual tests
+    - cron: "*/5 * * * *"        # backup only - throttled by GitHub to every few hours
+  workflow_dispatch:             # "Run workflow" button
 
 permissions:
   contents: write
@@ -23,29 +33,47 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 355         # GitHub's cap is 360
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Computa once
+      - name: Poll Slack every 90s for ~5.5 hours
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 computa.py
-
-      - name: Persist state
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
-          # add each state file only if it exists - a single missing
-          # pathspec makes git add abort the whole command
-          for f in computa_state.json computa_queue.json computa_health.json; do
-            [ -f "$f" ] && git add "$f"
+          persist() {
+            for f in computa_state.json computa_queue.json computa_health.json; do
+              [ -f "$f" ] && git add "$f"
+            done
+            git diff --cached --quiet && return 0
+            git commit -qm "computa: state"
+            git pull -q --rebase --autostash origin main
+            git push -q
+          }
+          END=$(( $(date +%s) + 330*60 ))
+          n=0
+          while [ "$(date +%s)" -lt "$END" ]; do
+            n=$((n+1))
+            echo "--- cycle $n $(date -u +%H:%M:%S) ---"
+            python3 computa.py || echo "cycle failed - continuing"
+            persist || echo "persist failed - continuing"
+            sleep 90
           done
-          if git diff --cached --quiet; then
-            echo "no state change"; exit 0
+          echo "loop done after $n cycles"
+
+      - name: Hand off to the next run
+        if: always()
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_PAT" ]; then
+            echo "no GH_PAT secret - relying on the cron backup to restart"; exit 0
           fi
-          git commit -m "computa: state"
-          # computa.py may have already committed beers.json via the API
-          git pull --rebase --autostash origin main
-          git push
+          curl -sS -o /dev/null -w "dispatch -> HTTP %{http_code}\n" -X POST \
+            -H "Authorization: Bearer $GH_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/PlattPark/liveboard/dispatches \
+            -d '{"event_type":"computa-next"}'
