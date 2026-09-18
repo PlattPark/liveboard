@@ -127,11 +127,15 @@ def health(status):
         if h["fails"] >= ALERT_AFTER and not h.get("alerted"):
             slack("chat.postMessage", channel=ALERT_CHANNEL,
                   text=":warning: Computa can't reach GitHub (%s). Board and menu won't "
-                       "update until it's fixed - Colby, check the Beelink. "
+                       "update until it's fixed - Colby, check the Computa log. "
                        "I'll say when it's back." % status)
             h["alerted"] = True
     if not DRY:
-        json.dump(h, open(HEALTH_PATH, "w"), indent=1)
+        # only touch the file when fails/alerted actually change - the loop
+        # runs every 90s and a rewrite per cycle would mean a commit per cycle
+        prev = load_json(HEALTH_PATH, {})
+        if (prev.get("fails"), prev.get("alerted")) != (h["fails"], h["alerted"]) or not prev:
+            json.dump(h, open(HEALTH_PATH, "w"), indent=1)
 
 
 def fetch_beers():
@@ -183,7 +187,8 @@ def parse(text):
         nb = newbeer.parse_new_beer(body)
         if nb and nb.get("name"):
             return "newbeer", nb, body
-    woke = re.match(r"^\s*%s\b[\s,!:.\-]*" % WAKE, body, re.I)
+    # "@Computa 86 chela" arrives as "<@U0C2GMAT8CD> 86 chela" - the mention is the wake word
+    woke = re.match(r"^\s*(?:<@U[A-Z0-9]+(?:\|[^>]*)?>|%s\b)[\s,!:.\-]*" % WAKE, body, re.I)
     if woke:
         body = body[woke.end():].strip()
     for line in [l.strip() for l in body.split("\n") if l.strip()]:
@@ -206,6 +211,28 @@ def parse(text):
 
 def norm(s):
     return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+BBL_OZ = 3968                       # one barrel in ounces
+LEVEL_RE = re.compile(r"(\d+(?:\.\d+)?)\s*bbl(?:\s+in\s+an?\s+(\d+)\s*bbl)?", re.I)
+
+def read_level(text, beer):
+    """'9.3bbl in a 10bbl tank' -> remainingOz 36902, vessel tank10.
+    Returns a reply fragment, or '' if the message says nothing about level."""
+    m = LEVEL_RE.search(text)
+    if not m:
+        return ""
+    have = float(m.group(1))
+    beer["remainingOz"] = int(have * BBL_OZ)
+    if m.group(2):
+        size = int(m.group(2))
+        label = "%d BBL" % size
+        if label in VESSELS:
+            beer["vessel"], _ = VESSELS[label]
+            beer["vesselLabel"] = label
+    elif have <= 0.5:
+        beer["vessel"], _ = VESSELS["1/2 BBL"]; beer["vesselLabel"] = "1/2 BBL"
+    return " Tank set to %.1f bbl." % have
 
 
 def match_beers(item, pool):
@@ -258,10 +285,19 @@ def handle(msg, data, queue, channel):
 
     elif action == "back":
         b = match_beer(item, recent)
+        already = match_beer(item, beers)
         if b:
-            recent.remove(b); b.pop("offSince", None); beers.append(b)
+            recent.remove(b); b.pop("offSince", None)
+            b["tappedDaysAgo"] = 0
+            lvl = read_level(msg.get("text", ""), b)
+            beers.append(b)
             change = b["name"] + " back on"
-            reply = ":beer: *%s* is back on - it'll reappear shortly." % b["name"]
+            reply = ":beer: *%s* is back on - it'll reappear shortly.%s" % (b["name"], lvl)
+        elif already:
+            lvl = read_level(msg.get("text", ""), already)
+            if lvl:
+                change = already["name"] + " level"
+            reply = ":beer: *%s* is already pouring - nothing to do.%s" % (already["name"], lvl)
         else:
             queue.append({"ts": ts, "action": "restore_unknown", "item": item, "text": msg.get("text", "")})
             reply = (":grey_question: *%s* isn't in the recently-off list, so I don't have its price "
@@ -417,7 +453,7 @@ if __name__ == "__main__":
         for item in q: print("   - %s: %s" % (item.get("action"), item.get("item")))
         sys.exit(0)
     if "--watch" in sys.argv:
-        print("watching #bar-only every %ds - ctrl-c to stop" % POLL_SEC)
+        print("watching %s every %ds - ctrl-c to stop" % (", ".join("#"+n for n in CHANNELS.values()), POLL_SEC))
         while True:
             try:
                 run_once()
