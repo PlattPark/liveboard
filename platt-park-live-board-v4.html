@@ -393,7 +393,6 @@ setInterval(function(){ if(!window.__LIVE){ var o=$('odo'); if(o){
 } } }, 15000);
 (function(){ var o=$('odo'); if(o&&!window.__LIVE){ var mins=(Date.now()-new Date('2026-09-11T00:00:00-06:00').getTime())/60000; o.textContent=Math.floor(1080448+Math.max(0,mins)*0.203188).toLocaleString(); } })();
 const NOTES = {
-  'chela':'last keg',
   'oktoberfest':'the fest beer',
   'plattmosphere':'the flagship hazy',
   'nutorious':'us open gold 2026',
@@ -512,8 +511,8 @@ function render(s){
       });
     }
     const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3600000;
-    u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(beer.medal?' gold':'')+(fresh&&!beer.kicked?' justtapped':'');
-    u.querySelector('.spotcap').textContent=NOTES[beer.id]||'';
+    u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(beer.medal?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'');
+    u.querySelector('.spotcap').textContent=beer.sash||'';
     var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
     u.querySelector('.size').textContent=beer.vesselLabel;
     const liq=u.querySelector('.liquid');
@@ -750,7 +749,7 @@ document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==
 body.bn .stage{transform:scale(.878)}
 
 /* chela: last-keg sash, green so the fest sash stays unique */
-#u-chela .spotcap,#u-pacific-detour .spotcap{display:block;background:#46683a}
+.unit.hasSash .spotcap{display:block} .unit.lastkeg .spotcap{background:#46683a}
 
 /* dense mode: wakes at 15+ taps so the board survives a fuller wall */
 .floor.dense{gap:6px 10px}
@@ -944,7 +943,6 @@ function festOverride(s){
     'fresh Platty Lite racked this week \u00b7 the 20 bbl is full',
     'Nutorious refilled friday \u00b7 the gold-medal beer is not running out this weekend',
     'Plattmosphere: next batch already in the fermenter \u2014 19 bbls on the way',
-    'Chela Morena \u00b7 last keg \u2014 when it\u2019s gone, it\u2019s gone',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
     '5280 put the Italian Job on its best-sandwiches-in-Denver list',
     'Westword Best of Denver 2020 \u00b7 best walk-up beer + sandwiches',
