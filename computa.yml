@@ -1,0 +1,92 @@
+name: Computa
+
+# HOW THIS RUNS
+#   GitHub throttles 5-minute crons on free repos to a run every few hours,
+#   which the crew noticed on day two. So instead: each run polls Slack every
+#   90 seconds for ~5.5 hours, then hands off to the next run. Four runs a
+#   day, continuous coverage, 90-second replies.
+#
+#   The handoff needs a token that can fire repository_dispatch - the
+#   Actions-provided GITHUB_TOKEN is not allowed to start new runs. Secret
+#   GH_PAT = the computa-liveboard fine-grained token (Contents write is enough).
+#   Without GH_PAT the run still does its 5.5 hours; the cron backup restarts
+#   it within a few hours. With it, the chain never breaks.
+#
+#   Concurrency keeps one run at a time and one queued; a cron backup that
+#   fires mid-chain is simply cancelled by the next handoff, so there is
+#   never a second chain.
+
+on:
+  repository_dispatch:
+    types: [computa-next]        # the handoff
+  schedule:
+    - cron: "*/5 * * * *"        # backup only - throttled by GitHub to every few hours
+  workflow_dispatch:             # "Run workflow" button
+    inputs:
+      minutes:
+        description: "How long this run polls before handing off (default 330 = ~5.5h; use 2 to test the handoff)"
+        default: "330"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: computa
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355         # GitHub's cap is 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Poll Slack every 30s for ~5.5 hours
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name  "computa"
+          git config user.email "computa@plattparkbrewing.com"
+          persist() {
+            for f in computa_state.json computa_queue.json computa_health.json; do
+              [ -f "$f" ] && git add "$f"
+            done
+            git diff --cached --quiet && return 0
+            git commit -qm "computa: state"
+            git pull -q --rebase --autostash origin main
+            git push -q
+          }
+          MIN="${{ github.event.inputs.minutes }}"; MIN="${MIN:-330}"
+          echo "polling for $MIN minutes"
+          END=$(( $(date +%s) + MIN*60 ))
+          n=0
+          while [ "$(date +%s)" -lt "$END" ]; do
+            n=$((n+1))
+            echo "--- cycle $n $(date -u +%H:%M:%S) ---"
+            python3 computa.py || echo "cycle failed - continuing"
+            persist || echo "persist failed - continuing"
+            sleep 30
+          done
+          echo "loop done after $n cycles"
+
+      - name: Hand off to the next run
+        if: always()
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_PAT" ]; then
+            echo "no GH_PAT secret - relying on the cron backup to restart"; exit 0
+          fi
+          # three tries, 30s apart - a single GitHub hiccup must not break the chain
+          for try in 1 2 3; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer $GH_PAT" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/PlattPark/liveboard/dispatches \
+              -d '{"event_type":"computa-next"}')
+            echo "dispatch try $try -> HTTP $code"
+            [ "$code" = "204" ] && exit 0
+            sleep 30
+          done
+          echo "handoff failed 3x - the Beelink keepalive or cron backup will restart the chain"

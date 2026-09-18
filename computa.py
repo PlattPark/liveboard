@@ -164,13 +164,17 @@ REMOVE_RE  = re.compile(r"(?:^|\b)(?:86|eighty[- ]?six)\b[:\s]*(?:the\s+)?(?P<it
                         r"(?:\s+(?:until|til|till|thru|through)\b.*)?[.!]?\s*$", re.I)
 KICKED_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:just\s+)?(?:is\s+|has\s+)?"
                         r"(?:kicked|blew|blown|tapped\s+out|ran\s+out|is\s+out|gone)\b[.!]?\s*$", re.I)
-BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+back(?:\s+on)?|back\s+on|on\s+again|pouring\s+again)\b", re.I)
+BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+back(?:\s+on)?|back\s+on|on\s+again|pouring\s+again|back[.!]?$)\b", re.I)
 NOLASTKEG_RE = re.compile(r"(?:^(?:remove|clear|take\s+off|drop)\s+(?:the\s+)?last\s*keg(?:\s+sash)?\s+(?:from|off|on)\s+(?:the\s+)?(?P<item>.{2,48}?)"
                           r"|^(?:the\s+)?(?P<item2>.{2,48}?)\s+(?:is\s+)?(?:not|no\s+longer)\s+(?:on\s+)?(?:its\s+)?last\s*keg"
                           r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off)[.!]?\s*$", re.I)
+PRICE10_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+10\s*oz\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)[.!]?\s*$", re.I)
+PRICE_RE   = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)(?:\s*(?:a\s+)?(?:pint|pints))?[.!]?\s*$", re.I)
+ABV_RE     = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:now\s+)?|abv\s*(?:is|=|:)?\s*)(?P<abv>\d{1,2}(?:\.\d)?)\s*%(?:\s*abv)?[.!]?\s*$", re.I)
+FRESHKEG_RE= re.compile(r"^(?:a\s+)?(?:fresh|new)\s+keg\s+(?:of\s+)?(?:the\s+)?(?P<item>.{2,48}?)(?:\s+(?:is\s+)?(?:on|tapped|up|pouring))?[.!]?\s*$", re.I)
 STATUS_RE  = re.compile(r"^(?:status|what'?s\s+(?:on|pouring)|tap\s+list|list)\b[?!.]*$", re.I)
-ASKED_RE   = re.compile(r"\b(?:accurate|up\s+to\s+date|correct|status|what'?s\s+(?:on|pouring))\b", re.I)
-LASTKEG_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:on\s+)?(?:its\s+)?"
+ASKED_RE   = re.compile(r"\b(?:accurate|up\s+to\s+date|correct|status|what'?s\s+(?:on|pouring|low|left))\b", re.I)
+LASTKEG_RE = re.compile(r"^(?:(?:put|mark|set|flag)\s+)?(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:on\s+)?(?:its\s+)?"
                         r"(?:last\s+keg|almost\s+out|running\s+low|is\s+low|nearly\s+out)\b", re.I)
 # "boochcraft is now kiwi citrus" - the "now" is required. Without it, every
 # tank update in #brew-x-bar ("tank 3 is fermenting") would read as a flavor change.
@@ -196,7 +200,7 @@ def parse(text):
     if newbeer and NEWBEER_TRIGGER.match(body):
         nb = newbeer.parse_new_beer(body)
         if nb and nb.get("name"):
-            return "newbeer", nb, body
+            return "newbeer", nb, body   # handle() turns this into a restore if the name is already known
     # "@Computa 86 chela" arrives as "<@U0C2GMAT8CD> 86 chela" - the mention is the wake word
     woke = re.match(r"^\s*(?:<@U[A-Z0-9]+(?:\|[^>]*)?>|%s\b)[\s,!:.\-]*" % WAKE, body, re.I)
     if woke:
@@ -214,6 +218,18 @@ def parse(text):
         m = PICK_RE.search(line)
         if m:
             return "pick", m.group("item").strip(" .,-"), None
+        m = PRICE10_RE.search(line)
+        if m:
+            return "price10", m.group("item").strip(" .,-"), float(m.group("price"))
+        m = PRICE_RE.search(line)
+        if m:
+            return "price", m.group("item").strip(" .,-"), float(m.group("price"))
+        m = ABV_RE.search(line)
+        if m:
+            return "abv", m.group("item").strip(" .,-"), float(m.group("abv"))
+        m = FRESHKEG_RE.search(line)
+        if m:
+            return "back", m.group("item").strip(" .,-"), None
         for rx, act in ((NOBTN_RE, "needs_button"), (REMOVE_RE, "remove"),
                         (KICKED_RE, "remove"), (BACK_RE, "back"), (LASTKEG_RE, "lastkeg")):
             m = rx.search(line)
@@ -255,8 +271,11 @@ def read_level(text, beer):
     return " Tank set to %.1f bbl." % have
 
 
+import difflib
+
 def match_beers(item, pool):
-    """All plausible matches. Exact name wins outright; otherwise substring."""
+    """All plausible matches. Exact name wins; then substring; then a close typo
+    ('chelas', 'nadara', 'platy') against the whole name or any word of it."""
     t = norm(item)
     if not t:
         return []
@@ -265,7 +284,24 @@ def match_beers(item, pool):
         return exact[:1]
     if len(t) <= 3:
         return []
-    return [b for b in pool if t in norm(b.get("name","")) or norm(b.get("name","")) in t]
+    sub = [b for b in pool if t in norm(b.get("name","")) or norm(b.get("name","")) in t]
+    if sub:
+        return sub
+    def close(a, b):
+        return difflib.SequenceMatcher(None, a, b).ratio() >= 0.8
+    fuzzy = []
+    for b in pool:
+        words = [norm(w) for w in re.split(r"[\s\-/]+", b.get("name","")) if len(norm(w)) >= 4]
+        if close(t, norm(b.get("name",""))) or any(close(t, w) for w in words):
+            fuzzy.append(b)
+    return fuzzy
+
+SPLIT_RE = re.compile(r"\s*(?:,|&|\+|\band\b)\s*", re.I)
+
+def split_items(item):
+    """'witbier and nadare' -> ['witbier', 'nadare']; single names pass through."""
+    parts = [p.strip(" .,-") for p in SPLIT_RE.split(item) if p.strip(" .,-")]
+    return parts if len(parts) > 1 else [item]
 
 
 def match_beer(item, pool):
@@ -278,6 +314,19 @@ def handle(msg, data, queue, channel):
     if not p:
         return None
     action, item, extra = p
+    # "86 witbier and nadare": run the same action once per name, combine the replies
+    if action in ("remove", "back", "lastkeg") and isinstance(item, str) and len(split_items(item)) > 1:
+        changes, replies = [], []
+        for part in split_items(item):
+            r = handle_one(msg, data, queue, channel, action, part, extra)
+            if r:
+                if r[0]: changes.append(r[0])
+                if r[1]: replies.append(r[1][2])
+        return ("; ".join(changes) or None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
+    return handle_one(msg, data, queue, channel, action, item, extra)
+
+
+def handle_one(msg, data, queue, channel, action, item, extra):
     ts = msg["ts"]
     beers  = data.setdefault("beers", [])
     recent = data.setdefault("recent", [])
@@ -377,9 +426,43 @@ def handle(msg, data, queue, channel):
             reply = (":pencil: Logged: *%s* is now _%s_. That one lives in the 'Also Pouring' panel, "
                      "not the tap list - Colby will swap it." % (item, extra))
 
+    elif action == "price":
+        b = match_beer(item, beers)
+        if b:
+            old = b.get("price"); b["price"] = extra
+            change = "%s $%.2f" % (b["name"], extra)
+            reply = ":moneybag: *%s* pint is now $%.2f (was $%.2f). Change the 10oz too if it moved: _\"%s 10oz is now $X\"_" % (b["name"], extra, old or 0, b["name"])
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "price10":
+        b = match_beer(item, beers)
+        if b:
+            b["price10"] = extra
+            change = "%s 10oz $%.2f" % (b["name"], extra)
+            reply = ":moneybag: *%s* 10oz is now $%.2f." % (b["name"], extra)
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "abv":
+        b = match_beer(item, beers)
+        if b:
+            b["abv"] = extra
+            change = "%s %s%%" % (b["name"], extra)
+            reply = ":test_tube: *%s* is now %s%% on the board and menu." % (b["name"], extra)
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
     elif action == "newbeer":
         beer, assumed = newbeer.build_beer(item, extra or "")
-        if match_beer(beer["name"], beers):
+        known = match_beer(beer["name"], recent)
+        if known:   # "just tapped witbier" for a beer we already know: restore it, don't invent it
+            recent.remove(known); known.pop("offSince", None); known["tappedDaysAgo"] = 0
+            lvl = read_level(msg.get("text", ""), known)
+            beers.append(known)
+            change = known["name"] + " back on"
+            reply = ":beer: *%s* is back on with its old price and tank.%s" % (known["name"], lvl)
+        elif match_beer(beer["name"], beers):
             reply = ":information_source: *%s* is already on the tap list." % beer["name"]
         else:
             beers.append(beer)
