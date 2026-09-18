@@ -1,4 +1,4 @@
-·<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -732,6 +732,8 @@ setInterval(()=>{ document.body.classList.toggle('dusk', new Date().getHours()>=
 <style>.sc{background:none;border:2px solid rgba(41,61,34,.35);border-radius:4px;color:#293d22;padding:7px 10px;font-family:Barlow;font-weight:600;font-size:14px;cursor:pointer;text-align:left}.sc:hover{border-color:#ff5a3a;color:#ff5a3a}</style>
 <script>
 document.getElementById('gearBtn').onclick=()=>{const p=document.getElementById('panel');p.style.display=p.style.display==='none'?'flex':'none'};
+   // the scene picker is a demo tool: never on the wall. Add ?demo to the URL to get it back.
+   if(!/[?&]demo\b/.test(location.search)){ document.getElementById('gearBtn').parentElement.style.display='none'; }
 document.querySelectorAll('.sc[data-s]').forEach(b=>b.onclick=()=>{window.__scene=b.dataset.s;render(payload());});
 document.getElementById('kickBtn').onclick=()=>{const w=SIM.beers.find(b=>b.id==='chela');if(w)w.remainingOz=17;};
 </script>
@@ -835,9 +837,20 @@ function festOverride(s){
   const OPEN=11, CLOSE=22;                  // business day, America/Denver, every day
   const SNOW=[71,73,75,77,85,86], HOT_F=90; // WMO snow codes; "hot" from 90°F
   function denver(){
-    const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'2-digit',hourCycle:'h23'})
-      .formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{});
-    return {dow:p.weekday, t:(parseInt(p.hour,10)%24)+parseInt(p.minute,10)/60};
+    // Denver wall clock that survives old browsers: hour12:false is honoured almost
+    // everywhere; if a browser still hands back 12-hour parts, the dayPeriod fixes it;
+    // if Intl fails outright, the device itself lives in Denver, so use its clock.
+    var now=new Date(), dow='', h=NaN, m=NaN;
+    try{
+      var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'2-digit',hour12:false})
+        .formatToParts(now).reduce(function(o,x){o[x.type]=x.value;return o;},{});
+      dow=p.weekday; h=parseInt(p.hour,10); m=parseInt(p.minute,10);
+      if(h===24) h=0;
+      if(p.dayPeriod){ var pm=/p/i.test(p.dayPeriod); if(pm&&h<12) h+=12; if(!pm&&h===12) h=0; }
+    }catch(e){}
+    if(!(h>=0&&h<24)||!(m>=0&&m<60)){ h=now.getHours(); m=now.getMinutes(); }
+    if(!dow) dow=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()];
+    return {dow:dow, t:h+m/60};
   }
   function auto(){
     const {dow,t}=denver(), ctx={}, w=window.__wx;
