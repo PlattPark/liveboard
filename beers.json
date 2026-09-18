@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill.",
- "updated": "2026-09-17T18:47:28+00:00",
- "updatedBy": "86 Chela Morena",
+ "updated": "2026-09-18T17:59:32+00:00",
+ "updatedBy": "Chela Morena back on",
  "beers": [
   {
    "id": "oktoberfest",
@@ -173,9 +173,7 @@
    "remainingOz": 1267,
    "tappedDaysAgo": 8,
    "note": "coffee, pineapple & coconut"
-  }
- ],
- "recent": [
+  },
   {
    "id": "chela",
    "name": "Chela Morena",
@@ -184,14 +182,14 @@
    "price10": 4.75,
    "price": 7.5,
    "rating": 3.74,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
    "color": "#6e4a2a",
    "colorTop": "#8a5f38",
-   "remainingOz": 1091,
-   "tappedDaysAgo": 6,
-   "note": "toasty and smooth; the dark one that drinks light",
-   "offSince": "2026-09-17"
+   "remainingOz": 36902,
+   "tappedDaysAgo": 0,
+   "note": "toasty and smooth; the dark one that drinks light"
   }
- ]
+ ],
+ "recent": []
 }
