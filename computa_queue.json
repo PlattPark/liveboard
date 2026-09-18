@@ -10,5 +10,11 @@
   "action": "remove_unmatched",
   "item": "chela`  ·  `chela kicked`  →  it's off",
   "text": "*Computa is live.* You've been talking to it for months — it finally listens. Post like you already do and the board and menu update on their own in about 5 minutes:\n\n`86 chela`  ·  `chela kicked`  →  it's off\n`chela is back on`  →  it's back\n`chela is on last keg`  →  LAST KEG sash goes up\n`boochcraft is now kiwi citrus`  →  flavor line swaps\n\nIt replies in the thread so you know it landed. If it can't match the name, it says so and flags me. Sinks and open tabs still go to a human.\n\nFirst real one already happened: Jules 86'd Chela at 12:46 today. New batch is on tomorrow AM — whoever taps it, `chela is back on` and it reappears with everything intact. *Sent using* <@U0AQE5QBJ4U>"
+ },
+ {
+  "ts": "1789743427.235359",
+  "action": "restore_unknown",
+  "item": "Tv in",
+  "text": "Tv in back has wrong / outdated menu"
  }
 ]
