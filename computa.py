@@ -127,7 +127,7 @@ def health(status):
         if h["fails"] >= ALERT_AFTER and not h.get("alerted"):
             slack("chat.postMessage", channel=ALERT_CHANNEL,
                   text=":warning: Computa can't reach GitHub (%s). Board and menu won't "
-                       "update until it's fixed - Colby, check the Computa log. "
+                       "update until it's fixed - Colby, check the Beelink. "
                        "I'll say when it's back." % status)
             h["alerted"] = True
     if not DRY:
@@ -164,7 +164,12 @@ REMOVE_RE  = re.compile(r"(?:^|\b)(?:86|eighty[- ]?six)\b[:\s]*(?:the\s+)?(?P<it
                         r"(?:\s+(?:until|til|till|thru|through)\b.*)?[.!]?\s*$", re.I)
 KICKED_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:just\s+)?(?:is\s+|has\s+)?"
                         r"(?:kicked|blew|blown|tapped\s+out|ran\s+out|is\s+out|gone)\b[.!]?\s*$", re.I)
-BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:back|on again|back on|pouring again)\b", re.I)
+BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+back(?:\s+on)?|back\s+on|on\s+again|pouring\s+again)\b", re.I)
+NOLASTKEG_RE = re.compile(r"(?:^(?:remove|clear|take\s+off|drop)\s+(?:the\s+)?last\s*keg(?:\s+sash)?\s+(?:from|off|on)\s+(?:the\s+)?(?P<item>.{2,48}?)"
+                          r"|^(?:the\s+)?(?P<item2>.{2,48}?)\s+(?:is\s+)?(?:not|no\s+longer)\s+(?:on\s+)?(?:its\s+)?last\s*keg"
+                          r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off)[.!]?\s*$", re.I)
+STATUS_RE  = re.compile(r"^(?:status|what'?s\s+(?:on|pouring)|tap\s+list|list)\b[?!.]*$", re.I)
+ASKED_RE   = re.compile(r"\b(?:accurate|up\s+to\s+date|correct|status|what'?s\s+(?:on|pouring))\b", re.I)
 LASTKEG_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:on\s+)?(?:its\s+)?"
                         r"(?:last\s+keg|almost\s+out|running\s+low|is\s+low|nearly\s+out)\b", re.I)
 # "boochcraft is now kiwi citrus" - the "now" is required. Without it, every
@@ -173,6 +178,8 @@ FLAVOR_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,32}?)\s+is\s+now\s+(?:a\s+)?(
                         r"(?:\s+(?:flavor|flavour))?[.!]?\s*$", re.I)
 ADD_RE     = re.compile(r"\b(?:add|new|put|throw)\b\s+(?:on\s+|in\s+)?(?P<item>.{2,60}?)"
                         r"(?:\s+(?:to|on)\s+the\s+(?P<section>[\w \-]+?))?[.!]?\s*$", re.I)
+PICK_RE    = re.compile(r"^(?:staff\s+pick|pick\s+of\s+the\s+(?:day|week))\s*(?:is|=|:|-)?\s*(?:the\s+)?(?P<item>.{2,48}?)[.!]?\s*$", re.I)
+NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?staff\s+pick\b", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
                         r"(?:\s+(?:as\s+of\s+now|right\s+now|yet|currently|atm))?[.!]?\s*$", re.I)
 IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|"
@@ -183,6 +190,9 @@ NEWBEER_TRIGGER = re.compile(r"^\s*(?:computa+h?\s*[,!:]?\s*)?(?:new\s+beer|new\
 
 def parse(text):
     body = text.strip()
+    # Announcements and essays are not commands: long, or formatted with backticks.
+    if len(body) > 220 or "`" in body:
+        return None
     if newbeer and NEWBEER_TRIGGER.match(body):
         nb = newbeer.parse_new_beer(body)
         if nb and nb.get("name"):
@@ -194,6 +204,16 @@ def parse(text):
     for line in [l.strip() for l in body.split("\n") if l.strip()]:
         if IGNORE.search(line):
             continue
+        if STATUS_RE.search(line) or (woke and ASKED_RE.search(line)):
+            return "status", "", None
+        if NOPICK_RE.search(line):
+            return "nopick", "", None
+        m = NOLASTKEG_RE.search(line)
+        if m:
+            return "nolastkeg", (m.group("item") or m.group("item2") or m.group("item3")).strip(" .,-"), None
+        m = PICK_RE.search(line)
+        if m:
+            return "pick", m.group("item").strip(" .,-"), None
         for rx, act in ((NOBTN_RE, "needs_button"), (REMOVE_RE, "remove"),
                         (KICKED_RE, "remove"), (BACK_RE, "back"), (LASTKEG_RE, "lastkeg")):
             m = rx.search(line)
@@ -303,16 +323,47 @@ def handle(msg, data, queue, channel):
             reply = (":grey_question: *%s* isn't in the recently-off list, so I don't have its price "
                      "and tank details. Colby needs to add it." % item)
 
+    elif action == "pick":
+        b = match_beer(item, beers)
+        if b:
+            for x in beers: x.pop("pick", None)
+            b["pick"] = True
+            change = "staff pick " + b["name"]
+            reply = ":star: *%s* is the staff pick - tag's up on the board." % b["name"]
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "nopick":
+        had = [x["name"] for x in beers if x.pop("pick", None)]
+        change = "staff pick cleared" if had else None
+        reply = ":white_check_mark: Staff pick cleared." if had else ":information_source: There wasn't a staff pick set."
+
     elif action == "lastkeg":
         b = match_beer(item, beers)
         if b:
             b["vessel"], cap = VESSELS["1/2 BBL"]
             b["vesselLabel"] = "1/2 BBL"
             b["remainingOz"] = min(b.get("remainingOz", cap), int(cap * 0.55))
+            b["sash"] = "last keg"
             change = b["name"] + " last keg"
             reply = ":hourglass: *%s* marked last keg - the sash is up on the board." % b["name"]
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "nolastkeg":
+        b = match_beer(item, beers)
+        if b:
+            had = b.pop("sash", None) == "last keg"
+            change = (b["name"] + " sash off") if had else None
+            reply = (":white_check_mark: LAST KEG sash is off *%s*." % b["name"]) if had else \
+                    (":information_source: *%s* wasn't marked last keg." % b["name"])
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "status":
+        lines = ["%s%s" % (b["name"], (" (last keg)" if b.get("sash") == "last keg" else "") + (" :star:" if b.get("pick") else ""))
+                 for b in beers]
+        reply = ":beers: *%d on the wall:* %s\nLast change: %s" % (len(beers), " \u00b7 ".join(lines), data.get("updatedBy", "?"))
 
     elif action == "flavor":
         b = match_beer(item, beers)
