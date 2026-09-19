@@ -202,7 +202,7 @@ body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
   .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#5a8142;letter-spacing:.5px}
   body.night .plate .price .abv{color:#b9c49a}
-body.scene-industry .plate .price, body.night .plate .price{color:#eebf19}
+body.scene-industry .plate .price, body.night .plate .price{color:#e7eacd}
     .plate .age{color:#5a8142;font-size:15px;margin-top:3px;font-weight:600}
   .plate .adj{color:#b8412c;font-size:18px;font-weight:700;letter-spacing:.3px;margin-top:1px;line-height:1.1}
   .plate .adj:empty{display:none}
@@ -271,7 +271,7 @@ body.scene-industry .rail, body.night .rail{background:#131f0f}
   body.night .addr,body.night .elev{color:#8fa27a}
   body.night .tbody{box-shadow:0 0 0 1px rgba(231,234,205,.10)}
   body.night .dish{filter:brightness(.92)} body.night .cone{filter:brightness(.92) drop-shadow(0 2.5px 0 #0e150c)}
-  body.night .plate .price{color:#eebf19} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
+  body.night .plate .price{color:#e7eacd} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
   body.night .plate .adj{color:#ffb39f}
   body.night .stamp{opacity:.06}
   body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
@@ -305,7 +305,7 @@ body.dusk.scene-industry, body.dusk.night{background:#293d22}
 /* ---- design trio: spotlight loudness, quieter chips, header address line ---- */
 .unit.featured .name{font-size:43px;letter-spacing:0;color:#1e2f18}
 .unit.featured .price{color:#293d22}
-.price{background:none;border:none;box-shadow:none;padding:0}
+.plate .price .tag{display:inline-block;background:#eebf19;color:#293d22;padding:2px 9px 1px;border-radius:3px;box-shadow:2.5px 2.5px 0 rgba(41,61,34,.3);line-height:1.25} body.night .plate .price .tag{color:#293d22}
 .price .p10{opacity:.75}
 header{position:relative}
 .addr{position:absolute;right:132px;top:47px;font-family:'Barlow';font-weight:700;font-size:12px;letter-spacing:4px;color:#5a8142}
@@ -547,7 +547,7 @@ function render(s){
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.note').textContent=beer.wall||beer.note||'';
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML='<span class="abv">'+beer.abv+'%</span> <span class="p10 sep">·</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'');
+    u.querySelector('.price').innerHTML='<span class="abv">'+beer.abv+'%</span> <span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+'</span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
