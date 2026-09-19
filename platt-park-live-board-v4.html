@@ -859,7 +859,7 @@ function festOverride(s){
    Nothing invented: hours and specials are the real ones, weather is Open-Meteo.
    A preview button still wins while someone is demoing (window.__scene != default). ---- */
 (function(){
-  const OPEN=11, CLOSE=22;                  // business day, America/Denver, every day
+  const OPEN=10.5, CLOSE=22;   // board shows from 10:30 for setup; doors 11                  // business day, America/Denver, every day
   const SNOW=[71,73,75,77,85,86], HOT_F=90; // WMO snow codes; "hot" from 90°F
   function denver(){
     // Denver wall clock that survives old browsers: hour12:false is honoured almost
