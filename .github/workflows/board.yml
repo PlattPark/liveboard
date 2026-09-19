@@ -71,4 +71,4 @@ jobs:
           git add platt-park-live-board-v4.html img
           [ "$ACTION" = "split" ] && git add src
           git commit -m "board: build from src (${GITHUB_SHA::7}) [skip ci]" || { echo "nothing changed"; exit 0; }
-          git push
+          git fetch -q origin main; [ "$(git rev-parse origin/main)" = "$GITHUB_SHA" ] || { echo "main moved on since this build - the newer commit's own run publishes"; exit 0; }; git push
