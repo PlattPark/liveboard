@@ -231,8 +231,8 @@ body.scene-industry .rail, body.night .rail{background:#131f0f}
   /* bubbles + foam: the beer is alive */
   .bub{position:absolute;border-radius:50%;background:rgba(255,255,255,.38);animation:rise linear infinite;pointer-events:none}
   @keyframes rise{0%{transform:translateY(0);opacity:0}14%{opacity:.9}86%{opacity:.55}100%{transform:translateY(-64px);opacity:0}}
-  .foam{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,.55);animation:lap 5s ease-in-out infinite alternate}
-@keyframes lap{from{transform:translateY(0);opacity:.55}to{transform:translateY(1.6px);opacity:.75}} .unit.nitro .wave{opacity:0} .unit.nitro .foam{height:17px;background:linear-gradient(180deg,#f7f1de 0%,#eadfc3 55%,rgba(234,223,195,0) 100%);animation:settle 7s ease-in-out infinite alternate;opacity:1} @keyframes settle{from{height:15px}to{height:19px}} .unit.nitro .liquid::after{content:'';position:absolute;left:0;right:0;top:0;height:26%;pointer-events:none;background:linear-gradient(180deg,rgba(255,250,235,.28),rgba(255,250,235,0));animation:surge 7s ease-in-out infinite alternate} @keyframes surge{from{opacity:.55}to{opacity:1}} .unit.nitro .bub{background:rgba(255,250,235,.9);width:3px;height:3px;animation-name:cascade;animation-timing-function:ease-in} .unit.nitro .bub.n1{animation-duration:3.2s} .unit.nitro .bub.n2{animation-duration:4.1s} .unit.nitro .bub.n3{animation-duration:3.6s} @keyframes cascade{0%{transform:translateY(-8px);opacity:0}12%{opacity:.9}90%{opacity:.5}100%{transform:translateY(var(--fall,110px));opacity:0}} .nitrotag{position:absolute;top:6px;left:6px;z-index:4;display:none;font-family:'Archivo Black';font-size:10.5px;letter-spacing:2.2px;color:#e7eacd;background:rgba(41,61,34,.8);padding:2px 6px 1px;border-radius:3px} .unit.nitro .nitrotag{display:block} body.curtained .unit.nitro .bub,body.curtained .unit.nitro .foam,body.curtained .unit.nitro .liquid::after{animation-play-state:paused}
+  .foam{position:absolute;top:-1px;left:0;right:0;height:10px;background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(255,255,255,.78) 55%,rgba(255,255,255,.28) 100%);animation:lap 5s ease-in-out infinite alternate;box-shadow:0 1px 0 rgba(255,255,255,.35)} .foam::before{content:'';position:absolute;left:0;right:0;top:-3px;height:5px;background:radial-gradient(circle at 12% 60%,rgba(255,255,255,.9) 0 2px,transparent 3px),radial-gradient(circle at 31% 40%,rgba(255,255,255,.85) 0 1.5px,transparent 2.5px),radial-gradient(circle at 52% 65%,rgba(255,255,255,.9) 0 2.2px,transparent 3.2px),radial-gradient(circle at 70% 35%,rgba(255,255,255,.8) 0 1.6px,transparent 2.6px),radial-gradient(circle at 88% 55%,rgba(255,255,255,.9) 0 2px,transparent 3px)} .foam::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 3px,transparent 3px 7px);opacity:.5}
+@keyframes lap{from{transform:translateY(0);opacity:.86}to{transform:translateY(1.4px);opacity:1}} .unit.nitro .wave{opacity:0} .unit.nitro .foam{height:17px;top:0;background:linear-gradient(180deg,#f7f1de 0%,#eadfc3 55%,rgba(234,223,195,0) 100%);animation:settle 7s ease-in-out infinite alternate;opacity:1;box-shadow:none} .unit.nitro .foam::before,.unit.nitro .foam::after{display:none} @keyframes settle{from{height:15px}to{height:19px}} .unit.nitro .liquid::after{content:'';position:absolute;left:0;right:0;top:0;height:26%;pointer-events:none;background:linear-gradient(180deg,rgba(255,250,235,.28),rgba(255,250,235,0));animation:surge 7s ease-in-out infinite alternate} @keyframes surge{from{opacity:.55}to{opacity:1}} .unit.nitro .bub{background:rgba(255,250,235,.9);width:3px;height:3px;animation-name:cascade;animation-timing-function:ease-in} .unit.nitro .bub.n1{animation-duration:3.2s} .unit.nitro .bub.n2{animation-duration:4.1s} .unit.nitro .bub.n3{animation-duration:3.6s} @keyframes cascade{0%{transform:translateY(-8px);opacity:0}12%{opacity:.9}90%{opacity:.5}100%{transform:translateY(var(--fall,110px));opacity:0}} .nitrotag{position:absolute;top:6px;left:6px;z-index:4;display:none;font-family:'Archivo Black';font-size:10.5px;letter-spacing:2.2px;color:#e7eacd;background:rgba(41,61,34,.8);padding:2px 6px 1px;border-radius:3px} .unit.nitro .nitrotag{display:block} body.curtained .unit.nitro .bub,body.curtained .unit.nitro .foam,body.curtained .unit.nitro .liquid::after{animation-play-state:paused}
 .sun{transition:opacity .9s ease}
   /* spotlight cycle */
   .unit .vessel{transition:transform .7s cubic-bezier(.3,.9,.3,1.2)}
@@ -274,7 +274,7 @@ body.scene-industry .rail, body.night .rail{background:#131f0f}
   body.night .plate .price{color:#e7eacd} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
   body.night .plate .adj{color:#ffb39f}
   body.night .stamp{opacity:.06}
-  body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
+body.night .stage::before{filter:brightness(0) invert(1);opacity:.5}   /* the contours go cream at night */ body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
   .tbody{contain:layout paint}
 body.dusk.scene-industry, body.dusk.night{background:#293d22}
   .flake{position:fixed;top:-12px;color:#7c8b74;z-index:40;animation:fall linear forwards;pointer-events:none}
@@ -315,7 +315,7 @@ header{position:relative}
 .stage::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.9;
   background-image:url("ouray.svg");background-repeat:no-repeat;background-size:cover;background-position:center}   /* real SRTM contours of Ouray, CO - 15km window, 100m intervals; regenerate from the DEM, never hand-edit */
 /* passport cancellation stamp in the header quiet zone */
-.stamp{position:absolute;right:56px;top:-22px;width:150px;height:150px;opacity:.12;z-index:0;transform:rotate(-11deg);pointer-events:none}   /* postmark over the address block */
+.mapmarks{position:absolute;inset:0;z-index:1;pointer-events:none;color:#293d22;opacity:.42} body.night .mapmarks{color:#e7eacd;opacity:.34} .mapmarks .bm{position:absolute;left:1482px;top:478px;font-family:'Barlow';font-weight:700;font-size:11px;letter-spacing:2.5px;display:flex;align-items:center;gap:6px} .mapmarks .bm svg{width:14px;height:14px} .mapmarks .scale{position:absolute;left:1346px;top:846px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:2.5px;display:flex;align-items:flex-end;gap:14px} .mapmarks .scale svg{display:block} .stamp{position:absolute;right:56px;top:-22px;width:150px;height:150px;opacity:.12;z-index:0;transform:rotate(-11deg);pointer-events:none}   /* postmark over the address block */
 /* elevation tag under the address */
 .elev{position:absolute;right:132px;top:63px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:5px;color:#5a8142;opacity:.85}
 /* field-guide fermenters: ink outlines, flatter print shading, weld seam */
@@ -387,7 +387,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
 <div class="banner" id="banner"></div>
 
 <div class="stage">
-  <div class="floor" id="floor"></div>
+<div class="mapmarks"><div class="bm"><svg viewBox="0 0 14 14"><path d="M7 1.5 12.5 12.5H1.5Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="8.6" r="1.4" fill="currentColor"/></svg>BM 12,953</div><div class="scale"><svg width="222" height="18" viewBox="0 0 222 18"><path d="M10 12h201M10 6v6M110.5 8v4M211 6v6" stroke="currentColor" stroke-width="1.4" fill="none"/><text x="2" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">0</text><text x="98" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">½</text><text x="195" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">1 MI</text></svg><svg width="16" height="24" viewBox="0 0 16 24"><path d="M8 2 13 20 8 16 3 20Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 2 8 16" stroke="currentColor" stroke-width="1"/><text x="4.5" y="24" font-family="Barlow" font-weight="700" font-size="7" fill="currentColor">N</text></svg></div></div> <div class="floor" id="floor"></div>
   <div class="sidecol">
 <div class="side" id="side">
     <div class="side-h">Also pouring</div>
@@ -966,7 +966,7 @@ function festOverride(s){
 (function(){
   const LORE=[
     
-    'every beer pours in a 10oz too \u00b7 just ask', 'this room sold antique cash registers \u2014 then the tanks moved in',
+    'every beer pours in a 10oz too \u00b7 just ask', 'the lines behind the tanks are the mountains around Ouray, Colorado', 'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
     'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
     'industry night mondays \u00b7 Monday Night Football on the big screen',
