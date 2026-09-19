@@ -62,7 +62,7 @@ function render(s){
   } else cv.classList.remove('on');
   const wxWord={default:'SUNNY',hot:'HOT',snow:'SNOW',rain:'RAIN',cold:'COLD'};
   if (s.weather){
-    $('wxIco').textContent=wxWord[s.weather.scene]||'SUNNY'; $('wxDeg').textContent=s.weather.label;
+    $('wxIco').textContent=(s.weather.scene==='default'&&window.__wxWord&&window.__wx)?window.__wxWord(window.__wx.code):(wxWord[s.weather.scene]||'SUNNY'); $('wxDeg').textContent=s.weather.label;
     const ev=s.context&&s.context.event, phase=s.context&&s.context.eventPhase;
     let cls='';
     if (s.weather.scene && s.weather.scene!=='default') cls='scene-'+s.weather.scene;
@@ -85,6 +85,7 @@ function render(s){
   else if(ev && phase==='promote'){ b.innerHTML=`<strong>Tonight</strong> ${ev.promo}`; b.classList.add('show');document.body.classList.add('bn'); }
   else if(s.weather&&s.weather.banner){ b.innerHTML=`<strong>${wxWord[s.weather.scene]||''} DAY</strong> ${s.weather.banner}`; b.classList.add('show'); }
   else b.classList.remove('show');
+  document.body.classList.toggle('bn', b.classList.contains('show'));   // the floor breathes in whenever a banner is up (events, snow day, heat)
 
   $('wingCell').style.display=(ev&&ev.wingCounter&&phase==='run')?'flex':'none';
   $('wings').textContent=(s.wingsToday||0).toLocaleString();
@@ -215,7 +216,7 @@ const SIM={beers:[
 ]
 ,poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'chela':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad<br>Transfusion'}]};
 
-/* ── LIVE TAP DATA ─────────────────────────────────────────────────
+/* ── LIVE TAP DATA ───────────────────────────────────────────────────
    What's pouring lives in beers.json, not in this file.
 
    On boot we load it synchronously so the board renders the real list
@@ -243,7 +244,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
-        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {};
+        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || '';
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
         try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
@@ -261,7 +262,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
         const d = JSON.parse(cached);
         if(d && Array.isArray(d.beers) && d.beers.length){
           d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
-          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {};
+          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || '';
           console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
           return;
         }
@@ -350,4 +351,4 @@ try{render(payload());}catch(e){document.body.innerHTML='<div style="font-family
 (function pourLoop(){ setTimeout(function(){ simulate(); pourLoop(); }, 90000+Math.random()*180000); })();
 /* spotlight walker retired — featured rotation drives sash+glow+sun as one */
 setTimeout(()=>{const units=[...document.querySelectorAll('.unit')];if(units.length){spotIx=0;units[0].classList.add('spotlight');}},4000);
-setInterval(()=>{ document.body.classList.toggle('dusk', new Date().getHours()>=17 && !document.body.className.includes('industry')); },60000);
+/* dusk is set by shade() in 3-qol.js from the real sunset (golden hour), not from a fixed 5pm */
