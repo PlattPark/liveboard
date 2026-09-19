@@ -144,12 +144,12 @@ function kick(i){
 function lastKeg(i){
   const b=data.beers[i];
   b.vessel='keg-half'; b.vesselLabel='1/2 BBL';
-  b.remainingOz=Math.min(b.remainingOz,Math.round(1984*0.55));
+  b.remainingOz=Math.min(b.remainingOz,Math.round(1984*0.55)); b.sash='last keg';
   markDirty(); render();
 }
 function restore(i){
   const b=data.recent[i];
-  delete b.offSince;
+  delete b.offSince; b.tappedDaysAgo=0;
   data.beers.push(b); data.recent.splice(i,1); markDirty(); render();
 }
 
