@@ -197,7 +197,7 @@ body.scene-industry .plate .note, body.night .plate .note{color:#e7eacd}
 body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
   .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:5px}
   .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
-  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
+  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:16px;letter-spacing:.3px;color:#5a8142;margin-left:4px} .plate .note .abv2{font-weight:700;color:#5a8142;font-size:.86em;white-space:nowrap} body.night .plate .note .abv2{color:#b9c49a}
   .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
   .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#5a8142;letter-spacing:.5px}
@@ -545,9 +545,9 @@ function render(s){
     u.querySelector('.name').textContent=beer.name;
     (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
+    (function(){var nt=u.querySelector('.note');nt.textContent=beer.style||beer.wall||beer.note||'';nt.classList.toggle('long',(beer.style||beer.wall||beer.note||'').length>30);if(beer.abv){var a=document.createElement('span');a.className='abv2';a.textContent='\u00a0\u00b7 '+beer.abv+'%';nt.appendChild(a);}})();
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML='<span class="abv">'+beer.abv+'%</span> <span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+'</span>';
+    u.querySelector('.price').innerHTML=(beer.pourNote||beer.tenOzOnly)?'<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+'</span> <span class="p10">10oz pour</span>':'<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+'</span>'+(beer.price10?' <span class="p10">10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':'');
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
