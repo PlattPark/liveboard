@@ -50,14 +50,14 @@ body.scene-industry #hero .hn, body.night #hero .hn{color:#e7eacd}
 body.scene-industry #hero .hs, body.night #hero .hs{color:#b9c49a}
   #hero.on ~ .stamp{opacity:0}
   /* ---------- header ---------- */
-  header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;padding:12px 28px 0}
+  header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;padding:14px 28px 0}
   .brand{display:flex;flex-direction:column;gap:2px}
   .brand .tag{
     font-family:'Barlow';font-weight:700;font-size:13px;letter-spacing:5px;
     color:#5a8142;text-transform:uppercase;padding-left:3px;font-size:15px;
   }
 body.scene-industry .brand .tag, body.night .brand .tag{color:#eebf19}
-  .brand img{width:150px;height:auto;display:block}
+  .brand img{width:160px;height:auto;display:block}
 body.scene-industry .brand img, body.night .brand img{filter:brightness(1.08) saturate(1.05)}
   .context{display:flex;align-items:center;gap:16px;margin-top:8px}
   .chip{
@@ -93,7 +93,7 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   .banner.gold strong{color:#e7eacd}
 
   /* ---------- floor ---------- */
-  .stage{position:relative;z-index:2;display:flex;padding:4px 26px 5px}
+  .stage{position:relative;z-index:2;display:flex;padding:18px 26px 5px}
   .floor{
     flex:1;display:grid;grid-template-columns:repeat(6,1fr);
     gap:6px 16px;align-items:end;
@@ -242,7 +242,7 @@ body.scene-industry .rail, body.night .rail{background:#131f0f}
   .spotcap{position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(-2deg);z-index:6;display:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;
     background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:16.5px;letter-spacing:1px;
     padding:5px 12px;border-radius:3px;white-space:nowrap;text-transform:uppercase;box-shadow:3px 3px 0 rgba(41,61,34,.35)}
-  .unit.spotlight .spotcap{display:block}
+  .unit.spotlight .spotcap{display:block} .unit.featured .spotcap{top:2px}
   /* just tapped */
   .newtag{position:absolute;top:44%;left:50%;transform:translateX(-50%) rotate(-4deg);z-index:4;display:none;
     background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:15px;letter-spacing:1.5px;
