@@ -18,13 +18,15 @@ window.__BUILD='2026-09-11.2845';
 (function(){
   var deg=document.getElementById('wxDeg'), ico=document.getElementById('wxIco');
   var WMO={0:'SUNNY',1:'SUNNY',2:'PARTLY CLOUDY',3:'CLOUDY',45:'FOGGY',48:'FOGGY',51:'DRIZZLE',53:'DRIZZLE',55:'DRIZZLE',61:'RAIN',63:'RAIN',65:'RAIN',71:'SNOW',73:'SNOW',75:'SNOW',80:'SHOWERS',81:'SHOWERS',82:'SHOWERS',95:'STORMS',96:'STORMS',99:'STORMS'};
+  function wordFor(code){ var w=WMO[code]||''; return (code===0||code===1)&&document.body.classList.contains('night')?'CLEAR':w; }   // no 'sunny' after sunset
+  window.__wxWord=wordFor; setInterval(function(){ if(window.__wx) ico.textContent=wordFor(window.__wx.code); },5000);
   function wx(){
     try{
       fetch('https://api.open-meteo.com/v1/forecast?latitude=39.685&longitude=-104.980&current=temperature_2m,weather_code&daily=sunset&timezone=America%2FDenver&temperature_unit=fahrenheit')
         .then(r=>r.json()).then(d=>{
           if(d&&d.current){
             deg.textContent=Math.round(d.current.temperature_2m)+'°';
-            ico.textContent=WMO[d.current.weather_code]||'';
+            ico.textContent=wordFor(d.current.weather_code);
             window.__wx={temp:d.current.temperature_2m,code:d.current.weather_code,word:WMO[d.current.weather_code]||''};
             try{ var ss=d.daily&&d.daily.sunset&&d.daily.sunset[0]; if(ss){ var hm=ss.slice(11,16).split(':'); window.__sunset=parseInt(hm[0],10)+parseInt(hm[1],10)/60; } }catch(e){}
             if(window.__autoScene) window.__autoScene();   // let the scene react (snow, heat)
@@ -100,7 +102,7 @@ function festOverride(s){
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
       if(d) d.textContent=Math.round(window.__wx.temp)+'\u00b0';
-      if(i && !/scene-/.test(document.body.className)) i.textContent=window.__wx.word||i.textContent; }
+      if(i && !/scene-/.test(document.body.className)) i.textContent=(window.__wxWord?window.__wxWord(window.__wx.code):window.__wx.word)||i.textContent; }
     return out;
   };
   let sig='';
@@ -111,11 +113,26 @@ function festOverride(s){
   };
   // night dimming: the cream board is a lamp in a dark bar. From sunset (Open-Meteo;
   // 7pm if unknown) step the shade down an hour at a time; lift it again at open.
+  // the moon as it is tonight: phase from the mean synodic month (new moon 2000-01-06 18:14 UTC), drawn lit-side-correct
+  function moonPhase(){ var p=((Date.now()/864e5-10962.76)/29.530588853)%1; return p<0?p+1:p; }   // 0 new, .5 full, waxing below .5
+  function moonSVG(p){ var r=9,c=10,k=Math.cos(2*Math.PI*p),rx=Math.abs(k)*r,wax=p<0.5,gib=Math.abs(p-0.5)<0.25;
+    var d='M'+c+','+(c-r)+'A'+r+','+r+' 0 1,'+(wax?1:0)+' '+c+','+(c+r)+'A'+rx.toFixed(2)+','+r+' 0 1,'+((wax?1:0)^(gib?0:1))+' '+c+','+(c-r)+'Z';
+    return '<svg viewBox="0 0 20 20"><circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="#e7eacd" fill-opacity=".22"/><path d="'+d+'" fill="#e7eacd" fill-opacity=".92"/></svg>'; }
+  function moonWord(p){ var d=Math.abs(p-0.5)*29.53; return d<0.5?'full moon tonight':(p<0.017||p>0.983)?'new moon tonight \u00b7 darkest sky of the month':''; }
+  var _lastSky='';
   function shade(){
     const {t}=denver(); const sunset=window.__sunset||19;
     const night = (t>=sunset+0.5) || (!PREVIEW && (t<OPEN || ((window.__hours||{}).closed||[]).indexOf(denver().date)>=0));      // half an hour after sunset until doors
-    document.body.classList.toggle('night', night);
-    document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : '#e7eacd';
+    const dusk = !night && t>=sunset-0.75 && t<sunset+0.5;                                                                        // golden hour: the paper warms 45 min before sunset
+    document.body.classList.toggle('night', night); document.body.classList.toggle('dusk', dusk);
+    document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : dusk ? '#e9dfb6' : '#e7eacd';
+    const p=moonPhase(), lit=(1-Math.cos(2*Math.PI*p))/2;                                                                          // moonlit: the night map brightens with the real moon
+    document.documentElement.style.setProperty('--moonlit',(0.42+0.2*lit).toFixed(2));
+    const mo=$('moon'); if(mo && night && !mo.dataset.p){ mo.innerHTML=moonSVG(p); mo.dataset.p='1'; }
+    const hh=Math.floor(sunset), mm=Math.round((sunset-hh)*60), when=(hh>12?hh-12:hh)+':'+(mm<10?'0':'')+mm;
+    let sky=''; if(!night && t>=sunset-1 && t<sunset) sky='sunset at '+when+' tonight'; else if(t>=sunset && t<sunset+2) sky='sun went down at '+when;
+    const mw=night?moonWord(p):''; if(mw) sky=sky?sky+' \u00b7 '+mw:mw;
+    if(sky!==_lastSky){ _lastSky=sky; window.__skyWire=sky; if(window.__buildWire) window.__buildWire(); }
   }
   window.__shade=shade; shade(); setInterval(shade, 60000);
   if(window.__noData){ document.body.classList.add('curtained'); }
@@ -156,40 +173,14 @@ function festOverride(s){
 
 /* ---- THE WIRE: ticker of true things. Showcase = lore + real facts; live = real pours too. ---- */
 (function(){
-  /* beer medals on the wire come from beers.json (medals with show "wall" or "menu"), so a
-     line only runs while that beer is pouring and never names a medal we didn't win.
-     "GABF silver our very first year" is the brewery's own line and stays, Gump's or not. */
-  const WIRE_COMP={'us open':'US Open','state fair':'Colorado State Fair','gabf':'GABF','world beer cup':'World Beer Cup','brewers cup':'Colorado Brewers Cup'};
-  const MEDAL_LINES=(function(){ try{
-    const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    const rank=l=>({gold:3,silver:2,bronze:1})[l]||0, comp=c=>WIRE_COMP[String(c||'').toLowerCase()]||String(c||'');
-    const beers=(typeof SIM!=='undefined'&&SIM.beers)||[], groups=new Map(), perBeer=[];
-    beers.forEach(b=>{
-      const ms=(typeof medalsOf==='function'?medalsOf(b):[]).filter(m=>(m.show||'wall')!=='site');
-      if(!ms.length) return;
-      ms.forEach(m=>{ const k=[String(m.comp||'').toLowerCase(),m.level,m.year||''].join('|'); if(!groups.has(k)) groups.set(k,{m,names:[]}); groups.get(k).names.push(b.name); });
-      perBeer.push({b,ms});
-    });
-    const out=[], used=new Set();
-    groups.forEach(g=>{ if(g.names.length<2) return;          // one medal, several beers: one shared line
-      out.push(esc(g.names.slice(0,-1).join(', ')+' + '+g.names.slice(-1))+' \u00b7 '+esc(comp(g.m.comp))+' <em>'+esc(String(g.m.level).toUpperCase())+'</em>'+(g.m.year?' '+g.m.year:'')+' \u00b7 '+(g.names.length===2?'both':'all')+' pouring now');
-      g.names.forEach(n=>used.add(n+'|'+String(g.m.comp||'').toLowerCase())); });
-    perBeer.forEach(({b,ms})=>{                              // one beer, its medals by competition: "Nutorious \u00b7 US Open GOLD 2026 \u00b7 bronze 2025"
-      const byComp=new Map(); ms.forEach(m=>{ const k=String(m.comp||'').toLowerCase(); if(!byComp.has(k)) byComp.set(k,[]); byComp.get(k).push(m); });
-      byComp.forEach((list,k)=>{ if(used.has(b.name+'|'+k)) return;
-        list.sort((a,c)=>(c.year||0)-(a.year||0)||rank(c.level)-rank(a.level));
-        const top=list[0], rest=list.slice(1).map(m=>esc(m.level)+(m.year?' '+m.year:''));
-        out.push(esc(b.name)+' \u00b7 '+esc(comp(top.comp))+' <em>'+esc(String(top.level).toUpperCase())+'</em>'+(top.year?' '+top.year:'')+(rest.length?' \u00b7 '+rest.join(' \u00b7 '):'')); });
-    });
-    return out;
-  }catch(e){ console.warn('wire medals', e); return []; } })();
   const LORE=[
-
-    'every beer pours in a 10oz too \u00b7 just ask', 'the lines behind the tanks are the mountains around Ouray, Colorado', 'this room sold antique cash registers \u2014 then the tanks moved in',
+    
+    'every beer pours in a 10oz too \u00b7 just ask', 'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
     'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
     'industry night mondays \u00b7 Monday Night Football on the big screen',
-    ...MEDAL_LINES,
+    'Nutorious \u00b7 <em>US Open GOLD 2026</em> \u00b7 bronze 2025 \u00b7 we got better',
+    'Platty Lite + Plattmosphere \u00b7 Colorado State Fair <em>SILVER</em> 2026 \u00b7 both pouring now',
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
     '5280 put the Italian Job on its best-sandwiches-in-Denver list',
@@ -203,7 +194,7 @@ function festOverride(s){
   ];
   let liveItems=[];
   window.__wirePour=function(name){ liveItems.unshift('<span class="wi pour">just poured \u00b7 '+name+'</span>'); liveItems=liveItems.slice(0,6); buildWire(); };
-  function wireItems(){ return [...liveItems, ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
+  function wireItems(){ return [...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
   function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;
@@ -217,7 +208,7 @@ function festOverride(s){
     const k=$('railK'); if(k) k.textContent='The wire';
   }
   buildWire();
-  window.__buildWire=buildWire; window.__wireNext=function(){};
+  window.__buildWire=buildWire; window.__wireNext=function(){}; /* seasonal map: the field behind the tanks follows the real seasons (solstice/equinox, Denver); beers.json `map` overrides; maps/maps.json carries each map's file + wire line */ (function(){ var MAPS={winter:'abasin',spring:'platte',summer:'lostcreek',fall:'ouray'}; function season(){ var p; try{ p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',month:'numeric',day:'numeric'}).formatToParts(new Date()).reduce(function(o,x){o[x.type]=x.value;return o;},{}); }catch(e){ var n=new Date(); p={month:n.getMonth()+1,day:n.getDate()}; } var m=+p.month, d=+p.day; if((m===12&&d>=21)||m<3||(m===3&&d<20)) return 'winter'; if(m<6||(m===6&&d<21)) return 'spring'; if(m<9||(m===9&&d<22)) return 'summer'; return 'fall'; } var current=''; function apply(){ var key=(window.__mapOverride||'').replace(/[^a-z]/g,'')||MAPS[season()]; if(key===current) return; var x=new XMLHttpRequest(); x.open('GET','maps/maps.json?t='+Date.now(),true); x.onload=function(){ try{ var mp=JSON.parse(x.responseText); var e=mp[key]||mp[MAPS[season()]]; if(!e) return; current=key; document.documentElement.style.setProperty('--map','url("'+e.file+'")'); window.__mapWire=e.wire; buildWire(); }catch(err){} }; x.onerror=function(){}; x.send(); } window.__applyMap=apply; window.__season=season; apply(); setInterval(apply,3600000); })();
 })();
 
 
