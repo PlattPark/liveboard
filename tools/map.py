@@ -49,10 +49,17 @@ GRID_W, GRID_H = 96, 54          # sample grid; ~30 m data so this is plenty for
 
 
 # ---------------------------------------------------------------- data ----
-def http(url, data=None, timeout=60):
-    req = urllib.request.Request(url, data=data, headers={"User-Agent": "plattpark-liveboard map builder"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode()
+def http(url, data=None, timeout=60, tries=4):
+    """GET/POST with patience: public data servers 504 when busy, so back off and retry."""
+    last = None
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(url, data=data, headers={"User-Agent": "plattpark-liveboard map builder"})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read().decode()
+        except Exception as ex:
+            last = ex; print("    %s (try %d/%d)" % (str(ex)[:60], i + 1, tries)); time.sleep(8 * (i + 1))
+    raise last
 
 
 def fetch_dem(win):
@@ -88,7 +95,12 @@ def fetch_osm(win):
   way["highway"~"^(path|footway|track)$"]["name"](%s);
 );
 out geom;""" % (bbox, bbox, bbox, bbox)
-    d = json.loads(http("https://overpass-api.de/api/interpreter", data=urllib.parse.urlencode({"data": q}).encode(), timeout=120))
+    body = urllib.parse.urlencode({"data": q}).encode()
+    try:
+        d = json.loads(http("https://overpass-api.de/api/interpreter", data=body, timeout=150))
+    except Exception:
+        print("  main Overpass server is busy - trying the mirror")
+        d = json.loads(http("https://overpass.kumi.systems/api/interpreter", data=body, timeout=150))
     feats = []
     for el in d.get("elements", []):
         if el.get("type") != "way" or "geometry" not in el:
@@ -130,7 +142,7 @@ def draw(place, dem, feats):
     z = np.array(dem["z"], dtype=float).reshape(dem["h"], dem["w"])
     zz = gaussian_filter(zoom(z, 8, order=3), sigma=4); h, w = zz.shape
     relief = z.max() - z.min()
-    step = 20 if relief < 700 else 40 if relief < 1400 else 60 if relief < 2200 else 100
+    step = 20 if relief < 300 else 40 if relief < 700 else 60 if relief < 1400 else 100   # Ouray (1,800 m relief) -> 100 m, a ski hill -> 60 m
     levels = np.arange(math.floor(z.min() / step) * step, z.max() + step, step)
     cs = plt.contour(zz, levels=levels)
 
@@ -222,8 +234,15 @@ def build(place, offline=False):
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     offline = "--offline" in sys.argv
+    failed = []
     for p in (PLACES if which == "all" else [which]):
-        build(p, offline)
+        try:
+            build(p, offline)
+        except Exception as ex:
+            print("  FAILED %s: %s - the others still get drawn and committed" % (p, str(ex)[:80])); failed.append(p)
+        time.sleep(3)
+    if failed:
+        print("re-run for: " + " ".join(failed))
     # the manifest the board reads: which file, which label, which wire line
     json.dump({k: {"file": "maps/%s.svg" % k, "title": v["title"], "wire": v["wire"]} for k, v in PLACES.items()},
               open(OUT / "maps.json", "w"), indent=1, ensure_ascii=False)
