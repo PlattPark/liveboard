@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-09-19T19:39Z from src @ 6d0f76c - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-09-19T20:02Z from src @ 014a32b - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -200,8 +200,8 @@ body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
   .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
   .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
-  .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#5a8142;letter-spacing:.5px;margin-left:5px}
-  body.night .plate .price .abv{color:#b9c49a}
+  .plate .price .dot{opacity:.45;margin:0 1px} .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#131f0f;letter-spacing:.5px;opacity:.85}
+  body.night .plate .price .abv{color:#131f0f}
 body.scene-industry .plate .price, body.night .plate .price{color:#e7eacd}
     .plate .age{color:#5a8142;font-size:15px;margin-top:3px;font-weight:600}
   .plate .adj{color:#b8412c;font-size:18px;font-weight:700;letter-spacing:.3px;margin-top:1px;line-height:1.1}
@@ -547,7 +547,7 @@ function render(s){
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+'</span> <span class="abv">'+beer.abv+'%</span>';
+    u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+' <span class="dot">\u00b7</span> <span class="abv">'+beer.abv+'%</span></span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
