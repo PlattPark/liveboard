@@ -156,14 +156,40 @@ function festOverride(s){
 
 /* ---- THE WIRE: ticker of true things. Showcase = lore + real facts; live = real pours too. ---- */
 (function(){
+  /* beer medals on the wire come from beers.json (medals with show "wall" or "menu"), so a
+     line only runs while that beer is pouring and never names a medal we didn't win.
+     "GABF silver our very first year" is the brewery's own line and stays, Gump's or not. */
+  const WIRE_COMP={'us open':'US Open','state fair':'Colorado State Fair','gabf':'GABF','world beer cup':'World Beer Cup','brewers cup':'Colorado Brewers Cup'};
+  const MEDAL_LINES=(function(){ try{
+    const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const rank=l=>({gold:3,silver:2,bronze:1})[l]||0, comp=c=>WIRE_COMP[String(c||'').toLowerCase()]||String(c||'');
+    const beers=(typeof SIM!=='undefined'&&SIM.beers)||[], groups=new Map(), perBeer=[];
+    beers.forEach(b=>{
+      const ms=(typeof medalsOf==='function'?medalsOf(b):[]).filter(m=>(m.show||'wall')!=='site');
+      if(!ms.length) return;
+      ms.forEach(m=>{ const k=[String(m.comp||'').toLowerCase(),m.level,m.year||''].join('|'); if(!groups.has(k)) groups.set(k,{m,names:[]}); groups.get(k).names.push(b.name); });
+      perBeer.push({b,ms});
+    });
+    const out=[], used=new Set();
+    groups.forEach(g=>{ if(g.names.length<2) return;          // one medal, several beers: one shared line
+      out.push(esc(g.names.slice(0,-1).join(', ')+' + '+g.names.slice(-1))+' \u00b7 '+esc(comp(g.m.comp))+' <em>'+esc(String(g.m.level).toUpperCase())+'</em>'+(g.m.year?' '+g.m.year:'')+' \u00b7 '+(g.names.length===2?'both':'all')+' pouring now');
+      g.names.forEach(n=>used.add(n+'|'+String(g.m.comp||'').toLowerCase())); });
+    perBeer.forEach(({b,ms})=>{                              // one beer, its medals by competition: "Nutorious \u00b7 US Open GOLD 2026 \u00b7 bronze 2025"
+      const byComp=new Map(); ms.forEach(m=>{ const k=String(m.comp||'').toLowerCase(); if(!byComp.has(k)) byComp.set(k,[]); byComp.get(k).push(m); });
+      byComp.forEach((list,k)=>{ if(used.has(b.name+'|'+k)) return;
+        list.sort((a,c)=>(c.year||0)-(a.year||0)||rank(c.level)-rank(a.level));
+        const top=list[0], rest=list.slice(1).map(m=>esc(m.level)+(m.year?' '+m.year:''));
+        out.push(esc(b.name)+' \u00b7 '+esc(comp(top.comp))+' <em>'+esc(String(top.level).toUpperCase())+'</em>'+(top.year?' '+top.year:'')+(rest.length?' \u00b7 '+rest.join(' \u00b7 '):'')); });
+    });
+    return out;
+  }catch(e){ console.warn('wire medals', e); return []; } })();
   const LORE=[
-    
+
     'every beer pours in a 10oz too \u00b7 just ask', 'the lines behind the tanks are the mountains around Ouray, Colorado', 'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
     'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
     'industry night mondays \u00b7 Monday Night Football on the big screen',
-    'Nutorious \u00b7 <em>US Open GOLD 2026</em> \u00b7 bronze 2025 \u00b7 we got better',
-    'Platty Lite + Plattmosphere \u00b7 Colorado State Fair <em>SILVER</em> 2026 \u00b7 both pouring now',
+    ...MEDAL_LINES,
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
     '5280 put the Italian Job on its best-sandwiches-in-Denver list',

@@ -25,6 +25,29 @@ function celebrateKick(name){
   setTimeout(()=>{f.remove();st.remove();},2200);
 }
 const stars = r => r ? '●'.repeat(Math.round(r))+'○'.repeat(5-Math.round(r))+` <small>${r.toFixed(2)}</small>` : 'new';
+
+/* ── MEDALS ──────────────────────────────────────────────────────────
+   beers.json:  "medals":[{"comp":"US Open","level":"gold","year":2026,"show":"wall"}, ...]
+   show  "wall" = plaque on the tank + a line on the menu     (GABF, US Open, State Fair, WBC, Brewers Cup)
+         "menu" = the menu line only                          (an older medal for the same beer)
+         "site" = the record for the website / sell sheet     (points-based comps like DIBC - never the wall)
+   The wall carries ONE plaque per tank: the best "wall" medal, for the season it was
+   won plus two more (a 2026 medal shows through 2028), then it drops to the menu by
+   itself. A plaque only ever hangs on a tank that is pouring. Old shape (medal/medalText)
+   still reads, so a cached list from before this change renders the same. */
+const MEDAL_RANK={gold:3,silver:2,bronze:1};
+function medalsOf(b){
+  if(Array.isArray(b.medals)) return b.medals.filter(m=>m&&m.level);
+  if(b.medal){ const c=String(b.medalText||'').replace(/\s*(gold|silver|bronze)\s*/i,' ').trim(); return [{comp:c,level:String(b.medal).toLowerCase(),year:b.medalYear||null,show:'wall'}]; }
+  return [];
+}
+function denverYear(){ try{ return parseInt(new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',year:'numeric'}).format(new Date()),10); }catch(e){ return new Date().getFullYear(); } }
+function wallMedal(b){
+  const y=denverYear();
+  const ms=medalsOf(b).filter(m=>(m.show||'wall')==='wall' && (!m.year || y-m.year<=2));
+  ms.sort((a,c)=>(MEDAL_RANK[c.level]||0)-(MEDAL_RANK[a.level]||0) || (c.year||0)-(a.year||0));
+  return ms[0]||null;
+}
 const daysAgo = ts => { if(!ts) return ''; const d=Math.floor((Date.now()-ts)/86400000); if(d===0) return 'fresh · tapped today'; return d<=10?`fresh · tapped ${d}d ago`:''; };
 
 function render(s){
@@ -111,7 +134,8 @@ function render(s){
       });
     }
     const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3*86400000;   // NEW for the first 3 days
-    u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(beer.medal?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'')+((beer.nitro||/\bnitro\b/i.test(beer.style||''))?' nitro':'');
+    const wm = wallMedal(beer);
+    u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(wm?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'')+((beer.nitro||/\bnitro\b/i.test(beer.style||''))?' nitro':'');
     u.querySelector('.newtag').textContent=beer.pick?'Brewers\u2019 pick':'New';
     u.querySelector('.spotcap').textContent=beer.sash||'';
     var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
@@ -122,7 +146,20 @@ function render(s){
     liq.style.background=`linear-gradient(${beer.colorTop},${beer.color})`;
     liq.querySelector('.wave').style.fill=beer.colorTop;
     u.querySelector('.name').textContent=beer.name;
-    (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
+    (function(){ // the plaque: competition on line one, medal + year on line two - one per tank, best wall medal only
+      var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');
+      if(wm){
+        if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}
+        pl.className='tplaque'+(wm.level==='silver'?' sv':wm.level==='bronze'?' bz':'');
+        var key=String(wm.comp||'').toUpperCase()+'|'+String(wm.level).toUpperCase()+'|'+(wm.year||'');
+        if(pl.dataset.key!==key){
+          pl.dataset.key=key; pl.textContent='';
+          if(wm.comp){ var c=document.createElement('span'); c.textContent=String(wm.comp).toUpperCase(); pl.appendChild(c); }
+          var l=document.createElement('b'); l.textContent=String(wm.level).toUpperCase(); pl.appendChild(l);
+          if(wm.year){ var yr=document.createElement('i'); yr.textContent=String(wm.year); l.appendChild(document.createTextNode(' ')); l.appendChild(yr); }
+        }
+      } else if(pl){ pl.remove(); }
+    })();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
@@ -165,10 +202,10 @@ function snow(on){
 const CAP={tank20:79360,tank10:39680,serve6:5280,'keg-half':1984};
 const SIM={beers:[
  {id:'oktoberfest',name:'Oktoberfest',style:'Märzen',abv:5.4,price10:4.75,price:7.5,rating:3.63,vessel:'tank20',vesselLabel:'20 BBL',tall:true,featured:true,color:'#c77a1e',colorTop:'#e8a53a',remainingOz:67456,tappedAt:Date.now()-86400000*3},
- {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',medalText:'STATE FAIR SILVER',color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
- {id:'nutorious',name:'Nutorious',style:'Pistachio Cream Ale',abv:6.0,price10:5.0,price:8.5,rating:3.88,vessel:'tank10',vesselLabel:'10 BBL',medal:'gold',medalText:'US OPEN GOLD',color:'#b7893f',colorTop:'#d4a95c',remainingOz:4999,tappedAt:Date.now()-86400000*18},
+ {id:'plattmosphere',name:'Plattmosphere',style:'Hazy IPA',abv:6.9,price10:5.25,price:8.5,rating:3.82,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medals:[{comp:'State Fair',level:'silver',year:2026,show:'wall'}],color:'#d9a83c',colorTop:'#efc76a',remainingOz:5952,tappedAt:Date.now()-86400000*9},
+ {id:'nutorious',name:'Nutorious',style:'Pistachio Cream Ale',abv:6.0,price10:5.0,price:8.5,rating:3.88,vessel:'tank10',vesselLabel:'10 BBL',medals:[{comp:'US Open',level:'gold',year:2026,show:'wall'}],color:'#b7893f',colorTop:'#d4a95c',remainingOz:4999,tappedAt:Date.now()-86400000*18},
  {id:'tropical-snow-dance',name:'Tropical Snow Dance',style:'West Coast IPA',abv:6.9,price10:5.25,price:8.5,rating:3.74,vessel:'tank20',vesselLabel:'20 BBL',tall:true,color:'#d69a2b',colorTop:'#eebd55',remainingOz:19840,tappedAt:Date.now()-86400000*12},
- {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medal:'silver',medalText:'STATE FAIR SILVER',color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
+ {id:'platty-lite',name:'Platty Lite',style:'Light Lager',abv:4.0,price10:4.25,price:6.5,rating:3.56,vessel:'tank20',vesselLabel:'20 BBL',tall:true,medals:[{comp:'State Fair',level:'silver',year:2026,show:'wall'}],color:'#e3c25a',colorTop:'#f2dc8a',remainingOz:6745,tappedAt:Date.now()-86400000*6},
  {id:'nadare',name:'Nadare',style:'Japanese Rice Lager',abv:5.2,price10:4.75,price:7.5,rating:3.37,vessel:'tank10',vesselLabel:'10 BBL',color:'#e8d58a',colorTop:'#f5e9b3',remainingOz:32140,tappedAt:Date.now()-86400000*2},
  {id:'astronaut-amber',name:'Astronaut Amber',style:'American Amber',abv:5.3,price10:4.75,price:7.5,rating:3.51,vessel:'tank10',vesselLabel:'10 BBL',color:'#a8542a',colorTop:'#c97648',remainingOz:31347,tappedAt:Date.now()-86400000*15},
  {id:'witbier',name:'Witbier',style:'Witbier / Blanche',abv:4.3,price10:4.75,price:7.5,rating:3.6,vessel:'tank10',vesselLabel:'10 BBL',color:'#e6d9a0',colorTop:'#f3ecc4',remainingOz:1904,tappedAt:Date.now()-86400000*4},
