@@ -16,6 +16,8 @@ UNDERSTANDS
   chela is back on                         restore it with all its data
   chela is on last keg                     half-barrel + LAST KEG sash
   boochcraft is now kiwi citrus            swap a flavor line
+  nutorious medal: US Open gold 2026       plaque on the tank + menu line (DIBC etc. = record only)
+  take the bronze off nutorious wall       older medal steps down to the menu line
   computa add <thing>                      queued for a human
 
 DESIGN RULE
@@ -196,6 +198,38 @@ NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?(?:brewer'?s'?|
 REPORT_RE  = re.compile(r"^(?:the\s+)?(?:board|tv|menu|wall|screen)?\s*(?:for\s+)?(?P<item>.{2,40}?)?\s*(?:still\s+)?(?:says|shows|reads|is\s+showing|is\s+still\s+showing|is\s+wrong|looks\s+wrong|isn'?t\s+right|is\s+off)\b", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
                         r"(?:\s+(?:as\s+of\s+now|right\s+now|yet|currently|atm))?[.!]?\s*$", re.I)
+# medals - the tiers Colby set (Sept 2026): judged, top-three-per-category comps earn the
+# plaque on the tank + a line on the menu (show "wall"); an older medal for the same beer
+# keeps the menu line (show "menu"); points-based comps like DIBC are the record only
+# (show "site") - never the wall, never the menu. The board drops a wall medal to the
+# menu by itself two seasons after it was won.
+#   "nutorious medal: US Open gold 2026"  /  "nutorious won gold at the state fair 2026"
+#   "take the bronze off nutorious wall"  /  "put the bronze back on nutorious wall"
+MEDAL_COMPS = {   # what people type -> (key beers.json stores, earns the wall?)
+    "us open": ("US Open", True), "u.s. open": ("US Open", True), "usopen": ("US Open", True),
+    "us open beer championship": ("US Open", True),
+    "state fair": ("State Fair", True), "colorado state fair": ("State Fair", True),
+    "gabf": ("GABF", True), "great american beer festival": ("GABF", True),
+    "world beer cup": ("World Beer Cup", True), "wbc": ("World Beer Cup", True),
+    "brewers cup": ("Brewers Cup", True), "colorado brewers cup": ("Brewers Cup", True),
+    "dibc": ("DIBC", False), "denver international": ("DIBC", False),
+    "denver international beer competition": ("DIBC", False),
+}
+_COMPS = "|".join(re.escape(k) for k in sorted(MEDAL_COMPS, key=len, reverse=True))
+_LEVEL = r"gold|silver|bronze"
+_YEAR  = r"(?:19|20)\d{2}"
+MEDAL_RE = re.compile(
+    r"^(?:the\s+)?(?P<item>.{2,40}?)\s+(?:medal|medals|won|took|got)\s*(?:is|:|=|-|a|the)?\s*"
+    r"(?:(?P<comp1>" + _COMPS + r")\s+(?P<level1>" + _LEVEL + r")"
+    r"|(?P<level2>" + _LEVEL + r")\s+(?:medal\s+)?(?:at|in|from)?\s*(?:the\s+)?(?P<comp2>" + _COMPS + r"))"
+    r"(?:\s+(?:medal\s+)?(?:in\s+|for\s+)?'?(?P<year>" + _YEAR + r"|\d{2}))?[.!]?\s*$", re.I)
+OFFWALL_RE = re.compile(
+    r"^(?:take|remove|drop|pull|clear)\s+(?:the\s+)?(?P<level>" + _LEVEL + r"|medal|medals|plaque)\s+"
+    r"(?:off|from)\s+(?:of\s+)?(?:the\s+)?(?P<item>.{2,40}?)(?:'s|’s)?"
+    r"(?:\s+(?:wall|board|tank|plaque))?[.!]?\s*$", re.I)
+ONWALL_RE = re.compile(
+    r"^(?:put|move|hang)\s+(?:the\s+)?(?P<level>" + _LEVEL + r")\s+(?:back\s+)?(?:on|onto)\s+(?:the\s+)?"
+    r"(?P<item>.{2,40}?)(?:'s|’s)?\s+(?:wall|board|tank|plaque)[.!]?\s*$", re.I)
 IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|"
                     r"ice machine|dishwasher|shot glass(?:es)?|light bulb)\b", re.I)
 
@@ -222,6 +256,25 @@ def parse(text):
             return "status", "", None
         if NOPICK_RE.search(line):
             return "nopick", "", None
+        # "the board says nutorious is wrong" is a report, not a wall line for a beer called "the"
+        if REPORT_RE.search(line) and re.match(r"^(?:the\s+)?(?:board|tv|menu|wall|screen)\b", line, re.I):
+            return "report", line, None
+        # medals go before the generic patterns: "put the bronze back on nutorious wall"
+        # would otherwise read as "back on", and "nutorious medal: ..." as a note
+        m = ONWALL_RE.search(line)
+        if m:
+            return "onwall", m.group("item").strip(" .,-"), m.group("level").lower()
+        m = OFFWALL_RE.search(line)
+        if m:
+            return "offwall", m.group("item").strip(" .,-"), m.group("level").lower()
+        m = MEDAL_RE.search(line)
+        if m:
+            comp = (m.group("comp1") or m.group("comp2")).lower()
+            level = (m.group("level1") or m.group("level2")).lower()
+            year = m.group("year")
+            if year and len(year) == 2:
+                year = "20" + year
+            return "medal", m.group("item").strip(" .,-"), (comp, level, int(year) if year else None)
         for rx, act in ((WALL_RE, "wall"), (NOTE_RE, "note")):
             m = rx.search(line)
             if m:
@@ -357,6 +410,29 @@ def match_beer(item, pool):
     return m[0] if len(m) == 1 else None
 
 
+MEDAL_RANK = {"gold": 3, "silver": 2, "bronze": 1}
+MEDAL_EMOJI = {"gold": ":first_place_medal:", "silver": ":second_place_medal:", "bronze": ":third_place_medal:"}
+
+def beer_medals(b):
+    """The beer's medal list, migrating the pre-Sept-2026 shape (medal/medalText) in place."""
+    if not isinstance(b.get("medals"), list):
+        b["medals"] = []
+        if b.get("medal"):
+            comp = re.sub(r"\s*(gold|silver|bronze)\s*", " ", b.get("medalText") or "", flags=re.I).strip().title().replace("Us Open", "US Open")
+            b["medals"].append({"comp": comp, "level": str(b["medal"]).lower(), "year": b.get("medalYear"), "show": "wall"})
+        b.pop("medal", None); b.pop("medalText", None); b.pop("medalYear", None)
+    return b["medals"]
+
+def medal_tag(b):
+    """':first_place_medal:' for the plaque the tank shows right now, else ''."""
+    year = datetime.now().year
+    ms = [m for m in (b.get("medals") or []) if m.get("show", "wall") == "wall" and (not m.get("year") or year - m["year"] <= 2)]
+    if not ms:
+        return ""
+    top = sorted(ms, key=lambda m: (MEDAL_RANK.get(m.get("level"), 0), m.get("year") or 0), reverse=True)[0]
+    return " " + MEDAL_EMOJI.get(top.get("level"), ":medal:")
+
+
 def handle(msg, data, queue, channel):
     p = parse(msg.get("text", ""))
     if not p:
@@ -457,6 +533,58 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
 
+    elif action == "medal":
+        comp_said, level, year = extra
+        comp, earns_wall = MEDAL_COMPS[comp_said]
+        b = match_beer(item, beers) or match_beer(item, recent)
+        if b:
+            ms = beer_medals(b)
+            # the same medal said twice (or said first without the year) updates, never duplicates
+            hit = next((x for x in ms if x["comp"] == comp and x["level"] == level
+                        and (x.get("year") == year or not year or not x.get("year"))), None)
+            if hit:
+                if year: hit["year"] = year
+                hit["show"] = "wall" if earns_wall else "site"
+            else:
+                ms.append({"comp": comp, "level": level, "year": year, "show": "wall" if earns_wall else "site"})
+            if earns_wall:
+                # one plaque per tank: an older wall medal on the same beer steps down to the menu
+                for x in ms:
+                    if x is not hit and x.get("show") == "wall" and x["comp"] == comp and x["level"] == level and (x.get("year") or 0) < (year or 0):
+                        x["show"] = "menu"
+                yr = (" %d" % year) if year else ""
+                change = "%s %s %s%s" % (b["name"], comp, level, yr)
+                reply = (":medal: *%s* · %s %s%s - plaque on the tank, line on the menu, both within a couple of minutes."
+                         "%s" % (b["name"], comp, level, yr,
+                                 "" if year else "\nNo year given, so it never ages off the wall - say _\"%s medal: %s %s YYYY\"_ to date it." % (b["name"], comp, level)))
+            else:
+                change = "%s %s %s (record)" % (b["name"], comp, level)
+                reply = (":ledger: Logged *%s* · %s %s%s for the record. Points-based medals stay off the wall and the "
+                         "menu - it's in beers.json for the website and the sell sheet." % (b["name"], comp, level, (" %d" % year) if year else ""))
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list or the recently-off list." % item
+
+    elif action in ("offwall", "onwall"):
+        b = match_beer(item, beers) or match_beer(item, recent)
+        if b:
+            want = "wall" if action == "onwall" else "menu"
+            ms = beer_medals(b)
+            hits = [x for x in ms if (extra in ("medal", "medals", "plaque") or x["level"] == extra)
+                    and x.get("show") != "site" and x.get("show", "wall") != want]
+            if action == "onwall" and any(not MEDAL_COMPS.get(x["comp"].lower(), ("", True))[1] for x in hits):
+                hits = [x for x in hits if MEDAL_COMPS.get(x["comp"].lower(), ("", True))[1]]
+            for x in hits:
+                x["show"] = want
+            if hits:
+                what = ", ".join("%s %s%s" % (x["comp"], x["level"], (" %d" % x["year"]) if x.get("year") else "") for x in hits)
+                change = "%s %s %s" % (b["name"], what, "on wall" if want == "wall" else "off wall")
+                reply = ((":white_check_mark: *%s* · %s is back on the wall." if want == "wall" else
+                          ":white_check_mark: *%s* · %s is off the wall - it stays on the menu line.") % (b["name"], what))
+            else:
+                reply = ":information_source: *%s* has no %s to move." % (b["name"], "wall medal" if want == "menu" else "medal for the wall")
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
     elif action in ("wall", "note"):
         b = match_beer(item, beers)
         if b:
@@ -488,7 +616,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         reply = ":eyes: Got it - flagged for Colby. If you want me to change it, tell me what it should say."
 
     elif action == "status":
-        lines = ["%s%s" % (b["name"], (" (last keg)" if b.get("sash") == "last keg" else "") + (" :star:" if b.get("pick") else ""))
+        lines = ["%s%s" % (b["name"], (" (last keg)" if b.get("sash") == "last keg" else "") + (" :star:" if b.get("pick") else "") + medal_tag(b))
                  for b in beers]
         reply = ":beers: *%d on the wall:* %s\nLast change: %s" % (len(beers), " \u00b7 ".join(lines), data.get("updatedBy", "?"))
 
