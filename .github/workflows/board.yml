@@ -48,7 +48,7 @@ jobs:
         if: env.ACTION != 'check'
         run: |
           python3 tools/board.py build
-          cp -r fonts ouray.svg beers.json dist/
+          cp -r fonts ouray.svg beers.json maps dist/   # maps/ too: the board loads maps/maps.json at boot and the render check counts a 404 as a failure
 
       - name: Render check
         run: |
