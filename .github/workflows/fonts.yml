@@ -1,0 +1,40 @@
+name: Fonts
+
+# Builds the brand typefaces the board and menu load from /fonts. Run once, or again
+# whenever a face changes. Sources are the open-licensed (OFL) originals in Google's
+# repo; each is subset to Latin + Latin Extended (KĀKOU's Ā needs it) as woff2.
+# The wall then depends on nothing outside this repo for how it looks.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q fonttools brotli
+      - name: Subset and commit
+        run: |
+          set -e
+          mkdir -p fonts
+          U="U+0000-00FF,U+0100-017F,U+2010-2027,U+2030-205E,U+20AC,U+2122,U+2190-2199"
+          while read src out; do
+            curl -sfL "https://raw.githubusercontent.com/google/fonts/main/ofl/$src" -o /tmp/src.ttf
+            pyftsubset /tmp/src.ttf --unicodes="$U" --flavor=woff2 --layout-features=kern,liga --output-file="fonts/$out.woff2"
+            echo "  fonts/$out.woff2  $(stat -c%s fonts/$out.woff2) bytes"
+          done <<'LIST'
+          anton/Anton-Regular.ttf anton
+          archivoblack/ArchivoBlack-Regular.ttf archivoblack
+          barlow/Barlow-Regular.ttf barlow-400
+          barlow/Barlow-Italic.ttf barlow-400i
+          barlow/Barlow-Medium.ttf barlow-500
+          barlow/Barlow-SemiBold.ttf barlow-600
+          barlow/Barlow-Bold.ttf barlow-700
+          LIST
+          git config user.name computa; git config user.email computa@plattparkbrewing.com
+          git add fonts
+          git diff --cached --quiet && echo "fonts unchanged" || (git commit -qm "fonts: build brand typefaces" && git push -q)
