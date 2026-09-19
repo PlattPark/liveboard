@@ -1,0 +1,38 @@
+name: Map
+# Draws the seasonal wall maps from public data (elevation + OpenStreetMap)
+# and commits maps/*.svg + maps/maps.json. Run it when a place is added or a
+# window changes; the Board workflow picks the files up on its next build.
+on:
+  workflow_dispatch:
+    inputs:
+      place:
+        description: abasin | platte | lostcreek | ouray | all
+        default: all
+
+concurrency:
+  group: board
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python libs for contouring
+        run: pip install --quiet numpy scipy matplotlib
+
+      - name: Draw
+        run: python3 tools/map.py ${{ inputs.place || 'all' }}
+
+      - name: Commit the maps
+        run: |
+          git config user.name "Map build"
+          git config user.email "board@plattparkbrewing.com"
+          git add maps
+          git commit -m "maps: ${{ inputs.place || 'all' }} drawn from elevation + OpenStreetMap [skip ci]" || { echo "no change"; exit 0; }
+          git fetch -q origin main && git rebase -q origin/main
+          git push
