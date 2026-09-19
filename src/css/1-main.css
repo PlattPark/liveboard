@@ -1,0 +1,347 @@
+
+  :root{
+    --cream:#e7eacd; --cream-2:#eef0d9;
+    --forest:#293d22; --forest-soft:rgba(41,61,34,.14);
+    --verm:#ff5a3a; --mustard:#eebf19; --olive:#5a8142;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:#e7eacd; color:#293d22;
+    font-family:'Barlow',sans-serif; overflow:hidden;
+    transition:background 1s;
+  }
+  body.scene-hot{background:#f0e8c4}
+  body.scene-snow{background:#e2e8e0}
+body.scene-industry, body.night{background:#293d22; color:#e7eacd}
+
+  /* print-speckle texture over everything */
+  
+  .tbody{position:relative;height:150px;overflow:hidden;
+    background:linear-gradient(90deg,#9ba18c 0%,#e6e9da 20%,#c2c7b2 48%,#9aa08b 78%,#848a76 100%);
+    border-left:3px solid #293d22;border-right:3px solid #293d22}
+        
+  /* ---------- header hero: the brewers' pick lives here when one is set ---------- */
+  #hero{position:absolute;left:50%;top:26px;transform:translateX(-50%);z-index:6;display:none;text-align:center;white-space:nowrap}
+  #hero.on{display:block}
+  #hero .hk{font-family:'Archivo Black';font-size:15px;letter-spacing:4px;color:#f0553d;text-transform:uppercase}
+  #hero .hn{font-family:'Anton',sans-serif;font-size:48px;letter-spacing:1.5px;line-height:1;color:#293d22;text-transform:uppercase;margin-top:2px}
+  #hero .hs{font-family:'Barlow';font-weight:600;font-size:21px;color:#5a8142;margin-top:4px}
+body.scene-industry #hero .hn, body.night #hero .hn{color:#e7eacd}
+body.scene-industry #hero .hs, body.night #hero .hs{color:#b9c49a}
+  #hero.on ~ .stamp{opacity:0}
+  /* ---------- header ---------- */
+  header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;padding:14px 28px 0}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .brand .tag{
+    font-family:'Barlow';font-weight:700;font-size:13px;letter-spacing:5px;
+    color:#5a8142;text-transform:uppercase;padding-left:3px;font-size:15px;
+  }
+body.scene-industry .brand .tag, body.night .brand .tag{color:#eebf19}
+  .brand img{width:160px;height:auto;display:block}
+body.scene-industry .brand img, body.night .brand img{filter:brightness(1.08) saturate(1.05)}
+  .context{display:flex;align-items:center;gap:16px;margin-top:8px}
+  .chip{
+    font-family:'Archivo Black';font-size:21px;letter-spacing:1px;
+    background:#293d22;color:#e7eacd;
+    padding:4px 14px;border-radius:4px;line-height:1.22;text-align:center;
+    box-shadow:4px 4px 0 rgba(41,61,34,.25);
+    font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:9px;
+  }
+  body.scene-industry .chip{background:#e7eacd;color:#293d22;box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+  .quiet{font-family:'Archivo Black';font-size:27px;color:#293d22;letter-spacing:1px;font-variant-numeric:tabular-nums}
+  .quiet .wxword{font-size:14px;letter-spacing:2.5px;color:#5a8142}
+body.scene-industry .quiet, body.night .quiet{color:#e7eacd}
+body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
+  .chip.hh{background:#eebf19;color:#293d22;display:none}
+  .chip.kk{background:#ff5a3a;color:#e7eacd;display:none}
+  .chip .sub{font-family:'Barlow';font-weight:700;font-size:15px;letter-spacing:2px;opacity:.85}
+
+  /* ---------- event banner ---------- */
+  .banner{
+    position:relative;z-index:5;margin:14px 40px 0;display:none;align-items:center;gap:16px;
+    background:#ff5a3a;color:#e7eacd;
+    padding:16px 24px;border-radius:5px;
+    box-shadow:5px 5px 0 rgba(41,61,34,.3);
+    font-size:22px;font-weight:600;
+  }
+  .banner.show{display:flex}
+  .banner strong{
+    font-family:'Archivo Black';font-weight:400;font-size:21px;letter-spacing:1.5px;
+    text-transform:uppercase;background:#293d22;padding:4px 12px;border-radius:3px;flex:none;margin-right:22px;
+  }
+  .banner.gold{background:#eebf19;color:#293d22}
+  .banner.gold strong{color:#e7eacd}
+
+  /* ---------- floor ---------- */
+  .stage{position:relative;z-index:2;display:flex;padding:18px 26px 5px}
+  .floor{
+    flex:1;display:grid;grid-template-columns:repeat(6,1fr);
+    gap:6px 16px;align-items:end;
+  }
+  .side{
+    flex:none;width:264px;align-self:flex-end;margin:0 4px 6px 8px;font-size:20px;
+    background:#293d22;color:#e7eacd;border-radius:6px;
+    padding:14px 15px 12px;box-shadow:5px 5px 0 rgba(41,61,34,.28);
+  }
+  body.scene-industry .side{background:#e7eacd;color:#293d22;box-shadow:5px 5px 0 rgba(0,0,0,.35)}
+  .side-h{font-family:'Archivo Black';font-size:21px;letter-spacing:2px;color:#eebf19;text-transform:uppercase;margin-bottom:8px}
+  body.scene-industry .side-h{color:#ff5a3a}
+  .s-item{padding:7px 0 8px;border-top:2px solid rgba(231,234,205,.16)}
+  body.scene-industry .s-item{border-top-color:rgba(41,61,34,.18)}
+  .s-item:first-of-type{border-top:none}
+  .s-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .s-name{display:block;font-family:'Barlow';font-weight:700;font-size:24px;line-height:1.05;letter-spacing:.2px}
+  .s-price{white-space:nowrap;font-family:'Archivo Black';font-size:22px;color:#eebf19}
+  body.scene-industry .s-price{white-space:nowrap;color:#ff5a3a}
+  .s-bar{margin-top:6px;height:7px;border-radius:4px;background:rgba(231,234,205,.22);overflow:hidden}
+  body.scene-industry .s-bar{background:rgba(41,61,34,.18)}
+  .s-bar i{display:block;height:100%;border-radius:4px;background:#eebf19;transition:width 1.2s ease}
+  .s-item.low-side .s-bar i{background:#ff5a3a}
+  .s-flavor{margin-top:2px;font-size:18px;font-weight:600;color:#dbe3bd;line-height:1.15}
+  body.scene-industry .s-flavor{color:#5a8142}
+  .s-foot{margin-top:9px;font-size:16px;font-weight:700;letter-spacing:1.3px;color:#cdd6ae;text-transform:uppercase}
+  .ranger{
+    flex:none;width:176px;display:flex;align-items:flex-end;justify-content:center;
+    margin-left:2px;margin-bottom:-24px;transform:translateY(46px);
+  }
+  .ranger img{width:100%;height:auto;filter:drop-shadow(6px 6px 0 rgba(41,61,34,.18))}
+
+  .unit{position:relative;display:flex;flex-direction:column;align-items:center;align-self:start}
+  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:256px}
+  /* featured beer gets the sun disc from the poster */
+  .sun{
+    position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+    width:122%;height:0;padding-bottom:122%;border-radius:50%;background:#ff5a3a;opacity:0;z-index:0;
+  }
+  .unit.featured .sun{opacity:0}   /* the poster sun is a fest-day thing now; scene-fest below still brings it back */
+  body.scene-fest .unit.featured .sun{width:185%;padding-bottom:185%;opacity:1}
+  body.scene-fest .unit.featured .vessel{transform:translateY(-2px) scale(1.02)}
+  .unit.featured.gold .sun{background:#eebf19}
+
+  .vessel{position:relative;width:61%;z-index:1}
+  .unit.tall .vessel{width:93%}
+  .dish{height:18px;border-radius:50% 50% 0 0/100% 100% 0 0;
+    background:linear-gradient(180deg,#dfe3d2,#a9b09b);
+    border:3px solid #293d22;border-bottom:none;position:relative}
+  .dish::after{content:"";position:absolute;left:50%;top:-8px;transform:translateX(-50%);
+    width:16px;height:8px;border-radius:3px 3px 0 0;background:#a9b09b;border:2.5px solid #293d22;border-bottom:none}
+
+  .unit.tall .tbody{height:198px}
+  .liquid{position:absolute;left:0;right:0;top:0;bottom:-6px;transition:transform 1.4s cubic-bezier(.25,.8,.3,1);will-change:transform}
+  .liquid .wave{position:absolute;top:-6px;left:0;width:200%;height:12px;animation:wave 8s linear infinite;opacity:.95}
+  @keyframes wave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .sheen{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,.42) 5%,rgba(255,255,255,0) 24%,rgba(41,61,34,.10) 62%,rgba(41,61,34,.26) 100%)}
+  .weld{position:absolute;left:0;right:0;height:1.5px;background:rgba(41,61,34,.30)}
+  .manway{position:absolute;left:50%;transform:translateX(-50%);bottom:32px;width:32px;height:32px;border-radius:50%;
+    border:2.5px solid rgba(41,61,34,.5);box-shadow:inset 0 0 0 3px rgba(255,255,255,.35)}
+  .cone{height:32px;background:linear-gradient(90deg,#9ba18c,#dfe3d2 32%,#b3b9a3 70%,#848a76);
+    clip-path:polygon(0 0,100% 0,62% 100%,38% 100%);
+    filter:drop-shadow(0 2.5px 0 #293d22)}
+  .valve{width:10px;height:11px;margin:0 auto;background:#293d22;border-radius:0 0 3px 3px;position:relative}
+  .valve::after{content:"";position:absolute;left:-7px;top:4px;width:24px;height:4.5px;background:#ff5a3a;border-radius:3px}
+  .size{position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:3;
+    font-family:'Archivo Black';font-size:13.5px;letter-spacing:2px;color:rgba(41,61,34,.72);display:none}
+  .pints{position:absolute;top:5px;right:5px;z-index:4;font-family:'Archivo Black';font-size:15px;
+    color:#293d22;background:#eebf19;padding:2px 8px;border-radius:3px;font-variant-numeric:tabular-nums;box-shadow:2.5px 2.5px 0 rgba(41,61,34,.3)}
+  .blip{position:absolute;right:7px;top:30px;z-index:4;color:#e7eacd;background:#ff5a3a;
+    padding:1px 7px;border-radius:3px;font-weight:700;font-size:12.5px;opacity:0}
+  .blip.go{animation:blip 1.4s ease forwards}
+  @keyframes blip{10%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
+
+  .unit.low .tbody{box-shadow:0 0 0 3px #eebf19}
+  .lowtag{position:absolute;top:44%;left:50%;transform:translateX(-50%) rotate(-4deg);z-index:4;display:none;
+    background:#eebf19;color:#293d22;font-family:'Archivo Black';font-size:13.5px;
+    letter-spacing:1.2px;padding:3px 8px;border-radius:3px;white-space:nowrap;text-transform:uppercase;max-width:none;
+    box-shadow:3px 3px 0 rgba(41,61,34,.3)}
+  .unit.low .lowtag{display:block}
+  .unit.kicked .liquid{transform:translateY(101%) !important}
+  .kicktag{position:absolute;top:0;left:0;right:0;bottom:0;z-index:5;display:none;place-items:center;background:rgba(231,234,205,.72)}
+  .unit.kicked .kicktag{display:grid}
+  .kicktag span{font-family:'Archivo Black';font-size:20px;color:#ff5a3a;
+    border:3px solid #ff5a3a;padding:4px 12px;transform:rotate(-8deg);letter-spacing:2px;border-radius:3px}
+
+  .plate{margin-top:8px;text-align:center;min-height:118px;position:relative;z-index:2}
+  .goldflag.sv{background:#cdd2da !important;color:#293d22}
+  .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+  .plate .name{
+    font-family:'Anton',sans-serif;font-size:32px;letter-spacing:1px;line-height:.97;
+    text-transform:uppercase;color:#293d22;height:64px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
+  }
+body.scene-industry .goldflag, body.night .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+body.scene-industry .plate .name, body.night .plate .name{color:#e7eacd}
+  .plate .note{color:#293d22;font-size:21px;font-weight:600;line-height:1.12;margin-top:4px;text-wrap:balance;max-width:214px;margin-left:auto;margin-right:auto}
+  .plate .note:empty{display:none} .plate .note.long{font-size:19px;max-width:222px;letter-spacing:-.15px;line-height:1.1}
+body.scene-industry .plate .note, body.night .plate .note{color:#e7eacd}
+  .plate .meta{display:none}
+body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
+  .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:5px}
+  .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
+  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
+  .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
+  .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
+  .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#5a8142;letter-spacing:.5px;margin-left:5px}
+  body.night .plate .price .abv{color:#b9c49a}
+body.scene-industry .plate .price, body.night .plate .price{color:#e7eacd}
+    .plate .age{color:#5a8142;font-size:15px;margin-top:3px;font-weight:600}
+  .plate .adj{color:#b8412c;font-size:18px;font-weight:700;letter-spacing:.3px;margin-top:1px;line-height:1.1}
+  .plate .adj:empty{display:none}
+body.scene-industry .plate .adj, body.night .plate .adj{color:#ffb39f}
+body.scene-industry .plate .age, body.night .plate .age{color:#93a077}
+
+  /* ---------- rail ---------- */
+  .rail{position:relative;z-index:6;height:70px;display:flex;margin-top:6px;
+    background:#293d22;color:#e7eacd;box-shadow:0 -5px 0 rgba(41,61,34,.22)}
+body.scene-industry .rail, body.night .rail{background:#131f0f}
+  .rail .cell{flex:1;display:flex;align-items:center;gap:14px;padding:0 28px;font-size:19px;font-weight:500;
+    white-space:nowrap;overflow:hidden;position:relative}
+  .rail .cell:nth-child(1){flex:0 0 auto;padding-right:34px}
+  .rail .cell:nth-child(2){flex:0 0 470px}
+  .rail .cell:nth-child(2) #most{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .rail .cell:nth-child(3){flex:1;min-width:0}
+  .rail .cell:nth-child(2){flex:0 0 auto}
+  .rail .cell:nth-child(4){flex:1;min-width:0}
+  .rail .cell + .cell::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;background:#ff5a3a;border-radius:2px}
+  .rail .k{font-family:'Archivo Black';font-size:16.5px;letter-spacing:2px;color:#eebf19;text-transform:uppercase}
+  .rail .big{font-family:'Archivo Black';font-size:27px;color:#e7eacd;font-variant-numeric:tabular-nums}
+  .rail .qrcell{flex:none;padding:0 22px;gap:11px}
+  .rail .qrcell img{height:56px;width:56px;border-radius:4px;border:2.5px solid #e7eacd}
+  .rail .qrtxt{font-family:'Archivo Black';font-size:12.5px;letter-spacing:1.5px;color:#eebf19;text-transform:uppercase;line-height:1.35}
+
+  /* bubbles + foam: the beer is alive */
+  .bub{position:absolute;border-radius:50%;background:rgba(255,255,255,.38);animation:rise linear infinite;pointer-events:none}
+  @keyframes rise{0%{transform:translateY(0);opacity:0}14%{opacity:.9}86%{opacity:.55}100%{transform:translateY(-64px);opacity:0}}
+  .foam{position:absolute;top:0;left:0;right:0;height:7px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.62));animation:lap 5s ease-in-out infinite alternate}
+@keyframes lap{from{transform:translateY(0);opacity:.8}to{transform:translateY(1.6px);opacity:.95}} .unit.nitro .wave{opacity:0} .unit.nitro .foam{height:17px;top:0;background:linear-gradient(180deg,#f7f1de 0%,#eadfc3 55%,rgba(234,223,195,0) 100%);animation:settle 7s ease-in-out infinite alternate;opacity:1;box-shadow:none} .unit.nitro .foam::before,.unit.nitro .foam::after{display:none} @keyframes settle{from{height:15px}to{height:19px}} .unit.nitro .liquid::after{content:'';position:absolute;left:0;right:0;top:0;height:26%;pointer-events:none;background:linear-gradient(180deg,rgba(255,250,235,.28),rgba(255,250,235,0));animation:surge 7s ease-in-out infinite alternate} @keyframes surge{from{opacity:.55}to{opacity:1}} .unit.nitro .bub{background:rgba(255,250,235,.9);width:3px;height:3px;animation-name:cascade;animation-timing-function:ease-in} .unit.nitro .bub.n1{animation-duration:3.2s} .unit.nitro .bub.n2{animation-duration:4.1s} .unit.nitro .bub.n3{animation-duration:3.6s} @keyframes cascade{0%{transform:translateY(-8px);opacity:0}12%{opacity:.9}90%{opacity:.5}100%{transform:translateY(var(--fall,110px));opacity:0}} .nitrotag{position:absolute;top:6px;left:6px;z-index:4;display:none;font-family:'Archivo Black';font-size:10.5px;letter-spacing:2.2px;color:#e7eacd;background:rgba(41,61,34,.8);padding:2px 6px 1px;border-radius:3px} .unit.nitro .nitrotag{display:block} body.curtained .unit.nitro .bub,body.curtained .unit.nitro .foam,body.curtained .unit.nitro .liquid::after{animation-play-state:paused}
+.sun{transition:opacity .9s ease}
+  /* spotlight cycle */
+  .unit .vessel{transition:transform .7s cubic-bezier(.3,.9,.3,1.2)}
+  .unit.spotlight .vessel{transform:translateY(-9px) scale(1.05)}
+  .unit.spotlight .tbody{box-shadow:0 0 0 3px #ff5a3a}
+  .unit.low.spotlight .tbody{box-shadow:0 0 0 3px #eebf19}
+  .spotcap{position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(-2deg);z-index:6;display:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;
+    background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:16.5px;letter-spacing:1px;
+    padding:5px 12px;border-radius:3px;white-space:nowrap;text-transform:uppercase;box-shadow:3px 3px 0 rgba(41,61,34,.35)}
+  .unit.spotlight .spotcap{display:block} .unit.featured .spotcap{top:2px}
+  /* just tapped */
+  .newtag{position:absolute;top:44%;left:50%;transform:translateX(-50%) rotate(-4deg);z-index:4;display:none;
+    background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:15px;letter-spacing:1.5px;
+    padding:4px 10px;border-radius:3px;white-space:nowrap;text-transform:uppercase;box-shadow:3px 3px 0 rgba(41,61,34,.3)}
+  .unit.justtapped .newtag{display:block}
+  .unit.pick .newtag{display:block;background:#eebf19;color:#293d22}
+  /* kick celebration */
+  .kickflash{position:fixed;top:0;left:0;right:0;bottom:0;z-index:90;background:#ff5a3a;opacity:0;pointer-events:none;animation:kflash 2.1s ease forwards}
+  @keyframes kflash{0%{opacity:0}8%{opacity:.92}30%{opacity:.92}100%{opacity:0}}
+  .kickstamp{position:fixed;top:38%;left:50%;z-index:95;pointer-events:none;color:#e7eacd;
+    font-family:'Archivo Black';font-size:64px;letter-spacing:3px;text-transform:uppercase;text-align:center;line-height:1.15;
+    animation:kslam 2.1s cubic-bezier(.2,1.4,.3,1) forwards}
+  .kickstamp small{display:block;font-size:26px;letter-spacing:6px;color:#eebf19}
+  @keyframes kslam{0%{transform:translate(-50%,-50%) scale(3) rotate(-14deg);opacity:0}
+    14%{transform:translate(-50%,-50%) scale(1) rotate(-6deg);opacity:1}
+    78%{transform:translate(-50%,-50%) scale(1) rotate(-6deg);opacity:1}
+    100%{transform:translate(-50%,-50%) scale(.94) rotate(-6deg);opacity:0}}
+  body.dusk{background:#e2e4c0}
+  /* NIGHT: lights down. The cream field is what lit the room - swap it for ink and leave every
+     beer colour exactly as it is. No overlay, nothing tinted. */
+  body.night{background:#1c2818;color:#e7eacd}
+  body.night .side{background:#243521;color:#e7eacd;box-shadow:inset 0 0 0 2px rgba(231,234,205,.14)}
+  body.night .side-h{color:#eebf19} body.night .s-price{color:#eebf19} body.night .s-flavor{color:#dbe3bd}
+  body.night .rail{background:#111a0f}
+  body.night #clock,body.night .wxDeg,body.night #wxDeg{color:#e7eacd}
+  body.night .addr,body.night .elev{color:#8fa27a}
+  body.night .tbody{box-shadow:0 0 0 1px rgba(231,234,205,.10)}
+  body.night .dish{filter:brightness(.92)} body.night .cone{filter:brightness(.92) drop-shadow(0 2.5px 0 #0e150c)}
+  body.night .plate .price{color:#e7eacd} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
+  body.night .plate .adj{color:#ffb39f}
+  body.night .stamp{opacity:.06}
+body.night::before{filter:brightness(0) invert(1);opacity:.5}   /* the contours go cream at night */ body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
+  .tbody{contain:layout paint}
+body.dusk.scene-industry, body.dusk.night{background:#293d22}
+  .flake{position:fixed;top:-12px;color:#7c8b74;z-index:40;animation:fall linear forwards;pointer-events:none}
+  @keyframes fall{to{transform:translateY(1134px)}}
+  .curtain{position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#e7eacd;text-align:center}
+  .curtain.on{display:flex}
+  .curtain.night{background:#293d22}
+  .c-ranger{height:475.2px;width:auto;filter:drop-shadow(7px 7px 0 rgba(41,61,34,.18))}
+  .c-wm{width:330px;height:auto}
+  .c-line{font-family:'Archivo Black';font-size:44px;letter-spacing:2px;color:#293d22;text-transform:uppercase;text-shadow:3px 3px 0 rgba(255,90,58,.4)}
+  .curtain.night .c-line{color:#e7eacd}
+  .c-sub{font-family:'Barlow';font-weight:700;font-size:21px;letter-spacing:2px;color:#5a8142;text-transform:uppercase}
+  .curtain.night .c-sub{color:#eebf19}
+  .demo{position:fixed;bottom:76px;right:12px;z-index:50;color:#5a8142;font-size:11.5px;letter-spacing:1px}
+
+/* ---- the wire: slow ticker with a human hand ---- */
+#railMsg{overflow:hidden;position:relative;display:flex;align-items:center;flex:1;height:100%;min-width:0}
+.wi{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
+  opacity:1;transition:opacity .5s ease}
+  .wi.fading{opacity:0}
+}
+.wi{font-family:'Barlow',sans-serif;font-weight:700;font-size:19px;letter-spacing:.3px;color:#e7eacd;padding:0 34px;position:relative}
+.wi em{font-style:normal;color:#eebf19}
+.wi::after{content:'\2736';position:absolute;right:-7px;color:#ff5a3a;font-size:13px;opacity:.9}
+.wi.pour{color:#eebf19}
+
+
+/* ---- design trio: spotlight loudness, quieter chips, header address line ---- */
+.unit.featured .name{font-size:43px;letter-spacing:0;color:#1e2f18}
+.unit.featured .price{color:#293d22}
+.plate .price .tag{display:inline-block;background:#eebf19;color:#293d22;padding:2px 9px 1px;border-radius:3px;box-shadow:2.5px 2.5px 0 rgba(41,61,34,.3);line-height:1.25} body.night .plate .price .tag{color:#293d22}
+.price .p10{opacity:.75}
+header{position:relative}
+.addr{position:absolute;right:132px;top:47px;font-family:'Barlow';font-weight:700;font-size:12px;letter-spacing:4px;color:#5a8142}
+
+/* ---- JOURNAL EDITION: field-guide skin ---- */
+/* topo contours behind everything (decorative, tone-on-tone) */
+body::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.9;
+  background-image:url("ouray.svg");background-repeat:no-repeat;background-size:cover;background-position:center}   /* real SRTM contours of Ouray, CO - 15km window, 100m intervals; regenerate from the DEM, never hand-edit */
+/* passport cancellation stamp in the header quiet zone */
+.mapmarks{position:absolute;inset:0;z-index:1;pointer-events:none;color:#293d22;opacity:.42} body.night .mapmarks{color:#e7eacd;opacity:.34} .mapmarks .bm{position:absolute;left:1482px;top:478px;font-family:'Barlow';font-weight:700;font-size:11px;letter-spacing:2.5px;display:flex;align-items:center;gap:6px} .mapmarks .bm svg{width:14px;height:14px} .mapmarks .scale{position:absolute;left:1346px;top:846px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:2.5px;display:flex;align-items:flex-end;gap:14px} .mapmarks .scale svg{display:block} .stamp{position:absolute;right:62px;top:10px;width:132px;height:132px;opacity:.13;z-index:0;transform:rotate(-11deg);pointer-events:none}   /* postmark over the address block */
+/* elevation tag under the address */
+.elev{position:absolute;right:132px;top:63px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:5px;color:#5a8142;opacity:.85}
+/* field-guide fermenters: ink outlines, flatter print shading, weld seam */
+.tbody{background:linear-gradient(90deg,#aab095 0%,#dfe2cf 22%,#c6cab4 50%,#a3a890 80%,#959b83 100%);
+  border-left:2.5px solid #2c3b22;border-right:2.5px solid #2c3b22;
+  box-shadow:inset 0 0 0 1px rgba(41,61,34,.22), inset 0 -6px 14px rgba(41,61,34,.12)}
+.tbody::after{content:'';position:absolute;left:6%;right:6%;top:34%;border-top:1.5px dashed rgba(41,61,34,.22);z-index:5;pointer-events:none}
+.cone{background:linear-gradient(90deg,#aab095,#d8dcc8 34%,#b3b8a1 72%,#8f957d);
+  filter:drop-shadow(0 2.5px 0 #2c3b22)}
+.dish{filter:saturate(.9)}
+
+/* ---- light pass: gentle vignette + warmth pooling at the spotlight ---- */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
+  background:radial-gradient(ellipse 118% 110% at 50% 42%, transparent 62%, rgba(28,38,18,.075) 100%)}
+.unit.featured .tankwrap{position:relative}
+.unit.featured .tankwrap::before{content:'';position:absolute;inset:-46px -34px;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 50% 38%, rgba(238,191,25,.14), rgba(238,191,25,.05) 48%, transparent 68%)}
+
+
+
+
+
+/* ---- subtle life: liquid drift, sun breath, register clunk ---- */
+.wave{animation:drift 9s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-2.5px)}to{transform:translateX(2.5px)}}
+.sun{animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.014)}}
+#odo.odoTick{animation:clunk .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes clunk{0%{transform:translateY(0)}35%{transform:translateY(2.5px)}100%{transform:translateY(0)}}
+#odo{display:inline-block}
+
+
+
+/* medal plaques: hung on the steel, where medals live */
+.tbody{position:relative}
+.tplaque{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%) rotate(-2deg);
+  background:#eebf19;color:#293d22;font-family:'Barlow';font-weight:800;font-size:11.5px;
+  letter-spacing:.8px;text-align:center;line-height:1.25;padding:4px 9px;border-radius:3px;
+  max-width:86%;box-shadow:2px 2px 0 rgba(41,61,34,.35), inset 0 0 0 1.5px rgba(41,61,34,.25);z-index:3}
+.tplaque.sv{background:#b9c0ca;box-shadow:2px 2px 0 rgba(41,61,34,.45), inset 0 0 0 1.5px rgba(41,61,34,.4)}
+
+/* rail v2: fixed frame, crawling wire */
+.rail .cell:nth-child(1),.rail .cell:nth-child(2){flex:0 0 auto}
+.rail .cell:nth-child(4){flex:1 1 0;min-width:0}
+#railMsg{-webkit-mask-image:linear-gradient(90deg,transparent,black 4%,black 96%,transparent);mask-image:linear-gradient(90deg,transparent,black 4%,black 96%,transparent)}
+.wireStrip{display:inline-flex;white-space:nowrap;will-change:transform;animation:wcrawl var(--wd,80s) linear infinite}
+.wireStrip .wi{padding-right:80px;font-size:22px;font-weight:600}
+@keyframes wcrawl{to{transform:translateX(-50%)}}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Platt Park Brewing Co. — Tap Board</title>
+<link rel="preload" href="fonts/anton.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivoblack.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-600.woff2" as="font" type="font/woff2" crossorigin>
+<style>@@css:0-fonts@@</style>
+<style>@@css:1-main@@</style>
+</head>
+<body>
+
+
+
+
+
+<header>
+  <div class="brand">
+    <img src="img/logo.png" alt="Platt Park Brewing Co.">
+  </div>
+  <div class="context" style="padding-right:130px">
+    <span class="chip hh" id="hhChip"></span>
+    <span class="chip kk" id="kChip"></span>
+    <span class="quiet"><span id="wxDeg">78°</span> <span id="wxIco" class="wxword">SUNNY</span></span>
+    <span class="quiet" id="clock"></span><span class="addr">1875 S PEARL ST · DENVER</span><span class="elev">ELEV 5,280 FT</span>
+  </div>
+<div id="hero"></div><svg class="stamp" viewBox="0 0 120 120"><defs><path id="stc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><circle cx="60" cy="60" r="56" fill="none" stroke="#293d22" stroke-width="2.5"/><circle cx="60" cy="60" r="37" fill="none" stroke="#293d22" stroke-width="1.5"/><text font-family="Archivo Black, sans-serif" font-size="10" letter-spacing="1.1" fill="#293d22"><textPath href="#stc">PLATT PARK BREWING CO • SOUTH PEARL ST •</textPath></text><text x="60" y="57" text-anchor="middle" font-family="Archivo Black" font-size="12" fill="#293d22">EST</text><text x="60" y="73" text-anchor="middle" font-family="Archivo Black" font-size="15" fill="#293d22">2014</text></svg></header>
+
+<div class="banner" id="banner"></div>
+
+<div class="stage">
+<div class="mapmarks"><div class="bm"><svg viewBox="0 0 14 14"><path d="M7 1.5 12.5 12.5H1.5Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="8.6" r="1.4" fill="currentColor"/></svg>BM 12,953</div><div class="scale"><svg width="222" height="18" viewBox="0 0 222 18"><path d="M10 12h201M10 6v6M110.5 8v4M211 6v6" stroke="currentColor" stroke-width="1.4" fill="none"/><text x="2" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">0</text><text x="98" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">½</text><text x="195" y="4" font-family="Barlow" font-weight="700" font-size="9" letter-spacing="1.5" fill="currentColor">1 MI</text></svg><svg width="16" height="24" viewBox="0 0 16 24"><path d="M8 2 13 20 8 16 3 20Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 2 8 16" stroke="currentColor" stroke-width="1"/><text x="4.5" y="24" font-family="Barlow" font-weight="700" font-size="7" fill="currentColor">N</text></svg></div></div> <div class="floor" id="floor"></div>
+  <div class="sidecol">
+<div class="side" id="side">
+    <div class="side-h">Also pouring</div>
+    <div class="s-item" id="s-cider"><span class="s-name">BrightCider</span><div class="s-row"><span class="s-flavor">2 Towns · dry cider</span><span class="s-price">$9</span></div></div>
+    <div class="s-item"><span class="s-name">Spiced Apple Cider</span><div class="s-row"><span class="s-flavor">2 Towns</span><span class="s-price">$9</span></div></div>
+    <div class="s-item" id="s-seltzer"><span class="s-name">Boochcraft</span><div class="s-row"><span class="s-flavor">kiwi citrus kombucha</span><span class="s-price">$9</span></div></div>
+    <div class="s-item"><span class="s-name">Bravazzi</span><div class="s-row"><span class="s-flavor">hard Italian soda</span><span class="s-price">$9</span></div></div>
+    <div class="s-item"><span class="s-name">Wine</span><div class="s-row"><span class="s-flavor">red &middot; white &middot; ros&eacute;</span><span class="s-price">$9&ndash;11</span></div></div>
+    <div class="s-item"><span class="s-name">Draft Cocktail</span><div class="s-row"><span class="s-flavor">Craftwell peach mojito</span><span class="s-price">$12</span></div></div>
+    <div class="s-item frozen"><span class="s-name">Frozen Cocktails</span><div class="s-row"><span class="s-flavor" id="sFlavor">Mexican Firing Squad<br>Transfusion</span><span class="s-price">$12</span></div></div>
+    <div class="s-foot">Full bar · NA options too</div>
+      </div>
+  <div class="ranger"><img src="img/ranger.png" alt=""></div>
+</div>
+</div>
+
+<div class="rail">
+  <div class="cell"><span class="k">Pints since 2014</span><span id="odo" class="big">1,080,448</span></div>
+  <div class="cell"><span class="k" id="mostK">Most poured today</span><span id="most" class="big">—</span></div>
+  <div class="cell" id="wingCell" style="display:none"><span class="k">Wings down</span><span id="wings" class="big">0</span></div>
+  <div class="cell"><span class="k" id="railK">House rule</span><span id="railMsg" style="min-width:0;overflow:hidden;flex:1">Every beer brewed 40 feet from your glass</span></div>
+  <div class="cell qrcell"><img id="qr" src="img/qr.png" alt="QR"><span class="qrtxt">Scan for<br>full menu</span></div>
+</div>
+<div class="curtain" id="curtain">
+  <img class="c-ranger" id="cRanger" alt="">
+  <img class="c-wm" id="cWm" alt="">
+  <div class="c-line" id="cLine"></div>
+  <div class="c-sub" id="cSub"></div>
+</div>
+<div class="demo" id="demoTag"></div>
+
+<script>@@js:0-app@@</script>
+<div style="position:fixed;top:14px;right:14px;z-index:80;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+  <button id="gearBtn" style="width:38px;height:38px;border-radius:50%;border:2.5px solid #293d22;background:#e7eacd;color:#293d22;font-size:16px;cursor:pointer;box-shadow:3px 3px 0 rgba(41,61,34,.3)">⚙</button>
+  <div id="panel" style="display:none;flex-direction:column;gap:6px;background:#e7eacd;border:2.5px solid #293d22;border-radius:6px;padding:12px;min-width:210px;box-shadow:5px 5px 0 rgba(41,61,34,.3)">
+    <span style="font-size:12px;color:#5a8142;font-weight:700;letter-spacing:1px">SCENES (PREVIEW ONLY)</span>
+    <button class="sc" data-s="default">Sunny day · 78°</button>
+    <button class="sc" data-s="hot">Hot day · 94°</button>
+    <button class="sc" data-s="snow">Snow day · 28°</button>
+    <button class="sc" data-s="industry">Industry night (dark mode)</button>
+    <button class="sc" data-s="trivia">Trivia Tuesday 6:40pm</button>
+    <button class="sc" data-s="wings">Wing Wednesday</button>
+    <button class="sc" data-s="hh">Happy hour + last call</button>
+    <button class="sc" data-s="fest">Oktoberfest Saturday</button>
+    <button class="sc" data-s="preopen">Pre-open morning</button>
+    <button class="sc" data-s="goodnight">Goodnight (close)</button>
+    <hr style="border:none;border-top:2px solid rgba(41,61,34,.2);margin:4px 0;width:100%">
+    <button id="kickBtn" class="sc">▶ Empty the Chela Morena</button>
+  </div>
+</div>
+<style>@@css:2-scenepicker@@</style>
+<script>@@js:1-gear@@</script>
+
+<style id="fitcss">@@css:3-fit@@</style>
+<script id="fitjs">@@js:2-fit@@</script>
+
+<script id="qol">@@js:3-qol@@</script>
+</body>
+</html>

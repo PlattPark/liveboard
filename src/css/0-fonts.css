@@ -1,0 +1,9 @@
+
+  /* the brand faces live in the repo (OFL) - the wall depends on nothing outside itself */
+  @font-face{font-family:'Anton';src:url(fonts/anton.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Archivo Black';src:url(fonts/archivoblack.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:400;src:url(fonts/barlow-400.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:400;font-style:italic;src:url(fonts/barlow-400i.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:500;src:url(fonts/barlow-500.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:600;src:url(fonts/barlow-600.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:700;src:url(fonts/barlow-700.woff2) format('woff2');font-display:swap}

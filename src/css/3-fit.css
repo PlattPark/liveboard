@@ -1,0 +1,24 @@
+
+  html{height:100%;overflow:hidden;background:#e7eacd}
+  body{width:1920px;overflow:hidden;transform-origin:0 0;position:relative;margin:0}
+
+/* bottom-lock: the rail lives at the frame edge, always inside the 1080 */
+.rail{position:absolute !important;left:0;right:0;bottom:0;margin-top:0 !important}
+
+/* banner day: the floor breathes in so every chip stays above the rail */
+.stage{transform:scale(.963);transform-origin:top center}
+body.bn .stage{transform:scale(.878)}
+
+/* chela: last-keg sash, green so the fest sash stays unique */
+.unit.hasSash .spotcap{display:block}
+.unit.lastkeg .spotcap{background:#46683a}
+
+/* dense mode: wakes at 15+ taps so the board survives a fuller wall */
+.floor.dense{gap:6px 10px}
+.floor.dense .unit{min-width:0}
+.floor.dense .name{font-size:19px;letter-spacing:0}
+.floor.dense .meta{font-size:15px}
+.floor.dense .price{font-size:13.5px;padding:3px 8px;line-height:1.2}
+.floor.dense .tbody{height:150px}
+.floor.dense .unit.tall .tbody{height:186px}
+.floor.dense .size{font-size:10px;letter-spacing:2px}
