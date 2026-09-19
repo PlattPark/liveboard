@@ -1,0 +1,74 @@
+name: Board
+# The wall file (platt-park-live-board-v4.html) is GENERATED from src/.
+# Edit src/css, src/js, src/board.html or src/img; this workflow rebuilds,
+# renders the result headless at six clock times, and publishes only if
+# every check passes. A red run publishes nothing - the wall keeps the last
+# good build. Manual actions: build (default), check (test the live file
+# without publishing), split (one-time carve-up of the monolith into src/).
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'tools/**']
+  workflow_dispatch:
+    inputs:
+      action:
+        description: build | check | split
+        default: build
+        type: choice
+        options: [build, check, split]
+
+concurrency:
+  group: board
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  board:
+    runs-on: ubuntu-latest
+    env:
+      ACTION: ${{ inputs.action || 'build' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install the checker's dependencies
+        run: cd tools && npm i --no-audit --no-fund puppeteer-core@23 pngjs@7 pixelmatch@5
+
+      - name: Split the monolith into src/ (one time)
+        if: env.ACTION == 'split'
+        run: python3 tools/board.py split
+
+      - name: Build from src/
+        if: env.ACTION != 'check'
+        run: |
+          python3 tools/board.py build
+          cp -r fonts ouray.svg beers.json dist/
+
+      - name: Render check
+        run: |
+          export CHROME_PATH=$(which google-chrome)
+          if [ "$ACTION" = "check" ]; then
+            node tools/check.js platt-park-live-board-v4.html
+          elif [ "$ACTION" = "split" ]; then
+            node tools/check.js dist/platt-park-live-board-v4.html --compare platt-park-live-board-v4.html
+          else
+            node tools/check.js dist/platt-park-live-board-v4.html
+          fi
+
+      - name: Publish
+        if: env.ACTION != 'check'
+        run: |
+          cp dist/platt-park-live-board-v4.html platt-park-live-board-v4.html
+          rm -rf img && cp -r dist/img img
+          git config user.name "Board build"
+          git config user.email "board@plattparkbrewing.com"
+          git add platt-park-live-board-v4.html img
+          [ "$ACTION" = "split" ] && git add src
+          git commit -m "board: build from src (${GITHUB_SHA::7}) [skip ci]" || { echo "nothing changed"; exit 0; }
+          git push
