@@ -173,6 +173,14 @@ PRICE10_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+10\s*oz\s+(?:is\s+now
 PRICE_RE   = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)(?:\s*(?:a\s+)?(?:pint|pints))?[.!]?\s*$", re.I)
 ABV_RE     = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:now\s+)?|abv\s*(?:is|=|:)?\s*)(?P<abv>\d{1,2}(?:\.\d)?)\s*%(?:\s*abv)?[.!]?\s*$", re.I)
 FRESHKEG_RE= re.compile(r"^(?:a\s+)?(?:fresh|new)\s+keg\s+(?:of\s+)?(?:the\s+)?(?P<item>.{2,48}?)(?:\s+(?:is\s+)?(?:on|tapped|up|pouring))?[.!]?\s*$", re.I)
+# hours: "late night tonight" / "open til midnight on 11/25" / "closed tomorrow" / "closed on 2026-12-25" / "normal hours tonight"
+WHEN = r"(?P<when>tonight|today|tomorrow|(?:on\s+)?(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}(?:/\d{2,4})?))"
+LATE_RE    = re.compile(r"^(?:late\s+night|open\s+(?:till?|until|to)\s+(?:midnight|12|12\s*am))\s+" + WHEN + r"[.!]?\s*$", re.I)
+CLOSED_RE  = re.compile(r"^closed\s+" + WHEN + r"[.!]?\s*$", re.I)
+NORMAL_RE  = re.compile(r"^(?:normal|regular|usual)\s+hours\s+" + WHEN + r"[.!]?\s*$", re.I)
+# "kakou wall is Golden Stout w/ coconut, coffee & pineapple" / "kakou note: coffee, pineapple and coconut"
+WALL_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,40}?)\s+(?:wall|board)(?:\s+line)?\s*(?:is|:|=|says|reads)\s+(?P<text>.{2,60}?)[.!]?\s*$", re.I)
+NOTE_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,40}?)\s+(?:menu\s+)?note\s*(?:is|:|=|says|reads)\s+(?P<text>.{2,90}?)[.!]?\s*$", re.I)
 STATUS_RE  = re.compile(r"^(?:status|what'?s\s+(?:on|pouring)|tap\s+list|list)\b[?!.]*$", re.I)
 ASKED_RE   = re.compile(r"\b(?:accurate|up\s+to\s+date|correct|status|what'?s\s+(?:on|pouring|low|left))\b", re.I)
 LASTKEG_RE = re.compile(r"^(?:(?:put|mark|set|flag)\s+)?(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+)?(?:on\s+)?(?:its\s+)?"
@@ -185,7 +193,7 @@ ADD_RE     = re.compile(r"\b(?:add|new|put|throw)\b\s+(?:on\s+|in\s+)?(?P<item>.
                         r"(?:\s+(?:to|on)\s+the\s+(?P<section>[\w \-]+?))?[.!]?\s*$", re.I)
 PICK_RE    = re.compile(r"^(?:brewer'?s'?\s+pick|staff\s+pick|pick\s+of\s+the\s+(?:day|week))\s*(?:is|=|:|-)?\s*(?:the\s+)?(?P<item>.{2,48}?)[.!]?\s*$", re.I)
 NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?(?:brewer'?s'?|staff)\s+pick\b", re.I)
-REPORT_RE  = re.compile(r"^(?:the\s+)?(?:board|tv|menu|wall|screen)?\s*(?:for\s+)?(?P<item>.{2,40}?)?\s*(?:still\s+)?(?:says|shows|reads|is\s+showing|is\s+still\s+showing)\b", re.I)
+REPORT_RE  = re.compile(r"^(?:the\s+)?(?:board|tv|menu|wall|screen)?\s*(?:for\s+)?(?P<item>.{2,40}?)?\s*(?:still\s+)?(?:says|shows|reads|is\s+showing|is\s+still\s+showing|is\s+wrong|looks\s+wrong|isn'?t\s+right|is\s+off)\b", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
                         r"(?:\s+(?:as\s+of\s+now|right\s+now|yet|currently|atm))?[.!]?\s*$", re.I)
 IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|"
@@ -214,6 +222,14 @@ def parse(text):
             return "status", "", None
         if NOPICK_RE.search(line):
             return "nopick", "", None
+        for rx, act in ((WALL_RE, "wall"), (NOTE_RE, "note")):
+            m = rx.search(line)
+            if m:
+                return act, m.group("item").strip(" .,-"), m.group("text").strip()
+        for rx, act in ((LATE_RE, "late"), (CLOSED_RE, "closed"), (NORMAL_RE, "normalhours")):
+            m = rx.search(line)
+            if m:
+                return act, when_to_date(m.group("when")), None
         m = REPORT_RE.search(line)
         if m and not NOLASTKEG_RE.search(line):
             return "report", line, None
@@ -248,6 +264,33 @@ def parse(text):
             if m:
                 return "add", m.group("item").strip(" .,-"), (m.group("section") or "").strip() or None
     return None
+
+
+def when_to_date(w):
+    """'tonight' -> today's date (Denver), 'tomorrow', '11/25', '2026-11-25' -> YYYY-MM-DD."""
+    import datetime as _dt
+    w = re.sub(r"^on\s+", "", w.strip().lower())
+    try:
+        from zoneinfo import ZoneInfo
+        today = _dt.datetime.now(ZoneInfo("America/Denver")).date()
+    except Exception:
+        today = _dt.date.today()
+    if w in ("tonight", "today"):
+        return today.isoformat()
+    if w == "tomorrow":
+        return (today + _dt.timedelta(days=1)).isoformat()
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", w)
+    if m:
+        return w
+    m = re.match(r"^(\d{1,2})/(\d{1,2})(?:/(\d{2,4}))?$", w)
+    if m:
+        y = int(m.group(3)) if m.group(3) else today.year
+        if y < 100: y += 2000
+        d = _dt.date(y, int(m.group(1)), int(m.group(2)))
+        if not m.group(3) and d < today:            # "12/31" said in January means next year's
+            d = d.replace(year=y + 1)
+        return d.isoformat()
+    return today.isoformat()
 
 
 def norm(s):
@@ -414,6 +457,31 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
 
+    elif action in ("wall", "note"):
+        b = match_beer(item, beers)
+        if b:
+            b[action] = extra
+            change = "%s %s line" % (b["name"], action)
+            reply = (":pencil2: *%s* now reads _%s_ on the %s." % (b["name"], extra, "wall" if action == "wall" else "menu"))
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action in ("late", "closed", "normalhours"):
+        hours = data.setdefault("hours", {})
+        late = hours.setdefault("late", []); closed = hours.setdefault("closed", [])
+        for lst in (late, closed):
+            while item in lst: lst.remove(item)
+        if action == "late":
+            late.append(item); change = "late night " + item
+            reply = ":night_with_stars: Board stays up till midnight on %s." % item
+        elif action == "closed":
+            closed.append(item); change = "closed " + item
+            reply = ":no_entry: Board shows *Closed today* on %s." % item
+        else:
+            change = "normal hours " + item
+            reply = ":white_check_mark: Normal hours on %s." % item
+        hours["late"] = sorted(set(late)); hours["closed"] = sorted(set(closed))
+
     elif action == "report":
         queue.append({"ts": ts, "action": "report", "item": item, "text": msg.get("text", ""),
                       "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
@@ -529,6 +597,16 @@ def run_once():
 
     # gather new messages from every channel, tagged with where they came from
     msgs = []
+    # ...and anything typed under a thread we answered in the last 30 minutes
+    threads = state.setdefault("threads", {})
+    for tts in list(threads):
+        th = threads[tts]
+        if time.time() - th.get("opened", 0) > 1800:
+            threads.pop(tts, None); continue
+        r = slack("conversations.replies", channel=th["channel"], ts=tts, oldest=th["last"], limit=20)
+        for m in r.get("messages", []) if r.get("ok") else []:
+            if m["ts"] != th["last"] and m["ts"] != tts and not m.get("bot_id") and not m.get("subtype"):
+                msgs.append((th["channel"], m)); th["last"] = max(th["last"], m["ts"], key=float)
     for cid, cname in CHANNELS.items():
         r = slack("conversations.history", channel=cid, oldest=state["last_ts"][cid], limit=50)
         if not r.get("ok"):
@@ -576,6 +654,8 @@ def run_once():
     for cid, ts_, text in replies:
         if not DRY:
             slack("chat.postMessage", channel=cid, thread_ts=ts_, text=text)
+        # remember the thread so a correction typed under our reply is seen
+        state.setdefault("threads", {})[ts_] = {"channel": cid, "last": ts_, "opened": time.time()}
 
     for cid, m in msgs:
         state["last_ts"][cid] = max(state["last_ts"][cid], m["ts"], key=float)
