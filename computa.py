@@ -182,8 +182,8 @@ FLAVOR_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,32}?)\s+is\s+now\s+(?:a\s+)?(
                         r"(?:\s+(?:flavor|flavour))?[.!]?\s*$", re.I)
 ADD_RE     = re.compile(r"\b(?:add|new|put|throw)\b\s+(?:on\s+|in\s+)?(?P<item>.{2,60}?)"
                         r"(?:\s+(?:to|on)\s+the\s+(?P<section>[\w \-]+?))?[.!]?\s*$", re.I)
-PICK_RE    = re.compile(r"^(?:staff\s+pick|pick\s+of\s+the\s+(?:day|week))\s*(?:is|=|:|-)?\s*(?:the\s+)?(?P<item>.{2,48}?)[.!]?\s*$", re.I)
-NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?staff\s+pick\b", re.I)
+PICK_RE    = re.compile(r"^(?:brewer'?s'?\s+pick|staff\s+pick|pick\s+of\s+the\s+(?:day|week))\s*(?:is|=|:|-)?\s*(?:the\s+)?(?P<item>.{2,48}?)[.!]?\s*$", re.I)
+NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?(?:brewer'?s'?|staff)\s+pick\b", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
                         r"(?:\s+(?:as\s+of\s+now|right\s+now|yet|currently|atm))?[.!]?\s*$", re.I)
 IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|"
@@ -377,15 +377,15 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         if b:
             for x in beers: x.pop("pick", None)
             b["pick"] = True
-            change = "staff pick " + b["name"]
-            reply = ":star: *%s* is the staff pick - tag's up on the board." % b["name"]
+            change = "brewers' pick " + b["name"]
+            reply = ":star: *%s* is the brewers' pick - it's on the board, top and centre." % b["name"]
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
 
     elif action == "nopick":
         had = [x["name"] for x in beers if x.pop("pick", None)]
-        change = "staff pick cleared" if had else None
-        reply = ":white_check_mark: Staff pick cleared." if had else ":information_source: There wasn't a staff pick set."
+        change = "brewers' pick cleared" if had else None
+        reply = ":white_check_mark: Brewers' pick cleared." if had else ":information_source: There wasn't a brewers' pick set."
 
     elif action == "lastkeg":
         b = match_beer(item, beers)
