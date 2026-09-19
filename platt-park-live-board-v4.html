@@ -191,7 +191,7 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
 body.scene-industry .goldflag, body.night .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
 body.scene-industry .plate .name, body.night .plate .name{color:#e7eacd}
   .plate .note{color:#293d22;font-size:21px;font-weight:600;line-height:1.12;margin-top:4px;text-wrap:balance;max-width:214px;margin-left:auto;margin-right:auto}
-  .plate .note:empty{display:none}
+  .plate .note:empty{display:none} .plate .note.long{font-size:19px;max-width:222px;letter-spacing:-.15px;line-height:1.1}
 body.scene-industry .plate .note, body.night .plate .note{color:#e7eacd}
   .plate .meta{display:none}
 body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
@@ -545,7 +545,7 @@ function render(s){
     u.querySelector('.name').textContent=beer.name;
     (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.note').textContent=beer.wall||beer.note||'';
+    u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
     u.querySelector('.price').innerHTML='<span class="abv">'+beer.abv+'%</span> <span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+'</span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
