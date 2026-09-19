@@ -126,7 +126,7 @@ function render(s){
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+'</span> <span class="abv">'+beer.abv+'%</span>';
+    u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+' <span class="dot">\u00b7</span> <span class="abv">'+beer.abv+'%</span></span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
