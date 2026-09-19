@@ -167,7 +167,8 @@ KICKED_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:just\s+)?(?:is\s+|
 BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+back(?:\s+on)?|back\s+on|on\s+again|pouring\s+again|back[.!]?$)\b", re.I)
 NOLASTKEG_RE = re.compile(r"(?:^(?:remove|clear|take\s+off|drop)\s+(?:the\s+)?last\s*keg(?:\s+sash)?\s+(?:from|off|on)\s+(?:the\s+)?(?P<item>.{2,48}?)"
                           r"|^(?:the\s+)?(?P<item2>.{2,48}?)\s+(?:is\s+)?(?:not|no\s+longer)\s+(?:on\s+)?(?:its\s+)?last\s*keg"
-                          r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off)[.!]?\s*$", re.I)
+                          r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off"
+                          r"|^(?:the\s+)?(?P<item4>.{2,48}?)\s+should\s*(?:n'?t|\s+not)\s+(?:say|be|show|read)\s+(?:on\s+)?last\s*keg)[.!]?\s*$", re.I)
 PRICE10_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+10\s*oz\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)[.!]?\s*$", re.I)
 PRICE_RE   = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)(?:\s*(?:a\s+)?(?:pint|pints))?[.!]?\s*$", re.I)
 ABV_RE     = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:now\s+)?|abv\s*(?:is|=|:)?\s*)(?P<abv>\d{1,2}(?:\.\d)?)\s*%(?:\s*abv)?[.!]?\s*$", re.I)
@@ -184,6 +185,7 @@ ADD_RE     = re.compile(r"\b(?:add|new|put|throw)\b\s+(?:on\s+|in\s+)?(?P<item>.
                         r"(?:\s+(?:to|on)\s+the\s+(?P<section>[\w \-]+?))?[.!]?\s*$", re.I)
 PICK_RE    = re.compile(r"^(?:brewer'?s'?\s+pick|staff\s+pick|pick\s+of\s+the\s+(?:day|week))\s*(?:is|=|:|-)?\s*(?:the\s+)?(?P<item>.{2,48}?)[.!]?\s*$", re.I)
 NOPICK_RE  = re.compile(r"^(?:no|clear|remove|kill)\s+(?:the\s+)?(?:brewer'?s'?|staff)\s+pick\b", re.I)
+REPORT_RE  = re.compile(r"^(?:the\s+)?(?:board|tv|menu|wall|screen)?\s*(?:for\s+)?(?P<item>.{2,40}?)?\s*(?:still\s+)?(?:says|shows|reads|is\s+showing|is\s+still\s+showing)\b", re.I)
 NOBTN_RE   = re.compile(r"\bno\s+button\s+for\s+(?:the\s+)?(?P<item>.{2,48}?)"
                         r"(?:\s+(?:as\s+of\s+now|right\s+now|yet|currently|atm))?[.!]?\s*$", re.I)
 IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|"
@@ -212,9 +214,12 @@ def parse(text):
             return "status", "", None
         if NOPICK_RE.search(line):
             return "nopick", "", None
+        m = REPORT_RE.search(line)
+        if m and not NOLASTKEG_RE.search(line):
+            return "report", line, None
         m = NOLASTKEG_RE.search(line)
         if m:
-            return "nolastkeg", (m.group("item") or m.group("item2") or m.group("item3")).strip(" .,-"), None
+            return "nolastkeg", (m.group("item") or m.group("item2") or m.group("item3") or m.group("item4")).strip(" .,-"), None
         m = PICK_RE.search(line)
         if m:
             return "pick", m.group("item").strip(" .,-"), None
@@ -408,6 +413,11 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                     (":information_source: *%s* wasn't marked last keg." % b["name"])
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "report":
+        queue.append({"ts": ts, "action": "report", "item": item, "text": msg.get("text", ""),
+                      "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
+        reply = ":eyes: Got it - flagged for Colby. If you want me to change it, tell me what it should say."
 
     elif action == "status":
         lines = ["%s%s" % (b["name"], (" (last keg)" if b.get("sash") == "last keg" else "") + (" :star:" if b.get("pick") else ""))
