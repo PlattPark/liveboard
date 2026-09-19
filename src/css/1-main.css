@@ -337,6 +337,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
   letter-spacing:.8px;text-align:center;line-height:1.25;padding:4px 9px;border-radius:3px;
   max-width:86%;box-shadow:2px 2px 0 rgba(41,61,34,.35), inset 0 0 0 1.5px rgba(41,61,34,.25);z-index:3}
 .tplaque.sv{background:#b9c0ca;box-shadow:2px 2px 0 rgba(41,61,34,.45), inset 0 0 0 1.5px rgba(41,61,34,.4)}
+.tplaque.bz{background:#cf9b60;box-shadow:2px 2px 0 rgba(41,61,34,.45), inset 0 0 0 1.5px rgba(41,61,34,.4)}
+/* line one: the competition · line two: medal + the year it was won */
+.tplaque span,.tplaque b{display:block;white-space:nowrap}
+.tplaque b{font-weight:800}
+.tplaque i{font-style:normal;font-weight:700;letter-spacing:.4px;opacity:.72}
 
 /* rail v2: fixed frame, crawling wire */
 .rail .cell:nth-child(1),.rail .cell:nth-child(2){flex:0 0 auto}
