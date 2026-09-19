@@ -571,7 +571,7 @@ function render(s){
     prevKick[beer.id]=beer.kicked;
   }
   if(window.__LIVE) $('odo').textContent=odo.toLocaleString(); /* showcase: the audited pace is the only writer */
-  $('demoTag').textContent='';
+  $('demoTag').textContent=(window.PREVIEW_MODE?'PREVIEW \u00b7 live data \u00b7 what the wall shows during service':'');
 }
 
 let snowTimer=null;
@@ -859,7 +859,7 @@ function festOverride(s){
    Nothing invented: hours and specials are the real ones, weather is Open-Meteo.
    A preview button still wins while someone is demoing (window.__scene != default). ---- */
 (function(){
-  const OPEN=10.5, CLOSE=22;   // board shows from 10:30 for setup; doors 11                  // business day, America/Denver, every day
+  const OPEN=10.5, CLOSE=22; const PREVIEW=/[?&]preview\b/.test(location.search); window.PREVIEW_MODE=PREVIEW;   // board shows from 10:30 for setup; doors 11; ?preview = crew check, no curtain                  // business day, America/Denver, every day
   const SNOW=[71,73,75,77,85,86], HOT_F=90; // WMO snow codes; "hot" from 90°F
   function denver(){
     // Denver wall clock that survives old browsers: hour12:false is honoured almost
@@ -879,7 +879,7 @@ function festOverride(s){
   }
   function auto(){
     const {dow,t}=denver(), ctx={}, w=window.__wx;
-    if(t<OPEN) ctx.curtain='preopen'; else if(t>=CLOSE) ctx.curtain='goodnight';
+    if(!PREVIEW){ if(t<OPEN) ctx.curtain='preopen'; else if(t>=CLOSE) ctx.curtain='goodnight'; }
     if(!ctx.curtain){
       if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'Everything, all day, food included \u00b7 clock-out slip, schedule or work shirt gets you in'}; ctx.eventPhase='run'; }
       else if(dow==='Tue'){ const live=(t>=19&&t<21);
@@ -916,7 +916,7 @@ function festOverride(s){
   // 7pm if unknown) step the shade down an hour at a time; lift it again at open.
   function shade(){
     const {t}=denver(); const sunset=window.__sunset||19;
-    const night = (t>=sunset+0.5) || (t<OPEN);      // half an hour after sunset until doors
+    const night = (t>=sunset+0.5) || (!PREVIEW && t<OPEN);      // half an hour after sunset until doors
     document.body.classList.toggle('night', night);
     document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : '#e7eacd';
   }
