@@ -36,7 +36,7 @@ body.scene-industry, body.night{background:#293d22; color:#e7eacd}
 
   /* print-speckle texture over everything */
   
-  .tbody{position:relative;height:136px;overflow:hidden;
+  .tbody{position:relative;height:150px;overflow:hidden;
     background:linear-gradient(90deg,#9ba18c 0%,#e6e9da 20%,#c2c7b2 48%,#9aa08b 78%,#848a76 100%);
     border-left:3px solid #293d22;border-right:3px solid #293d22}
         
@@ -127,7 +127,7 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   .ranger img{width:100%;height:auto;filter:drop-shadow(6px 6px 0 rgba(41,61,34,.18))}
 
   .unit{position:relative;display:flex;flex-direction:column;align-items:center;align-self:start}
-  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:238px}
+  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:256px}
   /* featured beer gets the sun disc from the poster */
   .sun{
     position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
@@ -146,7 +146,7 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   .dish::after{content:"";position:absolute;left:50%;top:-8px;transform:translateX(-50%);
     width:16px;height:8px;border-radius:3px 3px 0 0;background:#a9b09b;border:2.5px solid #293d22;border-bottom:none}
 
-  .unit.tall .tbody{height:180px}
+  .unit.tall .tbody{height:198px}
   .liquid{position:absolute;left:0;right:0;top:0;bottom:-6px;transition:transform 1.4s cubic-bezier(.25,.8,.3,1);will-change:transform}
   .liquid .wave{position:absolute;top:-6px;left:0;width:200%;height:12px;animation:wave 8s linear infinite;opacity:.95}
   @keyframes wave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -190,16 +190,18 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   }
 body.scene-industry .goldflag, body.night .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
 body.scene-industry .plate .name, body.night .plate .name{color:#e7eacd}
-  .plate .note{color:#293d22;font-size:22px;font-weight:600;line-height:1.1;margin-top:3px;text-wrap:balance;max-width:210px;margin-left:auto;margin-right:auto}
+  .plate .note{color:#293d22;font-size:21px;font-weight:600;line-height:1.12;margin-top:4px;text-wrap:balance;max-width:214px;margin-left:auto;margin-right:auto}
   .plate .note:empty{display:none}
 body.scene-industry .plate .note, body.night .plate .note{color:#e7eacd}
-  .plate .meta{color:#5a8142;font-size:18px;font-weight:700;margin-top:2px;line-height:1.12;letter-spacing:.2px}
+  .plate .meta{display:none}
 body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
-  .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:4px}
+  .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:5px}
   .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
   .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
   .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
+  .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#5a8142;letter-spacing:.5px}
+  body.night .plate .price .abv{color:#b9c49a}
 body.scene-industry .plate .price, body.night .plate .price{color:#eebf19}
     .plate .age{color:#5a8142;font-size:15px;margin-top:3px;font-weight:600}
   .plate .adj{color:#b8412c;font-size:18px;font-weight:700;letter-spacing:.3px;margin-top:1px;line-height:1.1}
@@ -453,8 +455,8 @@ function render(s){
   if(curtain){
     cv.classList.add('on'); cv.classList.toggle('night',curtain==='goodnight');
     if(!$('cRanger').src){$('cRanger').src=document.querySelector('.ranger img').src;$('cWm').src=document.querySelector('.brand img').src;}
-    $('cLine').textContent=curtain==='goodnight'?"That's last call":curtain==='offline'?'Back in a moment':'Doors at 11';
-    $('cSub').textContent=curtain==='goodnight'?'See you tomorrow · open 11am':curtain==='offline'?'the tap list is reconnecting · ask the bar':'Gates breakfast next door til 11';
+    $('cLine').textContent=curtain==='goodnight'?"That's last call":curtain==='offline'?'Back in a moment':curtain==='closed'?'Closed today':'Doors at 11';
+    $('cSub').textContent=curtain==='goodnight'?'See you tomorrow · open 11am':curtain==='offline'?'the tap list is reconnecting · ask the bar':curtain==='closed'?'back tomorrow at 11':'Gates breakfast next door til 11';
   } else cv.classList.remove('on');
   const wxWord={default:'SUNNY',hot:'HOT',snow:'SNOW',rain:'RAIN',cold:'COLD'};
   if (s.weather){
@@ -543,9 +545,9 @@ function render(s){
     u.querySelector('.name').textContent=beer.name;
     (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.note').textContent=beer.note||'';
+    u.querySelector('.note').textContent=beer.wall||beer.note||'';
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?' <span class="p10 sep">·</span> <span class="p10">10oz</span> <span class="p10b">$'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
+    u.querySelector('.price').innerHTML='<span class="abv">'+beer.abv+'%</span> <span class="p10 sep">·</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'');
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
@@ -625,7 +627,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
-        SIM.beers  = d.beers;
+        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {};
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
         try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
@@ -643,7 +645,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
         const d = JSON.parse(cached);
         if(d && Array.isArray(d.beers) && d.beers.length){
           d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
-          SIM.beers = d.beers;
+          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {};
           console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
           return;
         }
@@ -859,7 +861,8 @@ function festOverride(s){
    Nothing invented: hours and specials are the real ones, weather is Open-Meteo.
    A preview button still wins while someone is demoing (window.__scene != default). ---- */
 (function(){
-  const OPEN=10.5, CLOSE=22; const PREVIEW=/[?&]preview\b/.test(location.search); window.PREVIEW_MODE=PREVIEW;   // board shows from 10:30 for setup; doors 11; ?preview = crew check, no curtain                  // business day, America/Denver, every day
+  const OPEN=10.5; const closeFor=function(dow,date){ var H=(window.__hours||{}); if((H.late||[]).indexOf(date)>=0) return 24; return (dow==='Fri'||dow==='Sat') ? 24 : 22; };   // 10:30 for setup, doors 11; Fri/Sat till midnight, else 10pm
+  const PREVIEW=/[?&]preview\b/.test(location.search); window.PREVIEW_MODE=PREVIEW;                  // business day, America/Denver, every day
   const SNOW=[71,73,75,77,85,86], HOT_F=90; // WMO snow codes; "hot" from 90°F
   function denver(){
     // Denver wall clock that survives old browsers: hour12:false is honoured almost
@@ -875,11 +878,12 @@ function festOverride(s){
     }catch(e){}
     if(!(h>=0&&h<24)||!(m>=0&&m<60)){ h=now.getHours(); m=now.getMinutes(); }
     if(!dow) dow=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()];
-    return {dow:dow, t:h+m/60};
+    var dt=''; try{ var q=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).reduce(function(o,x){o[x.type]=x.value;return o;},{}); dt=q.year+'-'+q.month+'-'+q.day; }catch(e){ dt=now.toISOString().slice(0,10); }
+    return {dow:dow, t:h+m/60, date:dt};
   }
   function auto(){
-    const {dow,t}=denver(), ctx={}, w=window.__wx;
-    if(!PREVIEW){ if(t<OPEN) ctx.curtain='preopen'; else if(t>=CLOSE) ctx.curtain='goodnight'; }
+    const {dow,t,date}=denver(), ctx={}, w=window.__wx; const H=(window.__hours||{});
+    if(!PREVIEW){ if((H.closed||[]).indexOf(date)>=0) ctx.curtain='closed'; else if(t<OPEN) ctx.curtain=(t<1.5?'goodnight':'preopen'); else if(t>=closeFor(dow,date)) ctx.curtain='goodnight'; }   // ?preview: crew check, never the curtain
     if(!ctx.curtain){
       if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'Everything, all day, food included \u00b7 clock-out slip, schedule or work shirt gets you in'}; ctx.eventPhase='run'; }
       else if(dow==='Tue'){ const live=(t>=19&&t<21);
@@ -895,10 +899,11 @@ function festOverride(s){
   render=function(s){
     if(window.__scene==='default'){ const a=auto(); s.weather=a.weather; s.context=Object.assign({},s.context,a.context); }
     const out=_r(s);
+    window.__hours = s.hours || window.__hours || {};
     if(window.__shade) window.__shade();       // render() rewrites body.className; put the night level back
     document.body.classList.toggle('curtained', document.getElementById('curtain').classList.contains('on'));
     (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;});
-      if(pk){ h.textContent=''; var k=document.createElement('div');k.className='hk';k.textContent='Brewers\u2019 pick';var nm=document.createElement('div');nm.className='hn';nm.textContent=pk.name;h.appendChild(k);h.appendChild(nm);if(pk.note){var ns=document.createElement('div');ns.className='hs';ns.textContent=pk.note;h.appendChild(ns);} h.classList.add('on'); }
+      if(pk){ h.textContent=''; var k=document.createElement('div');k.className='hk';k.textContent='Brewers\u2019 pick';var nm=document.createElement('div');nm.className='hn';nm.textContent=pk.name;h.appendChild(k);h.appendChild(nm);var hn=pk.wall||pk.note;if(hn){var ns=document.createElement('div');ns.className='hs';ns.textContent=hn;h.appendChild(ns);} h.classList.add('on'); }
       else { h.classList.remove('on'); h.innerHTML=''; } })();
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
@@ -916,7 +921,7 @@ function festOverride(s){
   // 7pm if unknown) step the shade down an hour at a time; lift it again at open.
   function shade(){
     const {t}=denver(); const sunset=window.__sunset||19;
-    const night = (t>=sunset+0.5) || (!PREVIEW && t<OPEN);      // half an hour after sunset until doors
+    const night = (t>=sunset+0.5) || (!PREVIEW && (t<OPEN || ((window.__hours||{}).closed||[]).indexOf(denver().date)>=0));      // half an hour after sunset until doors
     document.body.classList.toggle('night', night);
     document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : '#e7eacd';
   }
@@ -960,6 +965,7 @@ function festOverride(s){
 /* ---- THE WIRE: ticker of true things. Showcase = lore + real facts; live = real pours too. ---- */
 (function(){
   const LORE=[
+    'every beer pours in a 10oz too \u00b7 just ask',
     'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
     'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
