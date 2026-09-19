@@ -4,7 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920">
 <title>Platt Park Brewing Co. — Tap Board</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/anton.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivoblack.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-600.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  /* the brand faces live in the repo (OFL) - the wall depends on nothing outside itself */
+  @font-face{font-family:'Anton';src:url(fonts/anton.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Archivo Black';src:url(fonts/archivoblack.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:400;src:url(fonts/barlow-400.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:400;font-style:italic;src:url(fonts/barlow-400i.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:500;src:url(fonts/barlow-500.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:600;src:url(fonts/barlow-600.woff2) format('woff2');font-display:swap}
+  @font-face{font-family:'Barlow';font-weight:700;src:url(fonts/barlow-700.woff2) format('woff2');font-display:swap}
+</style>
 <style>
   :root{
     --cream:#e7eacd; --cream-2:#eef0d9;
@@ -20,7 +32,7 @@
   }
   body.scene-hot{background:#f0e8c4}
   body.scene-snow{background:#e2e8e0}
-  body.scene-industry{background:#293d22; color:#e7eacd}
+body.scene-industry, body.night{background:#293d22; color:#e7eacd}
 
   /* print-speckle texture over everything */
   
@@ -28,6 +40,15 @@
     background:linear-gradient(90deg,#9ba18c 0%,#e6e9da 20%,#c2c7b2 48%,#9aa08b 78%,#848a76 100%);
     border-left:3px solid #293d22;border-right:3px solid #293d22}
         
+  /* ---------- header hero: the brewers' pick lives here when one is set ---------- */
+  #hero{position:absolute;left:50%;top:26px;transform:translateX(-50%);z-index:6;display:none;text-align:center;white-space:nowrap}
+  #hero.on{display:block}
+  #hero .hk{font-family:'Archivo Black';font-size:15px;letter-spacing:4px;color:#f0553d;text-transform:uppercase}
+  #hero .hn{font-family:'Anton',sans-serif;font-size:48px;letter-spacing:1.5px;line-height:1;color:#293d22;text-transform:uppercase;margin-top:2px}
+  #hero .hs{font-family:'Barlow';font-weight:600;font-size:21px;color:#5a8142;margin-top:4px}
+body.scene-industry #hero .hn, body.night #hero .hn{color:#e7eacd}
+body.scene-industry #hero .hs, body.night #hero .hs{color:#b9c49a}
+  #hero.on ~ .stamp{opacity:0}
   /* ---------- header ---------- */
   header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;padding:12px 28px 0}
   .brand{display:flex;flex-direction:column;gap:2px}
@@ -35,9 +56,9 @@
     font-family:'Barlow';font-weight:700;font-size:13px;letter-spacing:5px;
     color:#5a8142;text-transform:uppercase;padding-left:3px;font-size:15px;
   }
-  body.scene-industry .brand .tag{color:#eebf19}
+body.scene-industry .brand .tag, body.night .brand .tag{color:#eebf19}
   .brand img{width:150px;height:auto;display:block}
-  body.scene-industry .brand img{filter:brightness(1.08) saturate(1.05)}
+body.scene-industry .brand img, body.night .brand img{filter:brightness(1.08) saturate(1.05)}
   .context{display:flex;align-items:center;gap:16px;margin-top:8px}
   .chip{
     font-family:'Archivo Black';font-size:21px;letter-spacing:1px;
@@ -49,8 +70,8 @@
   body.scene-industry .chip{background:#e7eacd;color:#293d22;box-shadow:4px 4px 0 rgba(0,0,0,.35)}
   .quiet{font-family:'Archivo Black';font-size:27px;color:#293d22;letter-spacing:1px;font-variant-numeric:tabular-nums}
   .quiet .wxword{font-size:14px;letter-spacing:2.5px;color:#5a8142}
-  body.scene-industry .quiet{color:#e7eacd}
-  body.scene-industry .quiet .wxword{color:#eebf19}
+body.scene-industry .quiet, body.night .quiet{color:#e7eacd}
+body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   .chip.hh{background:#eebf19;color:#293d22;display:none}
   .chip.kk{background:#ff5a3a;color:#e7eacd;display:none}
   .chip .sub{font-family:'Barlow';font-weight:700;font-size:15px;letter-spacing:2px;opacity:.85}
@@ -105,12 +126,12 @@
   }
   .ranger img{width:100%;height:auto;filter:drop-shadow(6px 6px 0 rgba(41,61,34,.18))}
 
-  .unit{position:relative;display:flex;flex-direction:column;align-items:center}
-  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end}
+  .unit{position:relative;display:flex;flex-direction:column;align-items:center;align-self:start}
+  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:238px}
   /* featured beer gets the sun disc from the poster */
   .sun{
     position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
-    width:150%;height:0;padding-bottom:150%;border-radius:50%;background:#ff5a3a;opacity:0;z-index:0;
+    width:122%;height:0;padding-bottom:122%;border-radius:50%;background:#ff5a3a;opacity:0;z-index:0;
   }
   .unit.featured .sun{opacity:.9}
   body.scene-fest .unit.featured .sun{width:185%;padding-bottom:185%;opacity:1}
@@ -165,36 +186,37 @@
   .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
   .plate .name{
     font-family:'Anton',sans-serif;font-size:32px;letter-spacing:1px;line-height:.97;
-    text-transform:uppercase;color:#293d22;
+    text-transform:uppercase;color:#293d22;height:64px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
   }
-  body.scene-industry .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
-  body.scene-industry .plate .name{color:#e7eacd}
-  .plate .note{color:#293d22;font-size:23px;font-weight:600;line-height:1.1;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.scene-industry .goldflag, body.night .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+body.scene-industry .plate .name, body.night .plate .name{color:#e7eacd}
+  .plate .note{color:#293d22;font-size:22px;font-weight:600;line-height:1.1;margin-top:3px;text-wrap:balance;max-width:210px;margin-left:auto;margin-right:auto}
   .plate .note:empty{display:none}
-  body.scene-industry .plate .note{color:#e7eacd}
+body.scene-industry .plate .note, body.night .plate .note{color:#e7eacd}
   .plate .meta{color:#5a8142;font-size:18px;font-weight:700;margin-top:2px;line-height:1.12;letter-spacing:.2px}
-  body.scene-industry .plate .meta{color:#b9c49a}
+body.scene-industry .plate .meta, body.night .plate .meta{color:#b9c49a}
   .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:4px}
   .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
-  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:15px;letter-spacing:1.5px;color:#5a8142}
-  body.scene-industry .plate .price{color:#eebf19}
+  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
+  .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
+  .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
+body.scene-industry .plate .price, body.night .plate .price{color:#eebf19}
     .plate .age{color:#5a8142;font-size:15px;margin-top:3px;font-weight:600}
   .plate .adj{color:#b8412c;font-size:18px;font-weight:700;letter-spacing:.3px;margin-top:1px;line-height:1.1}
   .plate .adj:empty{display:none}
-  body.scene-industry .plate .adj{color:#ffb39f}
-  body.scene-industry .plate .age{color:#93a077}
+body.scene-industry .plate .adj, body.night .plate .adj{color:#ffb39f}
+body.scene-industry .plate .age, body.night .plate .age{color:#93a077}
 
   /* ---------- rail ---------- */
   .rail{position:relative;z-index:6;height:70px;display:flex;margin-top:6px;
     background:#293d22;color:#e7eacd;box-shadow:0 -5px 0 rgba(41,61,34,.22)}
-  body.scene-industry .rail{background:#131f0f}
+body.scene-industry .rail, body.night .rail{background:#131f0f}
   .rail .cell{flex:1;display:flex;align-items:center;gap:14px;padding:0 28px;font-size:19px;font-weight:500;
     white-space:nowrap;overflow:hidden;position:relative}
   .rail .cell:nth-child(1){flex:0 0 auto;padding-right:34px}
   .rail .cell:nth-child(2){flex:0 0 470px}
   .rail .cell:nth-child(2) #most{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .rail .cell:nth-child(3){flex:1;min-width:0}
-  .rail .cell:nth-child(1){flex:0 0 auto;padding-right:34px}
   .rail .cell:nth-child(2){flex:0 0 auto}
   .rail .cell:nth-child(4){flex:1;min-width:0}
   .rail .cell + .cell::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;background:#ff5a3a;border-radius:2px}
@@ -237,11 +259,22 @@
     78%{transform:translate(-50%,-50%) scale(1) rotate(-6deg);opacity:1}
     100%{transform:translate(-50%,-50%) scale(.94) rotate(-6deg);opacity:0}}
   body.dusk{background:#e2e4c0}
-  #nightShade{position:absolute;left:0;top:0;width:1920px;height:1080px;background:#000;opacity:0;pointer-events:none;z-index:40;transition:opacity 2s}
-  body.night1 #nightShade{opacity:.18}
-  body.night2 #nightShade{opacity:.30}
-  body.night3 #nightShade{opacity:.40}
-  body.dusk.scene-industry{background:#293d22}
+  /* NIGHT: lights down. The cream field is what lit the room - swap it for ink and leave every
+     beer colour exactly as it is. No overlay, nothing tinted. */
+  body.night{background:#1c2818;color:#e7eacd}
+  body.night .side{background:#243521;color:#e7eacd;box-shadow:inset 0 0 0 2px rgba(231,234,205,.14)}
+  body.night .side-h{color:#eebf19} body.night .s-price{color:#eebf19} body.night .s-flavor{color:#dbe3bd}
+  body.night .rail{background:#111a0f}
+  body.night #clock,body.night .wxDeg,body.night #wxDeg{color:#e7eacd}
+  body.night .addr,body.night .elev{color:#8fa27a}
+  body.night .tbody{box-shadow:0 0 0 1px rgba(231,234,205,.10)}
+  body.night .dish{filter:brightness(.92)} body.night .cone{filter:brightness(.92) drop-shadow(0 2.5px 0 #0e150c)}
+  body.night .plate .price{color:#eebf19} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
+  body.night .plate .adj{color:#ffb39f}
+  body.night .stamp{opacity:.06}
+  body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
+  .tbody{contain:layout paint}
+body.dusk.scene-industry, body.dusk.night{background:#293d22}
   .flake{position:fixed;top:-12px;color:#7c8b74;z-index:40;animation:fall linear forwards;pointer-events:none}
   @keyframes fall{to{transform:translateY(1134px)}}
   .curtain{position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#e7eacd;text-align:center}
@@ -347,7 +380,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
     <span class="quiet"><span id="wxDeg">78°</span> <span id="wxIco" class="wxword">SUNNY</span></span>
     <span class="quiet" id="clock"></span><span class="addr">1875 S PEARL ST · DENVER</span><span class="elev">ELEV 5,280 FT</span>
   </div>
-<svg class="stamp" viewBox="0 0 120 120"><defs><path id="stc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><circle cx="60" cy="60" r="56" fill="none" stroke="#293d22" stroke-width="2.5"/><circle cx="60" cy="60" r="37" fill="none" stroke="#293d22" stroke-width="1.5"/><text font-family="Archivo Black, sans-serif" font-size="10" letter-spacing="1.1" fill="#293d22"><textPath href="#stc">PLATT PARK BREWING CO • SOUTH PEARL ST •</textPath></text><text x="60" y="57" text-anchor="middle" font-family="Archivo Black" font-size="12" fill="#293d22">EST</text><text x="60" y="73" text-anchor="middle" font-family="Archivo Black" font-size="15" fill="#293d22">2014</text></svg></header>
+<div id="hero"></div><svg class="stamp" viewBox="0 0 120 120"><defs><path id="stc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><circle cx="60" cy="60" r="56" fill="none" stroke="#293d22" stroke-width="2.5"/><circle cx="60" cy="60" r="37" fill="none" stroke="#293d22" stroke-width="1.5"/><text font-family="Archivo Black, sans-serif" font-size="10" letter-spacing="1.1" fill="#293d22"><textPath href="#stc">PLATT PARK BREWING CO • SOUTH PEARL ST •</textPath></text><text x="60" y="57" text-anchor="middle" font-family="Archivo Black" font-size="12" fill="#293d22">EST</text><text x="60" y="73" text-anchor="middle" font-family="Archivo Black" font-size="15" fill="#293d22">2014</text></svg></header>
 
 <div class="banner" id="banner"></div>
 
@@ -376,7 +409,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
   <div class="cell"><span class="k" id="railK">House rule</span><span id="railMsg" style="min-width:0;overflow:hidden;flex:1">Every beer brewed 40 feet from your glass</span></div>
   <div class="cell qrcell"><img id="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyCAIAAABnRsZeAAAHu0lEQVR4nO3cwWksRxRAUcs4HG+dgAN3AkY75yBQFN4KDMXn1y2/6tE5++lpdY8utXi8t4/P918AOr9O3wDwamQFiMkKEJMVICYrQExWgJisADFZAWKyAsRkBYjJChCTFSAmK0BMVoCYrAAxWQFisgLEZAWIyQoQ+23nw7//8Wd1H5f45++/fvqz66exc+UpO3/RE38b597+E+08DacVICYrQExWgJisADFZAWKyAsRkBYjJChCTFSC2NWW7dudc6blpyHNTp+ee5NRk8NQ868472rnn7/a/4LQCxGQFiMkKEJMVICYrQExWgJisADFZAWKyAsQOTtmuTU277pialJ3aKbvzvXfO0Z777I4n/i+sOa0AMVkBYrICxGQFiMkKEJMVICYrQExWgJisALGxKdvvxuToV1MTunfulH09TitATFaAmKwAMVkBYrICxGQFiMkKEJMVICYrQMyUbebcTtm1c1fececuWzO4/w+nFSAmK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUgNjZla6Lxqyduq12bmpQ9d+Vzz/nON7jDaQWIyQoQkxUgJitATFaAmKwAMVkBYrICxGQFiB2csr1zx+oT7Ux/Tn127Yn3vOO7/S84rQAxWQFisgLEZAWIyQoQkxUgJitATFaAmKwAsa0p29fbwbljaib1iXamTu+co329d7TDaQWIyQoQkxUgJitATFaAmKwAMVkBYrICxGQFiG1N2Z7bOTplfc93/kXnvndq4+za1JXXnvh7PsdpBYjJChCTFSAmK0BMVoCYrAAxWQFisgLEZAWIbU3Zrk1Nf55zbovqnTOad97V2p2T0GtT93zu9+y0AsRkBYjJChCTFSAmK0BMVoCYrAAxWQFisgLE3j4+3w9d+tyu06mpxHPTvXf+vTvunDm+85dz51bgHU4rQExWgJisADFZAWKyAsRkBYjJChCTFSAmK0Ds4JTtjnNbNqdMzcI+cdp1bWqu9ImbjM9N9645rQAxWQFisgLEZAWIyQoQkxUgJitATFaAmKwAsd92Pjw1OXrn7s+pKcypu7pzUnbnyud+z3fOK9tlCzyGrAAxWQFisgLEZAWIyQoQkxUgJitATFaA2NaU7drUxtlzM6lT0707njgZfO7Kd97VzpXPfdYuW+AisgLEZAWIyQoQkxUgJitATFaAmKwAMVkBYltTtk/cGjs1d7hjan535zlPzZWu3TkJfecE9g6nFSAmK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUg9vbx+T7yxVOTlGuvN797513teOIM7tR079QbdFoBYrICxGQFiMkKEJMVICYrQExWgJisADFZAWJbu2x3PHGu9M6tsXduYD33fu98Gq83gb3zvU4rQExWgJisADFZAWKyAsRkBYjJChCTFSAmK0Bsa8rWVtEfv/I5O3/Rzj1/t/2sa36TXzmtADFZAWKyAsRkBYjJChCTFSAmK0BMVoCYrACxt4/P95EvfuL21ifOld45Cf16T9Jc+FdOK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUgJitAbGuX7Y475yxf73vXnjgbuvO9a1NvYe3Ou1pzWgFisgLEZAWIyQoQkxUgJitATFaAmKwAMVkBYltTtue2e57bsnnue6c+e87U5tedK383d05vO60AMVkBYrICxGQFiMkKEJMVICYrQExWgJisALGxXbZT7pzvfOJO2fWV73zOT3ySa3dOujutADFZAWKyAsRkBYjJChCTFSAmK0BMVoCYrACxt4/P95/+8NS+0jsnOO/c3XvO1JN8onOzsDvOPWenFSAmK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUgNrbLdmd28M69oTvOXXnt3GTwE9/vOXfelV22wGPIChCTFSAmK0BMVoCYrAAxWQFisgLEZAWIjU3ZTm1+3bnyubnSqSvvfPbOHat3bo09586/yGkFiMkKEJMVICYrQExWgJisADFZAWKyAsRkBYi9fXy+T9/DY5yb/X3i9075bs95at+wXbbARWQFiMkKEJMVICYrQExWgJisADFZAWKyAsS2dtneOYW5Y2eX7drUdt4p52ZS16aextSE7trUXTmtADFZAWKyAsRkBYjJChCTFSAmK0BMVoCYrACxrV22d04Wrp3b/bn2xI2z557GjqmJ5O/2Bu2yBS4iK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUgtrXLdsfUZOGUJ26cvXP/7rlJ2fWVvcEf57QCxGQFiMkKEJMVICYrQExWgJisADFZAWKyAsTGpmxfzxM3v77eZt8p52aOp96gXbbARWQFiMkKEJMVICYrQExWgJisADFZAWKyAsRM2b64O7fG7nzvE6+8tvO9U59dc1oBYrICxGQFiMkKEJMVICYrQExWgJisADFZAWJjU7ZP3GY6NdH4xI2zO/d851bgc0/y3F809V/mtALEZAWIyQoQkxUgJitATFaAmKwAMVkBYrICxN4+Pt9/+sNT847nTE2snpujvfOzU+6clD33rKbekdMKEJMVICYrQExWgJisADFZAWKyAsRkBYjJChDbmrIF+C+nFSAmK0BMVoCYrAAxWQFisgLEZAWIyQoQkxUgJitATFaAmKwAMVkBYrICxGQFiMkKEJMVICYrQExWgNi/BinsynRaSF8AAAAASUVORK5CYII=" alt="QR"><span class="qrtxt">Scan for<br>full menu</span></div>
 </div>
-<div id="nightShade"></div>
 <div class="curtain" id="curtain">
   <img class="c-ranger" id="cRanger" alt="">
   <img class="c-wm" id="cWm" alt="">
@@ -394,7 +426,6 @@ setInterval(function(){ if(!window.__LIVE){ var o=$('odo'); if(o){
   o.textContent=Math.floor(1080448 + Math.max(0,mins)*0.203188).toLocaleString();
 } } }, 15000);
 (function(){ var o=$('odo'); if(o&&!window.__LIVE){ var mins=(Date.now()-new Date('2026-09-11T00:00:00-06:00').getTime())/60000; o.textContent=Math.floor(1080448+Math.max(0,mins)*0.203188).toLocaleString(); } })();
-const NOTES = {}; /* captions now come from beers.json `sash` */
 const HOUSE = [
   'Every beer brewed 40 feet from your glass',
   '1875 S Pearl St · Platt Park, Denver',
@@ -417,13 +448,13 @@ const daysAgo = ts => { if(!ts) return ''; const d=Math.floor((Date.now()-ts)/86
 
 function render(s){
   const _p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'2-digit'}).formatToParts(new Date()).reduce((o,x)=>(o[x.type]=x.value,o),{}); $('clock').textContent=_p.weekday.toUpperCase()+' · '+_p.hour+':'+_p.minute+' '+(_p.dayPeriod||'').toLowerCase();
-  const curtain=s.context&&s.context.curtain;
+  const curtain=window.__noData ? 'offline' : (s.context&&s.context.curtain);
   const cv=$('curtain');
   if(curtain){
     cv.classList.add('on'); cv.classList.toggle('night',curtain==='goodnight');
     if(!$('cRanger').src){$('cRanger').src=document.querySelector('.ranger img').src;$('cWm').src=document.querySelector('.brand img').src;}
-    $('cLine').textContent=curtain==='goodnight'?"That's last call":'Doors at 11';
-    $('cSub').textContent=curtain==='goodnight'?'See you tomorrow · open 11am':'Gates breakfast next door til 11';
+    $('cLine').textContent=curtain==='goodnight'?"That's last call":curtain==='offline'?'Back in a moment':'Doors at 11';
+    $('cSub').textContent=curtain==='goodnight'?'See you tomorrow · open 11am':curtain==='offline'?'the tap list is reconnecting · ask the bar':'Gates breakfast next door til 11';
   } else cv.classList.remove('on');
   const wxWord={default:'SUNNY',hot:'HOT',snow:'SNOW',rain:'RAIN',cold:'COLD'};
   if (s.weather){
@@ -467,7 +498,7 @@ function render(s){
     const ids=new Set(s.beers.map(b=>'u-'+b.id));
     [...floor.querySelectorAll('.unit')].forEach(u=>{ if(!ids.has(u.id)) u.remove(); });
   })();
-  for(const beer of s.beers){
+  for(const beer of s.beers){ try{
     let u=document.getElementById('u-'+beer.id);
     if(!u){
       u=document.createElement('div'); u.id='u-'+beer.id;
@@ -500,7 +531,7 @@ function render(s){
     }
     const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3*86400000;   // NEW for the first 3 days
     u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(beer.medal?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'');
-    u.querySelector('.newtag').textContent=beer.pick?'Staff pick':'New';
+    u.querySelector('.newtag').textContent=beer.pick?'Brewers\u2019 pick':'New';
     u.querySelector('.spotcap').textContent=beer.sash||'';
     var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
     u.querySelector('.size').textContent=beer.vesselLabel;
@@ -509,12 +540,12 @@ function render(s){
     liq.style.transform=`translateY(${(1-shown)*100}%)`;
     liq.style.background=`linear-gradient(${beer.colorTop},${beer.color})`;
     liq.querySelector('.wave').style.fill=beer.colorTop;
-    u.querySelector('.name').innerHTML=beer.name;
+    u.querySelector('.name').textContent=beer.name;
     (function(){var tb=u.querySelector('.tbody');var pl=tb.querySelector('.tplaque');if(beer.medal){if(!pl){pl=document.createElement('div');pl.className='tplaque';tb.appendChild(pl);}pl.className='tplaque'+(beer.medal==='silver'?' sv':'');pl.textContent=beer.medalText||(beer.medal==='silver'?'SILVER':'GOLD');}else if(pl){pl.remove();}})();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
     u.querySelector('.note').textContent=beer.note||'';
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
-    u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?'<br><span class="p10">10oz $'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
+    u.querySelector('.price').innerHTML=((beer.pourNote||beer.tenOzOnly)?'<span class="p10">10oz</span> $'+beer.price.toFixed(2).replace(/\.00$/,''):'<span class="p10">pint</span> $'+beer.price.toFixed(2).replace(/\.00$/,'')+(beer.price10?' <span class="p10 sep">·</span> <span class="p10">10oz</span> <span class="p10b">$'+beer.price10.toFixed(2).replace(/\.00$/,'')+'</span>':''));
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
     const was=prev[beer.id];
     if(was!==undefined && beer.remainingOz<was){
@@ -524,6 +555,7 @@ function render(s){
       bl.classList.remove('go'); void bl.offsetWidth; bl.classList.add('go');
     }
     prev[beer.id]=beer.remainingOz;
+    }catch(e){ console.error('tank render failed', beer&&beer.id, e); }
   }
   if(s.side){
     for(const it of s.side){
@@ -617,9 +649,11 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
         }
       }
     }catch(_){}
-    // 2nd fallback: whatever was compiled into this file
-    console.warn('[taps] no cache either — using built-in list');
-    SIM.beers = FALLBACK_BEERS.slice();
+    // 2nd fallback: nothing trustworthy to show. Curtain up, keep retrying
+    // (checkTaps reloads the moment beers.json is reachable). Never a stale list as if live.
+    console.warn('[taps] no cache either — curtain until the list is reachable');
+    SIM.beers = [];
+    window.__noData = true;
   }
 })();
 
@@ -775,13 +809,14 @@ window.__BUILD='2026-09-11.2845';
 (function(){
   var T0=Date.now();
   function checkUpdate(){
-    try{
-      fetch(location.href,{cache:'no-store'}).then(r=>r.text()).then(t=>{
-        var m=t.match(/__BUILD='([^']+)'/);
-        if(m&&m[1]!==window.__BUILD) location.reload();
-      }).catch(function(){});
-    }catch(e){}
-    if(Date.now()-T0>20*3600*1000) location.reload();
+    // ask only for headers - GitHub Pages sends an ETag - and reload when it changes.
+    // ~200 bytes per check instead of the whole page.
+    try{ fetch(location.href,{method:'HEAD',cache:'no-store'}).then(r=>{
+      var tag=r.headers.get('etag')||r.headers.get('last-modified'); if(!tag) return;
+      if(!window.__pageTag){ window.__pageTag=tag; return; }
+      if(tag!==window.__pageTag){ location.reload(); }
+    }).catch(function(){}); }catch(e){}
+    if(Date.now()-T0>20*3600*1000) location.reload();   // never run a page longer than a day
   }
   setInterval(checkUpdate,5*60*1000);
 })();
@@ -861,6 +896,10 @@ function festOverride(s){
     if(window.__scene==='default'){ const a=auto(); s.weather=a.weather; s.context=Object.assign({},s.context,a.context); }
     const out=_r(s);
     if(window.__shade) window.__shade();       // render() rewrites body.className; put the night level back
+    document.body.classList.toggle('curtained', document.getElementById('curtain').classList.contains('on'));
+    (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;});
+      if(pk){ h.textContent=''; var k=document.createElement('div');k.className='hk';k.textContent='Brewers\u2019 pick';var nm=document.createElement('div');nm.className='hn';nm.textContent=pk.name;h.appendChild(k);h.appendChild(nm);if(pk.note){var ns=document.createElement('div');ns.className='hs';ns.textContent=pk.note;h.appendChild(ns);} h.classList.add('on'); }
+      else { h.classList.remove('on'); h.innerHTML=''; } })();
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
       if(d) d.textContent=Math.round(window.__wx.temp)+'\u00b0';
@@ -877,13 +916,12 @@ function festOverride(s){
   // 7pm if unknown) step the shade down an hour at a time; lift it again at open.
   function shade(){
     const {t}=denver(); const sunset=window.__sunset||19;
-    let lvl=0;
-    if(t<OPEN || t>=sunset+2) lvl=3;
-    else if(t>=sunset+1) lvl=2;
-    else if(t>=sunset) lvl=1;
-    document.body.classList.toggle('night1',lvl===1); document.body.classList.toggle('night2',lvl===2); document.body.classList.toggle('night3',lvl===3);
+    const night = (t>=sunset+0.5) || (t<OPEN);      // half an hour after sunset until doors
+    document.body.classList.toggle('night', night);
+    document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : '#e7eacd';
   }
   window.__shade=shade; shade(); setInterval(shade, 60000);
+  if(window.__noData){ document.body.classList.add('curtained'); }
   window.__autoScene(true);                 // apply now (boot render ran before this hook)
   setInterval(function(){ window.__autoScene(); }, 60000);
 })();
