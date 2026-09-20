@@ -50,6 +50,7 @@ jobs:
         if: env.ACTION != 'check'
         run: |
           python3 tools/fixart.py
+          python3 tools/mapstrip.py
           python3 tools/board.py build
           cp -r fonts ouray.svg beers.json maps dist/   # maps/ too: the board loads maps/maps.json at boot and the render check counts a 404 as a failure
 
@@ -71,7 +72,7 @@ jobs:
           rm -rf img && cp -r dist/img img
           git config user.name "Board build"
           git config user.email "board@plattparkbrewing.com"
-          git add platt-park-live-board-v4.html img src/img/ranger.png
+          git add platt-park-live-board-v4.html img src/img/ranger.png maps
           [ "$ACTION" = "split" ] && git add src
           git commit -m "board: build from src (${GITHUB_SHA::7}) [skip ci]" || { echo "nothing changed"; exit 0; }
           git fetch -q origin main; [ "$(git rev-parse origin/main)" = "$GITHUB_SHA" ] || { echo "main moved on since this build - the newer commit's own run publishes"; exit 0; }; git push
