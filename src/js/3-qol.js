@@ -99,8 +99,8 @@ function festOverride(s){
     (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;}); var n=(s.beers||[]).length;
       var mk=function(c,t){ var e=document.createElement('div'); e.className=c; e.textContent=t; return e; };
       h.textContent='';
-      if(pk){ h.appendChild(mk('hk','On tap today \u00b7 '+n+' house beers')); h.appendChild(mk('hn',pk.name)); h.appendChild(mk('hs','Brewers\u2019 pick'+((pk.wall||pk.note)?' \u00b7 '+(pk.wall||pk.note):''))); }
-      else { h.appendChild(mk('hk','On tap today')); h.appendChild(mk('hn',n+' house beers')); h.appendChild(mk('hs','brewed 40 feet from your glass')); }
+      if(pk){ h.appendChild(mk('hk','On tap today \u00b7 '+n+' brewed here')); h.appendChild(mk('hn',pk.name)); h.appendChild(mk('hs','Brewers\u2019 pick'+((pk.wall||pk.note)?' \u00b7 '+(pk.wall||pk.note):''))); }
+      else { h.appendChild(mk('hk','On tap today')); h.appendChild(mk('hn',n+' brewed here')); h.appendChild(mk('hs','40 feet from your glass')); }   // "house beers" means the promo pours at Platt Park - never use it for the whole list
       h.classList.add('on'); })();
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
