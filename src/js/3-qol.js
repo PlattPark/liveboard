@@ -239,9 +239,43 @@ function festOverride(s){
 
 
 
-/* the odometer clunks like the antique registers this room used to sell */
-(function(){ var last=null; setInterval(function(){ var o=$('odo'); if(!o) return;
-  if(last!==null && o.textContent!==last){ o.classList.remove('odoTick'); void o.offsetWidth; o.classList.add('odoTick'); }
-  last=o.textContent; }, 400); })();
-
-
+/* split-flap pint counter (Solari tiles): #odo stays the only data source - the audited pace and Square pours write it there;
+   this just mirrors it. Only a digit that actually changed folds: old top half drops, new bottom half rises, staggered right-to-left.
+   If the text ever changes shape (more digits) the tiles are rebuilt. If anything here fails, #odo is un-hidden and shows plain. */
+(function(){
+  var host=$('odoFlap'), o=$('odo'); if(!host||!o) return;
+  var shown='', busy=false;
+  function half(cls,d){ var h=document.createElement('div'); h.className='h '+cls; var s=document.createElement('span'); s.textContent=d; h.appendChild(s); return h; }
+  function tile(d){ var f=document.createElement('div'); f.className='fl'; f.appendChild(half('t st',d)); f.appendChild(half('b st',d)); f.setAttribute('data-d',d); return f; }
+  function build(txt){
+    host.innerHTML='';
+    for(var i=0;i<txt.length;i++){ var c=txt.charAt(i);
+      if(c>='0'&&c<='9') host.appendChild(tile(c));
+      else { var s=document.createElement('span'); s.className='sep'; s.textContent=c; host.appendChild(s); } }
+    shown=txt; host.classList.add('on'); o.classList.add('hid');
+  }
+  function settle(f){ var was=f.getAttribute('data-d'); var go=f.querySelectorAll('.go'); for(var i=0;i<go.length;i++) go[i].parentNode.removeChild(go[i]);
+    var st=f.querySelectorAll('.st'); if(st.length===2){ st[0].firstChild.textContent=was; st[1].firstChild.textContent=was; } }
+  function flip(f,d,delay){
+    settle(f);
+    var was=f.getAttribute('data-d'); if(was===d) return;
+    var st=f.querySelectorAll('.st'); st[0].firstChild.textContent=d;   /* static top already shows the new digit, behind the falling flap */
+    var t=half('t go',was), b=half('b go',d);
+    t.style.setProperty('--d',delay.toFixed(2)+'s'); b.style.setProperty('--d',delay.toFixed(2)+'s');
+    f.appendChild(t); f.appendChild(b); f.setAttribute('data-d',d);
+    var done=false; function fin(){ if(done) return; done=true; settle(f); }
+    b.addEventListener('animationend',fin); setTimeout(fin, 2600+delay*1000);
+  }
+  function sync(){
+    var txt=o.textContent||''; if(txt===shown||!txt) return;
+    if(!shown||txt.length!==shown.length){ build(txt); return; }
+    var tiles=host.querySelectorAll('.fl'), digits=[], i;
+    for(i=0;i<txt.length;i++){ var c=txt.charAt(i); if(c>='0'&&c<='9') digits.push(c); else if(shown.charAt(i)!==c){ build(txt); return; } }
+    if(digits.length!==tiles.length){ build(txt); return; }
+    var n=0;
+    for(i=digits.length-1;i>=0;i--){ if(tiles[i].getAttribute('data-d')!==digits[i]){ flip(tiles[i],digits[i],n*0.07); n++; } }
+    shown=txt;
+  }
+  try{ build(o.textContent||''); }catch(e){ o.classList.remove('hid'); host.classList.remove('on'); return; }
+  setInterval(function(){ try{ sync(); }catch(e){ o.classList.remove('hid'); host.classList.remove('on'); } }, 400);
+})();
