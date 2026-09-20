@@ -16,5 +16,11 @@
   "action": "restore_unknown",
   "item": "Tv in",
   "text": "Tv in back has wrong / outdated menu"
+ },
+ {
+  "ts": "1789932938.707009",
+  "action": "remove_unmatched",
+  "item": "plattmosphere",
+  "text": "<@U0C2GMAT8CD> 86 plattmosphere"
  }
 ]
