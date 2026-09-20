@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platt Park Brewing Co. — On Tap</title>
+<meta name="robots" content="noindex">
+<!-- Embeddable tap list for plattparkbrewing.com. Reads beers.json — the same file the wall and the QR menu read.
+     Never edit beer data here: edit beers.json (Computa / taps-admin).
+     Options: ?embed (no outer padding, transparent page, posts its height to the parent for the iframe)
+              ?bg=cream|transparent   ?title=0 hides the heading -->
+<style>
+@font-face{font-family:'Anton';src:url(fonts/anton.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Barlow';font-weight:400;src:url(fonts/barlow-400.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Barlow';font-weight:500;src:url(fonts/barlow-500.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Barlow';font-weight:600;src:url(fonts/barlow-600.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Barlow';font-weight:700;src:url(fonts/barlow-700.woff2) format('woff2');font-display:swap}
+:root{--cream:#e7eacd;--forest:#293d22;--verm:#ff5a3a;--mustard:#eebf19;--olive:#5a8142;--ink:#1b2a18}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--cream)}
+body{color:var(--forest);font-family:Barlow,system-ui,sans-serif;padding:32px 5vw 40px;-webkit-font-smoothing:antialiased}
+body.embed{padding:0;background:transparent}body.embed html{background:transparent}
+body.bg-transparent{background:transparent}
+.wrap{max-width:820px;margin:0 auto}
+h1{font-family:Anton,Impact,sans-serif;font-size:clamp(30px,5vw,44px);letter-spacing:.5px;line-height:1;text-transform:uppercase;color:var(--forest)}
+.sub{font-size:16px;color:var(--olive);margin:8px 0 4px;font-weight:500}
+.updated{font-size:13px;color:var(--olive);opacity:.85;margin-bottom:22px}
+.hd{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;align-items:end;border-bottom:3px solid var(--forest);padding-bottom:6px;font-family:Anton,Impact,sans-serif;font-size:15px;letter-spacing:1.5px;text-transform:uppercase}
+.hd span:nth-child(n+2){text-align:right;font-size:13px;color:var(--olive)}
+.it{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid rgba(41,61,34,.18)}
+.it.kicked{opacity:.45}
+.in{font-family:Anton,Impact,sans-serif;font-size:22px;letter-spacing:.3px;text-transform:uppercase;line-height:1.05}
+.tag{display:inline-block;vertical-align:2px;margin-left:8px;font-family:Barlow,sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;padding:2px 7px;border-radius:3px;color:var(--ink);background:var(--mustard)}
+.tag.new{background:var(--verm);color:#fff}.tag.nitro{background:var(--forest);color:var(--cream)}.tag.last{background:transparent;color:var(--verm);border:1.5px solid var(--verm)}
+.tag.gold{background:var(--mustard)}.tag.silver{background:#cfd2c9}.tag.bronze{background:#d59a63}
+.id{font-size:15.5px;line-height:1.35;margin-top:4px;color:var(--forest)}
+.id .st{font-weight:600}
+.id.md{font-size:14px;color:var(--olive);margin-top:3px}
+.ip{font-weight:600;font-size:18px;text-align:right;font-variant-numeric:tabular-nums;padding-top:2px}
+.ip small{display:block;font-size:11px;font-weight:500;color:var(--olive);letter-spacing:1px;text-transform:uppercase}
+.foot{margin-top:22px;font-size:14.5px;color:var(--olive);line-height:1.5}
+.foot a{color:var(--forest);font-weight:600}
+.err{padding:24px 0;font-size:16px}
+@media (max-width:480px){.hd,.it{grid-template-columns:1fr 54px 54px;gap:8px}.in{font-size:19px}.ip{font-size:16px}}
+</style></head>
+<body>
+<div class="wrap">
+  <h1 id="ttl">On tap right now</h1>
+  <div class="sub">Every beer brewed 40 feet from your glass at 1875 S Pearl St.</div>
+  <div class="updated" id="upd">&nbsp;</div>
+  <div class="hd"><span>Draft</span><span>10 oz</span><span>Pint</span></div>
+  <div id="rows"><div class="err">Loading the tap list…</div></div>
+  <div class="foot" id="foot">Crowlers filled at the bar and 4-packs canned in the brewery, to go. Sours pour 10 oz only.</div>
+</div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var EMBED = q.has('embed');
+  if (EMBED) document.body.classList.add('embed');
+  if (q.get('bg') === 'transparent') document.body.classList.add('bg-transparent');
+  if (q.get('title') === '0') { document.getElementById('ttl').style.display = 'none'; }
+  var SRC = (q.get('src') && /^https:\/\/plattpark\.github\.io\//.test(q.get('src'))) ? q.get('src') : 'beers.json';
+
+  var esc = function(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var money = function(n){ if (n == null || n === '') return ''; var v = Number(n); if (isNaN(v)) return esc(n); return '$' + v.toFixed(2); };   /* two decimals always: the columns line up */
+  var cap = function(t){ t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); };
+
+  /* medals — same policy as the wall and the menu: beers.json "medals":[{comp, level, year, show}]
+     show wall|menu -> printed here with the full competition name; show site -> never printed on a menu */
+  var COMP = {'us open':'U.S. Open Beer Championship','state fair':'Colorado State Fair','gabf':'Great American Beer Festival','world beer cup':'World Beer Cup','brewers cup':'Colorado Brewers Cup'};
+  var RANK = {gold:3, silver:2, bronze:1};
+  var YEAR = new Date().getFullYear();
+  var medals = function(b){
+    if (Array.isArray(b.medals)) return b.medals.filter(function(m){ return m && m.level && (m.show || 'wall') !== 'site'; });
+    if (b.medal) return [{comp: String(b.medalText || '').replace(/\s*(gold|silver|bronze)\s*/i, ' ').trim(), level: String(b.medal).toLowerCase(), year: b.medalYear || null, show: 'wall'}];
+    return [];
+  };
+  var byRank = function(a, c){ return (RANK[c.level] || 0) - (RANK[a.level] || 0) || (c.year || 0) - (a.year || 0); };
+  var wallMedal = function(b){ var ms = medals(b).filter(function(m){ return (m.show || 'wall') === 'wall' && (!m.year || YEAR - m.year <= 2); }); return ms.sort(byRank)[0] || null; };
+  var medalLine = function(b){
+    var ms = medals(b); if (!ms.length) return '';
+    var groups = {}, order = [];
+    ms.forEach(function(m){ var k = String(m.comp || '').toLowerCase(); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(m); });
+    return order.map(function(k){
+      var list = groups[k].slice().sort(function(a, c){ return (c.year || 0) - (a.year || 0) || byRank(a, c); });
+      return esc(COMP[k] || cap(k)) + ' — ' + list.map(function(m){ return cap(m.level) + (m.year ? ' ' + m.year : ''); }).join(' · ');
+    }).join(' · ');
+  };
+
+  var isNitro = function(b){ return b.nitro === true || /nitro/i.test(b.style || ''); };
+  var isNew = function(b){
+    if (b.tappedOn) { var d = (Date.now() - new Date(b.tappedOn).getTime()) / 864e5; return d >= 0 && d <= 3; }
+    return typeof b.tappedDaysAgo === 'number' && b.tappedDaysAgo <= 3;
+  };
+  var isKicked = function(b){ return b.kicked === true || b.status === 'kicked' || b.status === 'sold out' || b.sold_out === true || b.off === true; };
+  var isLast = function(b){ return b.lastKeg === true || b.last_keg === true || /last keg/i.test(b.sash || ''); };
+
+  var row = function(b){
+    var tags = '';
+    var wm = wallMedal(b);
+    if (wm) tags += '<span class="tag ' + esc(wm.level) + '">' + esc(String(wm.level).toUpperCase()) + (wm.year ? ' ' + esc(wm.year) : '') + '</span>';
+    if (isNitro(b)) tags += '<span class="tag nitro">NITRO</span>';
+    if (isNew(b) && !isKicked(b)) tags += '<span class="tag new">NEW</span>';
+    if (isLast(b) && !isKicked(b)) tags += '<span class="tag last">LAST KEG</span>';
+    if (isKicked(b)) tags += '<span class="tag last">KICKED</span>';
+    var d = [];
+    if (b.style) d.push('<span class="st">' + esc(b.style) + '</span>');
+    if (b.abv) d.push(esc(b.abv) + '% ABV');
+    var line = d.join(' · ');
+    if (b.note) line += (line ? ' — ' : '') + esc(b.note);
+    var ml = medalLine(b);
+    var adj = Array.isArray(b.adjuncts) && b.adjuncts.length ? '<div class="id md">Contains ' + esc(b.adjuncts.join(', ')) + '</div>' : '';
+    var p10 = b.sour ? '<span class="ip">' + money(b.price10) + '<small>10 oz only</small></span><span class="ip"></span>'
+                     : '<span class="ip">' + money(b.price10) + '</span><span class="ip">' + money(b.price) + '</span>';
+    return '<div class="it' + (isKicked(b) ? ' kicked' : '') + '"><div><div class="in">' + esc(b.name) + tags + '</div>' +
+           (line ? '<div class="id">' + line + '</div>' : '') + (ml ? '<div class="id md">' + ml + '</div>' : '') + adj + '</div>' + p10 + '</div>';
+  };
+
+  var when = function(d){
+    var t = d && (d.updated || d.updatedAt); if (!t) return '';
+    var dt = new Date(t); if (isNaN(dt)) return '';
+    try { return 'Updated ' + new Intl.DateTimeFormat('en-US', {timeZone:'America/Denver', weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}).format(dt); } catch (e) { return ''; }
+  };
+
+  var post = function(){ if (!EMBED || !window.parent || window.parent === window) return;
+    try { window.parent.postMessage({ppbc: 'beerlist', height: document.documentElement.scrollHeight}, '*'); } catch (e) {} };
+
+  var render = function(d){
+    var el = document.getElementById('rows');
+    var beers = (d && d.beers || []).filter(function(b){ return b && b.name; });
+    if (!beers.length) { el.innerHTML = '<div class="err">The tap list is being updated — check back in a minute, or ask at the bar.</div>'; return; }
+    el.innerHTML = beers.map(row).join('');
+    document.getElementById('upd').textContent = when(d) || '';
+    post();
+  };
+
+  var load = function(){
+    fetch(SRC + (SRC.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now(), {cache: 'no-store'})
+      .then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .then(render)
+      .catch(function(){ var el = document.getElementById('rows'); if (!el.querySelector('.it')) el.innerHTML = '<div class="err">The tap list is taking a moment. <a href="https://plattpark.github.io/liveboard/menu.html">Open the full menu</a>.</div>'; });
+  };
+  load();
+  setInterval(load, 5 * 60 * 1000);           /* same cadence as the wall: a beer kicked at the bar is gone from the site within minutes */
+  window.addEventListener('load', post); window.addEventListener('resize', post);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(post);
+})();
+</script>
+</body></html>
