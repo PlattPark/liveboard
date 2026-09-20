@@ -798,6 +798,7 @@ def run_once():
 # ---- five-second rule: one post to #bar-only each morning at 10:30 MT ----
 FIVE_SEC_CHANNEL = "C0B3E5GF6UR"  # bar-only
 FIVE_SEC_MARK = "Five seconds."
+FIVE_SEC_UNTIL = "2026-10-20"  # stops on its own after this date; bump it to extend
 FIVE_SEC_MSG = (
     "*Five seconds.*\n"
     "Every guest who sits down or walks up to the window gets acknowledged inside "
@@ -807,7 +808,9 @@ FIVE_SEC_MSG = (
 
 
 def five_second_nudge():
-    """Post the acknowledgment standard once a day, at the first poll after 10:30 MT.
+    """Post the acknowledgment standard daily at the first poll after 10:30 MT.
+
+    Runs through FIVE_SEC_UNTIL, then goes quiet without anyone having to turn it off.
 
     Dedupes against the channel's own history rather than local state, so a
     runner restart or a handoff mid-morning can't double-post it.
@@ -817,6 +820,8 @@ def five_second_nudge():
         from zoneinfo import ZoneInfo as _zi
 
         now = _dt.now(_zi("America/Denver"))
+        if now.strftime("%Y-%m-%d") > FIVE_SEC_UNTIL:
+            return
         if now.hour != 10 or now.minute < 30:
             return
 
