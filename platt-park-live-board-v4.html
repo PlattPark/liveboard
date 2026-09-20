@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-09-20T02:00Z from src @ 75c498b - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-09-20T02:18Z from src @ 0d88c58 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -377,7 +377,20 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
 .ranger .cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:3px;color:#5a8142;text-transform:uppercase;white-space:nowrap;opacity:.9}
 body.night .ranger .cap{color:#8fa27a}
 .c-cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;letter-spacing:6px;color:#5a8142;text-transform:uppercase;margin-top:-8px}
-.curtain.night .c-cap{color:#8fa27a}</style>
+.curtain.night .c-cap{color:#8fa27a}
+/* split-flap pint counter: each digit is a Solari tile; a tick folds the old top half down and the new bottom half up */
+#odo.hid{position:absolute;opacity:0;pointer-events:none}
+.flap{display:none;align-items:center;gap:2px;height:36px} .flap.on{display:inline-flex}
+.flap .sep{font-family:'Archivo Black';font-size:27px;color:#e7eacd;margin:0 1px;line-height:36px}
+.fl{position:relative;width:20px;height:36px;perspective:140px;font-family:'Archivo Black';font-size:27px;line-height:36px;color:#e7eacd;text-align:center}
+.fl .h{position:absolute;left:0;width:100%;height:18px;overflow:hidden;background:#1b2a18;backface-visibility:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.fl .h span{position:absolute;left:0;width:100%;height:36px;line-height:36px}
+.fl .t{top:0;border-radius:3px 3px 0 0;transform-origin:50% 100%} .fl .t span{top:0}
+.fl .b{bottom:0;border-radius:0 0 3px 3px;transform-origin:50% 0} .fl .b span{bottom:0}
+.fl::after{content:'';position:absolute;left:0;right:0;top:17px;height:2px;background:rgba(0,0,0,.42);z-index:3}
+.fl .t.go{animation:flTop .28s ease-in forwards;animation-delay:var(--d,0s);z-index:2} .fl .b.go{animation:flBot .3s ease-out forwards;animation-delay:calc(.28s + var(--d,0s));z-index:2;transform:rotateX(90deg)}
+@keyframes flTop{to{transform:rotateX(-90deg);filter:brightness(.7)}} @keyframes flBot{from{transform:rotateX(90deg);filter:brightness(.7)}to{transform:rotateX(0);filter:brightness(1)}}
+body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}</style>
 </head>
 <body>
 
@@ -418,7 +431,7 @@ body.night .ranger .cap{color:#8fa27a}
 </div>
 
 <div class="rail">
-  <div class="cell"><span class="k">Pints since 2014</span><span id="odo" class="big">1,080,448</span></div>
+  <div class="cell"><span class="k">Pints since 2014</span><span id="odo" class="big">1,080,448</span><span id="odoFlap" class="flap" aria-hidden="true"></span></div>
   <div class="cell"><span class="k" id="mostK">Most poured today</span><span id="most" class="big">—</span></div>
   <div class="cell" id="wingCell" style="display:none"><span class="k">Wings down</span><span id="wings" class="big">0</span></div>
   <div class="cell"><span class="k" id="railK">House rule</span><span id="railMsg" style="min-width:0;overflow:hidden;flex:1">Every beer brewed 40 feet from your glass</span></div>
