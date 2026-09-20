@@ -96,9 +96,12 @@ function festOverride(s){
     window.__hours = s.hours || window.__hours || {};
     if(window.__shade) window.__shade();       // render() rewrites body.className; put the night level back
     document.body.classList.toggle('curtained', document.getElementById('curtain').classList.contains('on'));
-    (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;});
-      if(pk){ h.textContent=''; var k=document.createElement('div');k.className='hk';k.textContent='Brewers\u2019 pick';var nm=document.createElement('div');nm.className='hn';nm.textContent=pk.name;h.appendChild(k);h.appendChild(nm);var hn=pk.wall||pk.note;if(hn){var ns=document.createElement('div');ns.className='hs';ns.textContent=hn;h.appendChild(ns);} h.classList.add('on'); }
-      else { h.classList.remove('on'); h.innerHTML=''; } })();
+    (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;}); var n=(s.beers||[]).length;
+      var mk=function(c,t){ var e=document.createElement('div'); e.className=c; e.textContent=t; return e; };
+      h.textContent='';
+      if(pk){ h.appendChild(mk('hk','On tap today \u00b7 '+n+' house beers')); h.appendChild(mk('hn',pk.name)); h.appendChild(mk('hs','Brewers\u2019 pick'+((pk.wall||pk.note)?' \u00b7 '+(pk.wall||pk.note):''))); }
+      else { h.appendChild(mk('hk','On tap today')); h.appendChild(mk('hn',n+' house beers')); h.appendChild(mk('hs','brewed 40 feet from your glass')); }
+      h.classList.add('on'); })();
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
       if(d) d.textContent=Math.round(window.__wx.temp)+'\u00b0';
