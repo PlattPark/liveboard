@@ -51,6 +51,7 @@ body.scene-industry .brand img, body.night .brand img{filter:brightness(1.08) sa
   body.scene-industry .chip{background:#e7eacd;color:#293d22;box-shadow:4px 4px 0 rgba(0,0,0,.35)}
   .quiet{font-family:'Archivo Black';font-size:27px;color:#293d22;letter-spacing:1px;font-variant-numeric:tabular-nums}
   .quiet .wxword{font-size:14px;letter-spacing:2.5px;color:#5a8142}
+.moon{display:none;width:20px;height:20px;margin:0 0 0 12px;vertical-align:-3px} body.night .moon{display:inline-block} .moon svg{display:block;width:20px;height:20px}
 body.scene-industry .quiet, body.night .quiet{color:#e7eacd}
 body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
   .chip.hh{background:#eebf19;color:#293d22;display:none}
@@ -105,7 +106,7 @@ body.scene-industry .quiet .wxword, body.night .quiet .wxword{color:#eebf19}
     flex:none;width:176px;display:flex;align-items:flex-end;justify-content:center;
     margin-left:2px;margin-bottom:-24px;transform:translateY(46px);
   }
-  .ranger img{width:100%;height:auto;filter:drop-shadow(6px 6px 0 rgba(41,61,34,.18))}
+  .ranger img{width:100%;height:auto;filter:drop-shadow(3px 3px 0 rgba(41,61,34,.18))}
 
   .unit{position:relative;display:flex;flex-direction:column;align-items:center;align-self:start}
   .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:256px}
@@ -255,7 +256,8 @@ body.scene-industry .rail, body.night .rail{background:#131f0f}
   body.night .plate .price{color:#e7eacd} body.night .plate .price .p10b{color:#eebf19;opacity:.9}
   body.night .plate .adj{color:#ffb39f}
   body.night .stamp{opacity:.06}
-body.night::before{filter:brightness(0) invert(1);opacity:.5}   /* the contours go cream at night */ body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
+body.night::before{filter:brightness(0) invert(1);opacity:var(--moonlit,.5)}
+body.dusk{background:#e9dfb6} body.dusk::before{opacity:.9}   /* the contours go cream at night */ body.curtained .bub,body.curtained .wave,body.curtained .foam,body.curtained .wireStrip,body.curtained .sun{animation-play-state:paused}
   .tbody{contain:layout paint}
 body.dusk.scene-industry, body.dusk.night{background:#293d22}
   .flake{position:fixed;top:-12px;color:#7c8b74;z-index:40;animation:fall linear forwards;pointer-events:none}
@@ -263,7 +265,7 @@ body.dusk.scene-industry, body.dusk.night{background:#293d22}
   .curtain{position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#e7eacd;text-align:center}
   .curtain.on{display:flex}
   .curtain.night{background:#293d22}
-  .c-ranger{height:475.2px;width:auto;filter:drop-shadow(7px 7px 0 rgba(41,61,34,.18))}
+  .c-ranger{height:475.2px;width:auto;filter:drop-shadow(3px 3px 0 rgba(41,61,34,.18))}
   .c-wm{width:330px;height:auto}
   .c-line{font-family:'Archivo Black';font-size:44px;letter-spacing:2px;color:#293d22;text-transform:uppercase;text-shadow:3px 3px 0 rgba(255,90,58,.4)}
   .curtain.night .c-line{color:#e7eacd}
@@ -294,9 +296,9 @@ header{position:relative}
 /* ---- JOURNAL EDITION: field-guide skin ---- */
 /* topo contours behind everything (decorative, tone-on-tone) */
 body::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.9;
-  background-image:url("ouray.svg");background-repeat:no-repeat;background-size:cover;background-position:center}   /* real SRTM contours of Ouray, CO - 15km window, 100m intervals; regenerate from the DEM, never hand-edit */
+  background-image:var(--map,url("ouray.svg"));background-repeat:no-repeat;background-size:cover;background-position:center}   /* real SRTM contours of Ouray, CO - 15km window, 100m intervals; regenerate from the DEM, never hand-edit */
 /* passport cancellation stamp in the header quiet zone */
-.mapmarks{position:absolute;inset:0;z-index:1;pointer-events:none;color:#293d22;opacity:.42} body.night .mapmarks{color:#e7eacd;opacity:.34} .mapmarks .bm{position:absolute;left:1482px;top:478px;font-family:'Barlow';font-weight:700;font-size:11px;letter-spacing:2.5px;display:flex;align-items:center;gap:6px} .mapmarks .bm svg{width:14px;height:14px} .mapmarks .scale{position:absolute;left:1346px;top:846px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:2.5px;display:flex;align-items:flex-end;gap:14px} .mapmarks .scale svg{display:block} .stamp{position:absolute;right:62px;top:10px;width:132px;height:132px;opacity:.13;z-index:0;transform:rotate(-11deg);pointer-events:none}   /* postmark over the address block */
+.stamp{position:absolute;right:62px;top:10px;width:132px;height:132px;opacity:.13;z-index:0;transform:rotate(-11deg);pointer-events:none}   /* postmark over the address block */
 /* elevation tag under the address */
 .elev{position:absolute;right:132px;top:63px;font-family:'Barlow';font-weight:700;font-size:10.5px;letter-spacing:5px;color:#5a8142;opacity:.85}
 /* field-guide fermenters: ink outlines, flatter print shading, weld seam */
