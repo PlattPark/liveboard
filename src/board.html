@@ -27,7 +27,11 @@ body.night .ranger .cap{color:#8fa27a}
 .fl::after{content:'';position:absolute;left:0;right:0;top:17px;height:2px;background:rgba(0,0,0,.42);z-index:3}
 .fl .t.go{animation:flTop .28s ease-in forwards;animation-delay:var(--d,0s);z-index:2} .fl .b.go{animation:flBot .3s ease-out forwards;animation-delay:calc(.28s + var(--d,0s));z-index:2;transform:rotateX(90deg)}
 @keyframes flTop{to{transform:rotateX(-90deg);filter:brightness(.7)}} @keyframes flBot{from{transform:rotateX(90deg);filter:brightness(.7)}to{transform:rotateX(0);filter:brightness(1)}}
-body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}</style>
+body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}
+/* the pick band on the tank: plaque-sized, not a billboard; the masthead is always on, so the postmark stays too */
+.unit.pick .newtag{font-size:11.5px;letter-spacing:1.4px;padding:3px 8px;top:46%;transform:translateX(-50%) rotate(-4deg);box-shadow:2px 2px 0 rgba(41,61,34,.3)}
+#hero.on ~ .stamp{opacity:.13}
+#hero .hn{font-size:44px}</style>
 </head>
 <body>
 
