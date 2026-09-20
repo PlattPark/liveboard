@@ -30,7 +30,8 @@ body.night .ranger .cap{color:#8fa27a}
 body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}
 /* the pick band on the tank: plaque-sized, not a billboard; the masthead is always on, so the postmark stays too */
 .unit.pick .newtag{font-size:11.5px;letter-spacing:1.4px;padding:3px 8px;top:46%;transform:translateX(-50%) rotate(-4deg);box-shadow:2px 2px 0 rgba(41,61,34,.3)}
-#hero.on ~ .stamp{opacity:.13}
+#hero.on ~ .stamp{opacity:.42}
+.stamp{opacity:.42} body.night .stamp{opacity:.3}
 #hero .hn{font-size:44px}</style>
 </head>
 <body>
@@ -49,8 +50,7 @@ body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-stat
     <span class="quiet"><span id="wxDeg">78°</span> <span id="wxIco" class="wxword">SUNNY</span><span id="moon" class="moon" aria-hidden="true"></span></span>
     <span class="quiet" id="clock"></span><span class="addr">1875 S PEARL ST · DENVER</span><span class="elev">ELEV 5,280 FT</span>
   </div>
-<div id="hero"></div><svg class="stamp" viewBox="0 0 120 120"><defs><path id="stc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><circle cx="60" cy="60" r="56" fill="none" stroke="#293d22" stroke-width="2.5"/><circle cx="60" cy="60" r="37" fill="none" stroke="#293d22" stroke-width="1.5"/><text font-family="Archivo Black, sans-serif" font-size="10" letter-spacing="1.1" fill="#293d22"><textPath href="#stc">PLATT PARK BREWING CO • SOUTH PEARL ST •</textPath></text><text x="60" y="57" text-anchor="middle" font-family="Archivo Black" font-size="12" fill="#293d22">EST</text><text x="60" y="73" text-anchor="middle" font-family="Archivo Black" font-size="15" fill="#293d22">2014</text></svg></header>
-
+<div id="hero"></div><svg class="stamp" viewBox="0 0 120 120"><defs><path id="stc" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/><filter id="worn" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G" result="rough"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.55" result="ink"/><feComposite in="rough" in2="ink" operator="in"/></filter></defs><g filter="url(#worn)"><circle cx="60" cy="60" r="56" fill="none" stroke="#f0553d" stroke-width="2.5"/><circle cx="60" cy="60" r="37" fill="none" stroke="#f0553d" stroke-width="1.5"/><text font-family="Archivo Black, sans-serif" font-size="10" letter-spacing="1.1" fill="#f0553d"><textPath href="#stc">PLATT PARK BREWING CO • SOUTH PEARL ST •</textPath></text><text x="60" y="57" text-anchor="middle" font-family="Archivo Black" font-size="12" fill="#f0553d">EST</text><text x="60" y="73" text-anchor="middle" font-family="Archivo Black" font-size="15" fill="#f0553d">2014</text></g></svg></header>
 <div class="banner" id="banner"></div>
 
 <div class="stage">
