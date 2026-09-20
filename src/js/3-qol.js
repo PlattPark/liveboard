@@ -96,12 +96,11 @@ function festOverride(s){
     window.__hours = s.hours || window.__hours || {};
     if(window.__shade) window.__shade();       // render() rewrites body.className; put the night level back
     document.body.classList.toggle('curtained', document.getElementById('curtain').classList.contains('on'));
-    (function(){ var h=document.getElementById('hero'); if(!h) return; var pk=(s.beers||[]).find(function(b){return b.pick;}); var n=(s.beers||[]).length;
-      var mk=function(c,t){ var e=document.createElement('div'); e.className=c; e.textContent=t; return e; };
+    (function(){ var h=document.getElementById('hero'); if(!h) return; var mk=function(c,t){ var e=document.createElement('div'); e.className=c; e.textContent=t; return e; };
       h.textContent='';
-      var title='What\u2019s pouring';                                                  // the wall's title (it pairs with the side panel's "Also pouring"); the pick is a subline, never the headline
-      h.appendChild(mk('hk','On tap today \u00b7 '+n+' brewed here')); h.appendChild(mk('hn',title));
-      h.appendChild(mk('hs', pk ? 'Brewers\u2019 pick \u00b7 '+pk.name : 'brewed 40 feet from your glass'));   // "house beers" means the promo pours at Platt Park - never use it for the whole list
+      /* the masthead, Colby's words exactly: the title, then one line. The brewers' pick lives on its tank only, never up here.
+         ("house beers" means the promo pours at Platt Park - never use it for the whole list) */
+      h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk','On tap today \u00b7 Brewed in house'));
       h.classList.add('on'); })();
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
