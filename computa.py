@@ -795,6 +795,48 @@ def run_once():
         print("%d item(s) waiting on a human - see %s" % (len(queue), QUEUE_PATH))
 
 
+# ---- five-second rule: one post to #bar-only each morning at 10:30 MT ----
+FIVE_SEC_CHANNEL = "C0B3E5GF6UR"  # bar-only
+FIVE_SEC_MARK = "Five seconds."
+FIVE_SEC_MSG = (
+    "*Five seconds.*\n"
+    "Every guest who sits down or walks up to the window gets acknowledged inside "
+    "five seconds \u2014 eye contact and \u201cbe right with you\u201d counts. "
+    "You don't have to be ready for them. They just have to know you saw them."
+)
+
+
+def five_second_nudge():
+    """Post the acknowledgment standard once a day, at the first poll after 10:30 MT.
+
+    Dedupes against the channel's own history rather than local state, so a
+    runner restart or a handoff mid-morning can't double-post it.
+    """
+    try:
+        from datetime import datetime as _dt
+        from zoneinfo import ZoneInfo as _zi
+
+        now = _dt.now(_zi("America/Denver"))
+        if now.hour != 10 or now.minute < 30:
+            return
+
+        midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        hist = slack(
+            "conversations.history",
+            channel=FIVE_SEC_CHANNEL,
+            oldest="%.6f" % midnight.timestamp(),
+            limit=200,
+        )
+        for m in (hist or {}).get("messages") or []:
+            if FIVE_SEC_MARK in (m.get("text") or ""):
+                return
+
+        slack("chat.postMessage", channel=FIVE_SEC_CHANNEL, text=FIVE_SEC_MSG)
+        print("five-second nudge posted")
+    except Exception as e:
+        print("five_second_nudge: %s" % e)
+
+
 if __name__ == "__main__":
     if "--status" in sys.argv:
         h = load_json(HEALTH_PATH, {}); st = load_json(STATE_PATH, {}); q = load_json(QUEUE_PATH, [])
@@ -809,6 +851,7 @@ if __name__ == "__main__":
         while True:
             try:
                 run_once()
+                five_second_nudge()
             except Exception as e:
                 print("error: %s" % e)
                 try: health("exception")
@@ -816,3 +859,4 @@ if __name__ == "__main__":
             time.sleep(POLL_SEC)
     else:
         run_once()
+        five_second_nudge()
