@@ -19,6 +19,10 @@ UNDERSTANDS
   nutorious medal: US Open gold 2026       plaque on the tank + menu line (DIBC etc. = record only)
   take the bronze off nutorious wall       older medal steps down to the menu line
   computa add <thing>                      queued for a human
+  86 kettle chips / wings are back         food & anything at the register: sold out / back on
+                                           Square Online (gatesdeli.com) and DoorDash follow (square.py)
+  86 all wings                             every item with that word
+  every beers.json change                  mirrored to plattparkbrewing.com's beer list (spothopper.py)
 
 DESIGN RULE
   Removing is automatic. Adding is not - a new beer needs a price, colour,
@@ -41,6 +45,18 @@ try:
     import newbeer
 except ImportError:
     newbeer = None
+try:
+    import square            # 86 -> sold out at the register / gatesdeli.com / DoorDash (needs SQUARE_ACCESS_TOKEN)
+except ImportError:
+    square = None
+try:
+    import spothopper        # beers.json -> the website's beer list (needs SPOTHOPPER_EMAIL/PASSWORD)
+except ImportError:
+    spothopper = None
+try:
+    import briefs            # 10:30 pre-shift brief + Sunday 4pm outlook (briefs.py)
+except ImportError:
+    briefs = None
 from datetime import datetime, timezone
 
 CHANNELS = {                       # every channel Computa listens in
@@ -166,7 +182,7 @@ REMOVE_RE  = re.compile(r"(?:^|\b)(?:86|eighty[- ]?six)\b[:\s]*(?:the\s+)?(?P<it
                         r"(?:\s+(?:until|til|till|thru|through)\b.*)?[.!]?\s*$", re.I)
 KICKED_RE  = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:just\s+)?(?:is\s+|has\s+)?"
                         r"(?:kicked|blew|blown|tapped\s+out|ran\s+out|is\s+out|gone)\b[.!]?\s*$", re.I)
-BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+back(?:\s+on)?|back\s+on|on\s+again|pouring\s+again|back[.!]?$)\b", re.I)
+BACK_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:(?:is|are)\s+back(?:\s+on|\s+in\s+stock)?|back\s+on|back\s+in\s+stock|on\s+again|pouring\s+again|back[.!]?$)\b", re.I)
 NOLASTKEG_RE = re.compile(r"(?:^(?:remove|clear|take\s+off|drop)\s+(?:the\s+)?last\s*keg(?:\s+sash)?\s+(?:from|off|on)\s+(?:the\s+)?(?P<item>.{2,48}?)"
                           r"|^(?:the\s+)?(?P<item2>.{2,48}?)\s+(?:is\s+)?(?:not|no\s+longer)\s+(?:on\s+)?(?:its\s+)?last\s*keg"
                           r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off"
@@ -433,6 +449,56 @@ def medal_tag(b):
     return " " + MEDAL_EMOJI.get(top.get("level"), ":medal:")
 
 
+def square_move(item, back):
+    """An 86 (or a back) for something that isn't on the tap list: try the register.
+    -> (ok, reply_or_None, label). Never raises."""
+    if not (square and square.enabled()):
+        return False, None, None
+    try:
+        return square.eighty_six(item, back=back, dry=DRY)
+    except Exception as e:
+        print("  ! square: %s" % e)
+        return False, ":warning: Couldn't reach the register (%s) - Colby, check the Square token." % str(e)[:80], None
+
+
+def square_aside(name, back):
+    """A beer that kicked (or came back) also flips its register button - exact name only, never a guess."""
+    if not (square and square.enabled()):
+        return ""
+    try:
+        kind, res = square.resolve(name, floor=0.95)
+        if kind != "one":
+            return ""
+        touched = square.set_sold_out(res, not back, dry=DRY)
+        if any(how == "set" for _, how in touched):
+            return "\n:convenience_store: Register button *%s* %s too." % (res["item_data"]["name"], "back on" if back else "marked kicked")
+    except Exception as e:
+        print("  ! square aside: %s" % e)
+    return ""
+
+
+def website_sync(data, queue):
+    """Mirror beers.json onto plattparkbrewing.com after every commit. Failures are logged once, never fatal."""
+    if not (spothopper and spothopper.enabled()) or DRY:
+        return
+    try:
+        spothopper.login()
+        ch = spothopper.sync(data.get("beers", []))
+        print("  website: " + ("; ".join(ch) if ch else "already matched"))
+        queue[:] = [q for q in queue if q.get("action") != "website_sync_failed"]
+    except Exception as e:
+        print("  ! website sync: %s" % e)
+        if not any(q.get("action") == "website_sync_failed" for q in queue):
+            queue.append({"action": "website_sync_failed", "item": str(e)[:160],
+                          "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
+            try:
+                slack("chat.postMessage", channel=ALERT_CHANNEL,
+                      text=":warning: The board and menu updated but the website's beer list didn't (%s). "
+                           "Colby, the SpotHopper login may need a look. I'll retry on the next change." % str(e)[:100])
+            except Exception:
+                pass
+
+
 def handle(msg, data, queue, channel):
     p = parse(msg.get("text", ""))
     if not p:
@@ -469,12 +535,18 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             b["offSince"] = datetime.now().strftime("%Y-%m-%d")
             recent.insert(0, b); data["recent"] = recent[:12]
             change = "86 " + b["name"]
-            reply = (":white_check_mark: 86'd *%s* - off the board and the menu within a "
+            reply = (":white_check_mark: 86'd *%s* - off the board, the menu and the website within a "
                      "couple of minutes.\nSay _\"%s is back on\"_ when it returns." % (b["name"], b["name"]))
+            reply += square_aside(b["name"], back=False)
         elif not reply:
-            queue.append({"ts": ts, "action": "remove_unmatched", "item": item, "text": msg.get("text", "")})
-            reply = (":grey_question: Couldn't match *%s* to anything pouring. Flagged it - if it's "
-                     "a cocktail, cider or food item it isn't in the tap list." % item)
+            ok, sq_reply, _ = square_move(item, back=False)
+            if sq_reply:
+                reply = sq_reply
+                if ok: change = None          # nothing in beers.json changed; Square holds the state
+            else:
+                queue.append({"ts": ts, "action": "remove_unmatched", "item": item, "text": msg.get("text", "")})
+                reply = (":grey_question: Couldn't match *%s* to anything pouring%s. Flagged it for Colby." %
+                         (item, " or at the register" if square and square.enabled() else ""))
 
     elif action == "back":
         b = match_beer(item, recent)
@@ -486,15 +558,20 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             beers.append(b)
             change = b["name"] + " back on"
             reply = ":beer: *%s* is back on - it'll reappear shortly.%s" % (b["name"], lvl)
+            reply += square_aside(b["name"], back=True)
         elif already:
             lvl = read_level(msg.get("text", ""), already)
             if lvl:
                 change = already["name"] + " level"
             reply = ":beer: *%s* is already pouring - nothing to do.%s" % (already["name"], lvl)
         else:
-            queue.append({"ts": ts, "action": "restore_unknown", "item": item, "text": msg.get("text", "")})
-            reply = (":grey_question: *%s* isn't in the recently-off list, so I don't have its price "
-                     "and tank details. Colby needs to add it." % item)
+            ok, sq_reply, _ = square_move(item, back=True)
+            if sq_reply:
+                reply = sq_reply
+            else:
+                queue.append({"ts": ts, "action": "restore_unknown", "item": item, "text": msg.get("text", "")})
+                reply = (":grey_question: *%s* isn't in the recently-off list%s, so I don't have its price "
+                         "and tank details. Colby needs to add it." % (item, " or at the register" if square and square.enabled() else ""))
 
     elif action == "pick":
         b = match_beer(item, beers)
@@ -619,6 +696,12 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         lines = ["%s%s" % (b["name"], (" (last keg)" if b.get("sash") == "last keg" else "") + (" :star:" if b.get("pick") else "") + medal_tag(b))
                  for b in beers]
         reply = ":beers: *%d on the wall:* %s\nLast change: %s" % (len(beers), " \u00b7 ".join(lines), data.get("updatedBy", "?"))
+        if square and square.enabled():
+            try:
+                so = square.status()
+                reply += "\n:no_entry_sign: *Sold out at the register:* " + (" \u00b7 ".join(n for n, _ in so) if so else "nothing")
+            except Exception as e:
+                reply += "\n:warning: Couldn't read the register (%s)." % str(e)[:60]
 
     elif action == "flavor":
         b = match_beer(item, beers)
@@ -778,6 +861,7 @@ def run_once():
             health("commit_failed")
             return
         print("committed: " + "; ".join(changes))
+        website_sync(data, queue)
 
     for cid, ts_, text in replies:
         if not DRY:
@@ -842,6 +926,16 @@ def five_second_nudge():
         print("five_second_nudge: %s" % e)
 
 
+def scheduled_posts():
+    """The pre-shift brief and the Sunday outlook (briefs.py) - each posts once, on the first cycle after its time."""
+    if not briefs or DRY:
+        return
+    try:
+        briefs.tick(slack, lambda: fetch_beers()[0], lambda: load_json(QUEUE_PATH, []))
+    except Exception as e:
+        print("scheduled_posts: %s" % e)
+
+
 if __name__ == "__main__":
     if "--status" in sys.argv:
         h = load_json(HEALTH_PATH, {}); st = load_json(STATE_PATH, {}); q = load_json(QUEUE_PATH, [])
@@ -857,6 +951,7 @@ if __name__ == "__main__":
             try:
                 run_once()
                 five_second_nudge()
+                scheduled_posts()
             except Exception as e:
                 print("error: %s" % e)
                 try: health("exception")
@@ -865,3 +960,4 @@ if __name__ == "__main__":
     else:
         run_once()
         five_second_nudge()
+        scheduled_posts()

@@ -1,0 +1,23 @@
+{
+ "_comment": "Computa reads this for the pre-shift brief and the Sunday outlook. 'broncos' is refreshed from ESPN by events.py - don't edit it. Edit 'weekly' (standing programming by weekday) and 'extra' (one-offs: {date: YYYY-MM-DD, text}).",
+ "weekly": {
+  "mon": "Industry Night - 25% off the whole tab, all day, food included · $2 off 32oz pitchers 3-10pm · Double Stars",
+  "tue": "Team Trivia 7pm",
+  "wed": "Wing Wednesday - a dozen for $12",
+  "thu": "",
+  "fri": "",
+  "sat": "",
+  "sun": ""
+ },
+ "extra": [
+  {
+   "date": "2026-10-15",
+   "text": "Broncos vs Seahawks (Thu night, home) - game-night setup"
+  },
+  {
+   "date": "2026-12-25",
+   "text": "Broncos vs Bills 2:30pm - Christmas game"
+  }
+ ],
+ "broncos": []
+}
