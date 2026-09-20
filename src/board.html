@@ -9,6 +9,12 @@
 <link rel="preload" href="fonts/barlow-600.woff2" as="font" type="font/woff2" crossorigin>
 <style>@@css:0-fonts@@</style>
 <style>@@css:1-main@@</style>
+<style>/* the ranger's tagline is real type now, not pixels baked into the figure (see tools/fixart.py) */
+.ranger{flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
+.ranger .cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:3px;color:#5a8142;text-transform:uppercase;white-space:nowrap;opacity:.9}
+body.night .ranger .cap{color:#8fa27a}
+.c-cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;letter-spacing:6px;color:#5a8142;text-transform:uppercase;margin-top:-8px}
+.curtain.night .c-cap{color:#8fa27a}</style>
 </head>
 <body>
 
@@ -44,7 +50,7 @@
     <div class="s-item frozen"><span class="s-name">Frozen Cocktails</span><div class="s-row"><span class="s-flavor" id="sFlavor">Mexican Firing Squad<br>Transfusion</span><span class="s-price">$12</span></div></div>
     <div class="s-foot">Full bar · NA options too</div>
       </div>
-  <div class="ranger"><img src="img/ranger.png" alt=""></div>
+  <div class="ranger"><img src="img/ranger.png" alt=""><span class="cap">Brewed for adventure</span></div>
 </div>
 </div>
 
@@ -57,6 +63,7 @@
 </div>
 <div class="curtain" id="curtain">
   <img class="c-ranger" id="cRanger" alt="">
+  <div class="c-cap">Brewed for adventure</div>
   <img class="c-wm" id="cWm" alt="">
   <div class="c-line" id="cLine"></div>
   <div class="c-sub" id="cSub"></div>
