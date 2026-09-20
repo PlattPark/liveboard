@@ -2,21 +2,21 @@
  "abasin": {
   "file": "maps/abasin.svg",
   "title": "ARAPAHOE BASIN",
-  "wire": "the lines behind the tanks are Arapahoe Basin — every lift and run, on real contours"
+  "wire": "the lines behind the tanks are Arapahoe Basin — every lift and run, on real contours · map data © OpenStreetMap contributors"
  },
  "platte": {
   "file": "maps/platte.svg",
   "title": "SOUTH PLATTE · CHEESMAN CANYON",
-  "wire": "the lines behind the tanks are the South Platte through Cheesman Canyon"
+  "wire": "the lines behind the tanks are the South Platte through Cheesman Canyon · map data © OpenStreetMap contributors"
  },
  "lostcreek": {
   "file": "maps/lostcreek.svg",
   "title": "LOST CREEK WILDERNESS",
-  "wire": "the lines behind the tanks are the Lost Creek Wilderness — real contours and trails"
+  "wire": "the lines behind the tanks are the Lost Creek Wilderness — real contours and trails · map data © OpenStreetMap contributors"
  },
  "ouray": {
   "file": "maps/ouray.svg",
   "title": "OURAY",
-  "wire": "the lines behind the tanks are the mountains around Ouray, Colorado"
+  "wire": "the lines behind the tanks are the mountains around Ouray, Colorado · map data © OpenStreetMap contributors"
  }
 }
