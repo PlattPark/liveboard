@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-09-20T19:35:11+00:00",
- "updatedBy": "86 Chela Morena; 86 Plattmosphere",
+ "updated": "2026-09-20T19:37:52+00:00",
+ "updatedBy": "Chela Morena back on",
  "beers": [
   {
    "id": "oktoberfest",
@@ -206,6 +206,24 @@
     "lactose"
    ],
    "wall": "Golden Stout w/ coconut, coffee & pineapple"
+  },
+  {
+   "id": "chela",
+   "name": "Chela Morena",
+   "style": "Mexican Dark Lager",
+   "abv": 4.9,
+   "price10": 4.75,
+   "price": 7.5,
+   "rating": 3.74,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#6e4a2a",
+   "colorTop": "#8a5f38",
+   "remainingOz": 36902,
+   "tappedDaysAgo": 0,
+   "note": "the dark one that drinks light",
+   "wall": "Mexican Dark Lager",
+   "pick": true
   }
  ],
  "recent": [
@@ -234,25 +252,6 @@
      "show": "wall"
     }
    ],
-   "offSince": "2026-09-20"
-  },
-  {
-   "id": "chela",
-   "name": "Chela Morena",
-   "style": "Mexican Dark Lager",
-   "abv": 4.9,
-   "price10": 4.75,
-   "price": 7.5,
-   "rating": 3.74,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#6e4a2a",
-   "colorTop": "#8a5f38",
-   "remainingOz": 36902,
-   "tappedDaysAgo": 0,
-   "note": "the dark one that drinks light",
-   "wall": "Mexican Dark Lager",
-   "pick": true,
    "offSince": "2026-09-20"
   }
  ],
