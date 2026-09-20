@@ -30,13 +30,13 @@ PLACES = {
         wire="the lines behind the tanks are Arapahoe Basin \u2014 every lift and run, on real contours"),
     "platte": dict(
         title="SOUTH PLATTE \u00b7 CHEESMAN CANYON", elev_ft=None,   # from the grid at the label point
-        window=(39.198, 39.272, -105.335, -105.165),
-        label_at=(39.2536, -105.2214), layers=("rivers", "trails"),   # Deckers
+        window=(39.197, 39.267, -105.345, -105.184),          # dam to Deckers, 8.7 x 13.9 km
+        label_at=(39.2536, -105.2214), layers=("water", "rivers", "trails"),   # Deckers; water = the reservoir shoreline
         wire="the lines behind the tanks are the South Platte through Cheesman Canyon"),
     "lostcreek": dict(
         title="LOST CREEK WILDERNESS", elev_ft=None,
-        window=(39.200, 39.300, -105.575, -105.340),
-        label_at=(39.2575, -105.4875), layers=("trails", "rivers"),   # Bison Peak
+        window=(39.2225, 39.2925, -105.568, -105.407),         # Bison Peak country, 7.8 x 13.9 km
+        label_at=(39.2575, -105.4875), layers=("trails", "rivers", "peaks"),   # Bison Peak; peaks = named summits
         wire="the lines behind the tanks are the Lost Creek Wilderness \u2014 real contours and trails"),
     "ouray": dict(
         title="OURAY", elev_ft=7792,
@@ -93,8 +93,11 @@ def fetch_osm(win):
   way["piste:type"="downhill"](%s);
   way["waterway"~"^(river|stream)$"]["name"](%s);
   way["highway"~"^(path|footway|track)$"]["name"](%s);
+  node["natural"="peak"]["name"](%s);
+  way["natural"="water"]["name"](%s);
+  relation["natural"="water"]["name"](%s);
 );
-out geom;""" % (bbox, bbox, bbox, bbox)
+out geom;""" % ((bbox,) * 7)
     body = urllib.parse.urlencode({"data": q}).encode()
     try:
         d = json.loads(http("https://overpass-api.de/api/interpreter", data=body, timeout=150))
@@ -103,12 +106,23 @@ out geom;""" % (bbox, bbox, bbox, bbox)
         d = json.loads(http("https://overpass.kumi.systems/api/interpreter", data=body, timeout=150))
     feats = []
     for el in d.get("elements", []):
+        t = el.get("tags", {})
+        if el.get("type") == "node" and t.get("natural") == "peak":
+            try: ele_ft = int(round(float(t.get("ele", "").split()[0]) * 3.28084))
+            except Exception: ele_ft = None
+            feats.append({"kind": "peaks", "name": t.get("name", ""), "ele_ft": ele_ft, "pts": [(el["lat"], el["lon"])]})
+            continue
+        if el.get("type") == "relation" and t.get("natural") == "water":
+            for m in el.get("members", []):                       # the shoreline is the union of the member ways
+                if m.get("type") == "way" and m.get("geometry"):
+                    feats.append({"kind": "water", "name": t.get("name", ""), "pts": [(g["lat"], g["lon"]) for g in m["geometry"]]})
+            continue
         if el.get("type") != "way" or "geometry" not in el:
             continue
-        t = el.get("tags", {})
         if "aerialway" in t: kind = "lifts"
         elif t.get("piste:type") == "downhill": kind = "pistes"
         elif "waterway" in t: kind = "rivers"
+        elif t.get("natural") == "water": kind = "water"
         else: kind = "trails"
         feats.append({"kind": kind, "name": t.get("name", ""), "pts": [(g["lat"], g["lon"]) for g in el["geometry"]]})
     return feats
@@ -131,6 +145,56 @@ def rel_path(pts):
 
 def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+# the three strips the tanks and plates leave clear on the wall: under the header, between the rows, above the rail
+OPEN = ((200, 8, 1330, 122), (40, 536, 1300, 582), (600, 946, 1290, 1000), (20, 972, 600, 1000))   # the credit and margin note own the bottom-left corner
+
+
+def open_at(box):
+    return any(bx0 <= box[0] and box[2] <= bx1 and by0 <= box[1] and box[3] <= by1 for bx0, by0, bx1, by1 in OPEN)
+
+
+def label_run(pts, need):
+    """Pick the straightest stretch of a polyline long enough for a label, or None.
+    Text on a switchback piles its letters up, so a run must stay within 20 percent of straight and
+    its first and last thirds must point within 60 degrees of each other; the run is smoothed before
+    the letters ride it (pixel-rounded segments jitter). A name only goes where the wall can show it
+    whole - the three strips the tanks and plates leave clear - because a name half-hidden behind a
+    price tag reads as litter. Near-vertical runs lose ties. Returns (points, box)."""
+    n = len(pts)
+    if n < 3: return None
+    seg = [math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]) for i in range(n - 1)]
+    cum = [0.0]
+    for d in seg: cum.append(cum[-1] + d)
+    if cum[-1] < need: return None
+    def heading(a, b): return math.atan2(pts[b][1] - pts[a][1], pts[b][0] - pts[a][0])
+    best = None; j = 0
+    for i in range(n - 1):
+        while j < n - 1 and cum[j] - cum[i] < need: j += 1
+        if cum[j] - cum[i] < need: break
+        L = cum[j] - cum[i]; chord = math.hypot(pts[j][0] - pts[i][0], pts[j][1] - pts[i][1])
+        if chord < 0.8 * L: continue
+        k1, k2 = i + max(1, (j - i) // 3), j - max(1, (j - i) // 3)
+        turn = abs((heading(i, k1) - heading(k2, j) + math.pi) % (2 * math.pi) - math.pi)
+        if turn > math.radians(60): continue
+        xs = [q[0] for q in pts[i:j + 1]]; ys = [q[1] for q in pts[i:j + 1]]
+        x0, y0, x1, y1 = min(xs), min(ys) - 14, max(xs), max(ys) + 4
+        if x0 < 30 or x1 > W - 30 or y0 < 8 or y1 > H - 85: continue          # off the wall or under the rail
+        open_band = open_at((x0, y0, x1, y1))
+        if not open_band: continue                                            # a half-hidden name reads as litter; none is better
+        vertical = abs(pts[j][0] - pts[i][0]) < abs(pts[j][1] - pts[i][1])
+        score = turn + 4 * (1 - chord / L) + (1.0 if vertical else 0)
+        if best is None or score < best[0]:
+            best = (score, i, j)
+    if best is None: return None
+    _, i, j = best
+    run = pts[i:j + 1]
+    if run[-1][0] < run[0][0]: run = run[::-1]                                 # read left to right, never upside down
+    sm = [(sum(q[0] for q in run[max(0, k - 9):k + 10]) / len(run[max(0, k - 9):k + 10]),
+           sum(q[1] for q in run[max(0, k - 9):k + 10]) / len(run[max(0, k - 9):k + 10])) for k in range(len(run))]
+    xs = [q[0] for q in sm]; ys = [q[1] for q in sm]
+    return sm, (min(xs) - 8, min(ys) - 14, max(xs) + 8, max(ys) + 4)
 
 
 def draw(place, dem, feats):
@@ -160,28 +224,46 @@ def draw(place, dem, feats):
     svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d">' % (W, H),
            '<g fill="none" stroke="#293d22" stroke-width="1.1" stroke-opacity=".17" stroke-linejoin="round">' + "".join('<path d="%s"/>' % d for d in reg) + "</g>",
            '<g fill="none" stroke="#293d22" stroke-width="1.9" stroke-opacity=".27" stroke-linejoin="round">' + "".join('<path d="%s"/>' % d for d in idx) + "</g>"]
-
     # features, only the layers this place asked for; labels ride along the line
     style = {"lifts":  ('stroke-width="2.2" stroke-opacity=".55"', True),
              "pistes": ('stroke-width="1" stroke-opacity=".28" stroke-dasharray="4 3"', False),
              "rivers": ('stroke-width="2.4" stroke-opacity=".45" stroke-linecap="round"', True),
-             "trails": ('stroke-width="1.3" stroke-opacity=".45" stroke-dasharray="3 5" stroke-linecap="round"', True)}
-    labelled = set(); n = 0
+             "trails": ('stroke-width="1.3" stroke-opacity=".45" stroke-dasharray="3 5" stroke-linecap="round"', True),
+             "water":  ('stroke-width="1.8" stroke-opacity=".42" stroke-linecap="round"', True),
+             "peaks":  ('stroke-width="1.4" stroke-opacity=".5"', True)}
+    labelled = set(); boxes = []; n = 0
+    def clear(box):
+        return not any(box[0] < b[2] and box[2] > b[0] and box[1] < b[3] and box[3] > b[1] for b in boxes)
     for kind in P["layers"]:
         st, label = style[kind]
         svg.append('<g fill="none" stroke="#293d22" %s stroke-linejoin="round">' % st)
         for f in sorted([f for f in feats if f["kind"] == kind], key=lambda f: -len(f["pts"])):
             pts = [proj(*p) for p in f["pts"]]
             if not any(0 <= x <= W and 0 <= y <= H for x, y in pts): continue
+            if kind == "peaks":                                   # a summit: small triangle, name and height beside it
+                x, y = pts[0]
+                if not (40 < x < W - 40 and 30 < y < H - 90) or f["name"] in labelled: continue
+                labelled.add(f["name"])
+                tag = f["name"].upper() + (" \u00b7 %s" % "{:,}".format(f["ele_ft"]) if f.get("ele_ft") else "")
+                svg.append('<path d="M%d %d l5 9 h-10z"/>' % (x, y - 5))
+                box = (x + 8, y - 8, x + 12 + 9 * len(tag), y + 6)
+                if open_at(box) and clear(box):                       # the name only where nothing on the wall covers it
+                    boxes.append(box)
+                    svg.append('<text x="%d" y="%d" font-family="Barlow,sans-serif" font-size="10" font-weight="700" letter-spacing="2.5" fill="#293d22" fill-opacity=".5" stroke="none">%s</text>'
+                               % (x + 10, y + 4, esc(tag)))
+                continue
             pid = "f%d" % n; n += 1
             svg.append('<path id="%s" d="%s"/>' % (pid, rel_path(pts)))
             if kind == "lifts":
                 svg.append('<circle cx="%d" cy="%d" r="3" fill="#293d22" fill-opacity=".55" stroke="none"/><circle cx="%d" cy="%d" r="3" fill="#293d22" fill-opacity=".55" stroke="none"/>'
                            % (pts[0][0], pts[0][1], pts[-1][0], pts[-1][1]))
             if label and f["name"] and f["name"] not in labelled and len(pts) > 2:
-                labelled.add(f["name"])
-                svg.append('<text font-family="Barlow,sans-serif" font-size="10.5" font-weight="700" letter-spacing="2.5" fill="#293d22" fill-opacity=".5" stroke="none" dy="-4">'
-                           '<textPath href="#%s" startOffset="12%%">%s</textPath></text>' % (pid, esc(f["name"].upper())))
+                run = label_run(pts, 9.2 * len(f["name"]) + 10)                 # ~9.2 px per letter at this size and tracking
+                if run and clear(run[1]):
+                    labelled.add(f["name"]); boxes.append(run[1]); lid = pid + "t"
+                    svg.append('<path id="%s" d="%s" stroke="none"/>' % (lid, rel_path(run[0])))
+                    svg.append('<text font-family="Barlow,sans-serif" font-size="10.5" font-weight="700" letter-spacing="2.5" fill="#293d22" fill-opacity=".5" stroke="none" dy="-4" text-anchor="middle">'
+                               '<textPath href="#%s" startOffset="50%%">%s</textPath></text>' % (lid, esc(f["name"].upper())))
         svg.append("</g>")
 
     # marks: place label, benchmark on the highest interior high point, scale bar, north arrow, credit
@@ -195,7 +277,8 @@ def draw(place, dem, feats):
     mx = (z == maximum_filter(z, size=7)); mx[:3, :] = mx[-3:, :] = mx[:, :3] = mx[:, -3:] = False
     peaks = sorted([(z[j, i], i, j) for j, i in zip(*np.where(mx))], reverse=True)
     txt = '<g font-family="Barlow,sans-serif" font-weight="700" letter-spacing="3" fill="#293d22" stroke="none">'
-    txt += '<text x="%d" y="%d" font-size="11" fill-opacity=".36">%s \u00b7 %s FT</text><circle cx="%d" cy="%d" r="3" fill-opacity=".36"/>' % (lx + 10, ly + 4, esc(P["title"]), "{:,}".format(elev_ft), lx, ly)
+    # the name reads like a map margin note (bottom-left, clear of the tanks); the dot stays on the true spot
+    txt += '<text x="34" y="%d" font-size="12" letter-spacing="3.5" fill-opacity=".42">%s \u00b7 %s FT</text><circle cx="%d" cy="%d" r="3" fill-opacity=".36"/>' % (H - 136, esc(P["title"]), "{:,}".format(elev_ft), lx, ly)
     if peaks:
         pz, pi, pj = peaks[0]; px, py = pi / (dem["w"] - 1) * W, pj / (dem["h"] - 1) * H
         txt += ('<path d="M%d %d l6 11 h-12z" fill="none" stroke="#293d22" stroke-width="1.4" stroke-opacity=".42"/><circle cx="%d" cy="%d" r="1.4" fill-opacity=".42"/>'
