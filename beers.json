@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-09-20T19:37:52+00:00",
- "updatedBy": "Chela Morena back on",
+ "updated": "2026-09-22T16:43:51+00:00",
+ "updatedBy": "Plattmosphere back on",
  "beers": [
   {
    "id": "oktoberfest",
@@ -224,9 +224,7 @@
    "note": "the dark one that drinks light",
    "wall": "Mexican Dark Lager",
    "pick": true
-  }
- ],
- "recent": [
+  },
   {
    "id": "plattmosphere",
    "name": "Plattmosphere",
@@ -241,7 +239,7 @@
    "color": "#d9a83c",
    "colorTop": "#efc76a",
    "remainingOz": 5952,
-   "tappedDaysAgo": 9,
+   "tappedDaysAgo": 0,
    "note": "the flagship hazy",
    "wall": "Hazy IPA · the flagship",
    "medals": [
@@ -251,10 +249,10 @@
      "year": 2026,
      "show": "wall"
     }
-   ],
-   "offSince": "2026-09-20"
+   ]
   }
  ],
+ "recent": [],
  "hours": {
   "_": "late = open till midnight on these dates (Fri/Sat always are); closed = curtain all day. Computa edits this: 'late night tonight', 'closed on 2026-11-26', 'normal hours tonight'",
   "late": [
