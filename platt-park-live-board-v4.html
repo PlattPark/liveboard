@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-09-20T04:33Z from src @ 3f8fcd0 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-09-23T01:50Z from src @ 188c2c7 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -979,6 +979,11 @@ function festOverride(s){
          ("house beers" means the promo pours at Platt Park - never use it for the whole list) */
       h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk','On tap today \u00b7 Brewed in house'));
       h.classList.add('on'); })();
+    // Sept 22: the 10oz price rides the gold tag again - the bar uses the wall to answer "how much is a 10?". From beers.json price10; no price10, no 10oz.
+    (s.beers||[]).forEach(function(b){ if(!b.price10||b.tenOzOnly) return; var u=document.getElementById('u-'+b.id); var tag=u&&u.querySelector('.price .tag'); if(!tag||tag.querySelector('.p10b')) return;
+      var abv=tag.querySelector('.abv'), dot=tag.querySelector('.dot'); if(!abv||!dot) return;
+      var d2=document.createElement('span'); d2.className='dot'; d2.textContent='\u00b7'; var l=document.createElement('span'); l.className='p10'; l.textContent='10oz'; var p=document.createElement('span'); p.className='p10b'; p.textContent='$'+b.price10.toFixed(2).replace(/\.00$/,'');
+      tag.insertBefore(d2,dot); tag.insertBefore(document.createTextNode(' '),dot); tag.insertBefore(l,dot); tag.insertBefore(document.createTextNode(' '),dot); tag.insertBefore(p,dot); tag.insertBefore(document.createTextNode(' '),dot); tag.classList.add('has10'); });
     // the real weather always wins over any scene's placeholder text
     if(window.__wx){ const d=$('wxDeg'), i=$('wxIco');
       if(d) d.textContent=Math.round(window.__wx.temp)+'\u00b0';
@@ -1006,6 +1011,7 @@ function festOverride(s){
     const dusk = !night && t>=sunset-0.75 && t<sunset+0.5;                                                                        // golden hour: the paper warms 45 min before sunset
     document.body.classList.toggle('night', night); document.body.classList.toggle('dusk', dusk);
     document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : dusk ? '#e9dfb6' : '#e7eacd';
+    document.body.style.backgroundColor = night ? '#1c2818' : dusk ? '#e9dfb6' : '';   // inline too: on Sept 22 the wall's browser painted cream paper under cream names - the class alone wasn't enough there
     const p=moonPhase(), lit=(1-Math.cos(2*Math.PI*p))/2;                                                                          // moonlit: the night map brightens with the real moon
     document.documentElement.style.setProperty('--moonlit',(0.42+0.2*lit).toFixed(2));
     const mo=$('moon'); if(mo && night && !mo.dataset.p){ mo.innerHTML=moonSVG(p); mo.dataset.p='1'; }
