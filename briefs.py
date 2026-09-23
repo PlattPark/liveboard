@@ -105,7 +105,6 @@ def wx_line(w):
         bits.append("%d° at 6pm" % round(w["evening"]))
     return " · ".join(bits)
 
-
 def patio_call(w):
     if not w:
         return ""
@@ -268,8 +267,15 @@ def outlook(slack, data):
     return True
 
 
+# Colby, Sept 20 2026: no scheduled briefs in Slack. Both posts stay off unless the workflow sets BRIEFS=on
+# (or a value naming one of them: BRIEFS=preshift / BRIEFS=outlook). The functions stay so nothing else changes.
+ENABLED = os.environ.get("BRIEFS", "off").strip().lower()
+
+
 def tick(slack, data_loader, queue_loader):
     """Called once per Computa cycle. Loads beers.json / the queue only when a post is due."""
+    if ENABLED in ("", "off", "0", "false", "no"):
+        return
     t = now()
     due_pre = (t.hour == 10 and t.minute >= 30)
     due_out = (t.weekday() == 6 and t.hour >= 16)
@@ -285,12 +291,12 @@ def tick(slack, data_loader, queue_loader):
     except Exception as e:
         print("  ! briefs: can't load beers.json (%s)" % e); return
     try:
-        if due_pre:
+        if due_pre and ENABLED in ("on", "preshift", "both"):
             preshift(slack, data, queue_loader())
     except Exception as e:
         print("  ! preshift: %s" % e)
     try:
-        if due_out:
+        if due_out and ENABLED in ("on", "outlook", "both"):
             outlook(slack, data)
     except Exception as e:
         print("  ! outlook: %s" % e)
