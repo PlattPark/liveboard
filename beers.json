@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-09-25T01:42:11+00:00",
- "updatedBy": "86 Plattmosphere",
+ "updated": "2026-09-30T15:40:55+00:00",
+ "updatedBy": "86 KĀKOU",
  "beers": [
   {
    "id": "oktoberfest",
@@ -162,26 +162,6 @@
    "wall": "Vanilla Cream · Nitro"
   },
   {
-   "id": "kakou",
-   "name": "KĀKOU",
-   "style": "Golden Stout · Nitro",
-   "abv": 5.8,
-   "price10": 5.25,
-   "price": 8.5,
-   "rating": 3.9,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#dfa93c",
-   "colorTop": "#eec468",
-   "remainingOz": 1267,
-   "tappedDaysAgo": 8,
-   "note": "coffee, pineapple & coconut",
-   "adjuncts": [
-    "lactose"
-   ],
-   "wall": "Golden Stout w/ coconut, coffee & pineapple"
-  },
-  {
    "id": "chela",
    "name": "Chela Morena",
    "style": "Mexican Dark Lager",
@@ -228,6 +208,27 @@
   }
  ],
  "recent": [
+  {
+   "id": "kakou",
+   "name": "KĀKOU",
+   "style": "Golden Stout · Nitro",
+   "abv": 5.8,
+   "price10": 5.25,
+   "price": 8.5,
+   "rating": 3.9,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#dfa93c",
+   "colorTop": "#eec468",
+   "remainingOz": 1267,
+   "tappedDaysAgo": 8,
+   "note": "coffee, pineapple & coconut",
+   "adjuncts": [
+    "lactose"
+   ],
+   "wall": "Golden Stout w/ coconut, coffee & pineapple",
+   "offSince": "2026-09-30"
+  },
   {
    "id": "plattmosphere",
    "name": "Plattmosphere",
