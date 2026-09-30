@@ -52,5 +52,13 @@
   "action": "remove_unmatched",
   "item": "spiced apple cider",
   "text": "<@U0C2GMAT8CD> 86 spiced apple cider "
+ },
+ {
+  "ts": "1790803289.725929",
+  "action": "add",
+  "item": "notes for ‘Nitro’ and ‘Contains Lactose’",
+  "section": null,
+  "text": "<@U0C2GMAT8CD> New beer: Grandma’s Pumpkin Pie - Spiced Ale, 5.5%, $8 for 16oz, $5 for 10oz, 9bbl available in a 10bbl tank. Add notes for ‘Nitro’ and ‘Contains Lactose’",
+  "logged": "2026-09-30 21:22"
  }
 ]
