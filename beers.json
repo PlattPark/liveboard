@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-01T00:43:37+00:00",
- "updatedBy": "Grandma's Pumpkin Pie 10oz $5.00",
+ "updated": "2026-10-01T00:46:14+00:00",
+ "updatedBy": "Grandma's Pumpkin Pie wall line",
  "beers": [
   {
    "id": "oktoberfest",
@@ -219,7 +219,8 @@
    "color": "#d0a04a",
    "colorTop": "#e4bd78",
    "rating": 0,
-   "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>"
+   "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "pumpkin pie spice, contains lactose"
   }
  ],
  "recent": [
