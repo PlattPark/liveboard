@@ -72,5 +72,11 @@
   "action": "remove_unmatched",
   "item": "spiced apple cider",
   "text": "<@U0C2GMAT8CD> 86 spiced apple cider "
+ },
+ {
+  "ts": "1791070355.179129",
+  "action": "remove_unmatched",
+  "item": "2 towns",
+  "text": "<@U0C2GMAT8CD> 86 2 towns"
  }
 ]
