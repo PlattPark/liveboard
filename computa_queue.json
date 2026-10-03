@@ -66,5 +66,11 @@
   "action": "remove_unmatched",
   "item": "fruited cider cosmic crisp",
   "text": "<@U0C2GMAT8CD> 86 fruited cider cosmic crisp"
+ },
+ {
+  "ts": "1791070275.994839",
+  "action": "remove_unmatched",
+  "item": "spiced apple cider",
+  "text": "<@U0C2GMAT8CD> 86 spiced apple cider "
  }
 ]
