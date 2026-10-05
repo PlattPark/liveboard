@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-01T00:46:14+00:00",
- "updatedBy": "Grandma's Pumpkin Pie wall line",
+ "updated": "2026-10-05T18:08:47+00:00",
+ "updatedBy": "Plattmosphere back on",
  "beers": [
   {
    "id": "oktoberfest",
@@ -221,29 +221,6 @@
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
    "wall": "pumpkin pie spice, contains lactose"
-  }
- ],
- "recent": [
-  {
-   "id": "kakou",
-   "name": "KĀKOU",
-   "style": "Golden Stout · Nitro",
-   "abv": 5.8,
-   "price10": 5.25,
-   "price": 8.5,
-   "rating": 3.9,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#dfa93c",
-   "colorTop": "#eec468",
-   "remainingOz": 1267,
-   "tappedDaysAgo": 8,
-   "note": "coffee, pineapple & coconut",
-   "adjuncts": [
-    "lactose"
-   ],
-   "wall": "Golden Stout w/ coconut, coffee & pineapple",
-   "offSince": "2026-09-30"
   },
   {
    "id": "plattmosphere",
@@ -270,8 +247,30 @@
      "show": "wall"
     }
    ],
-   "sash": "last keg",
-   "offSince": "2026-09-25"
+   "sash": "last keg"
+  }
+ ],
+ "recent": [
+  {
+   "id": "kakou",
+   "name": "KĀKOU",
+   "style": "Golden Stout · Nitro",
+   "abv": 5.8,
+   "price10": 5.25,
+   "price": 8.5,
+   "rating": 3.9,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#dfa93c",
+   "colorTop": "#eec468",
+   "remainingOz": 1267,
+   "tappedDaysAgo": 8,
+   "note": "coffee, pineapple & coconut",
+   "adjuncts": [
+    "lactose"
+   ],
+   "wall": "Golden Stout w/ coconut, coffee & pineapple",
+   "offSince": "2026-09-30"
   }
  ],
  "hours": {
