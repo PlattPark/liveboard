@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-06T23:11:55+00:00",
- "updatedBy": "86 Oktoberfest",
+ "updated": "2026-10-06T23:57:16+00:00",
+ "updatedBy": "Oktoberfest back on",
  "beers": [
   {
    "id": "nutorious",
@@ -229,9 +229,7 @@
     }
    ],
    "sash": "last keg"
-  }
- ],
- "recent": [
+  },
   {
    "id": "oktoberfest",
    "name": "Oktoberfest",
@@ -247,11 +245,12 @@
    "color": "#c77a1e",
    "colorTop": "#e8a53a",
    "remainingOz": 19840,
-   "tappedDaysAgo": 3,
+   "tappedDaysAgo": 0,
    "note": "toasty, copper, clean finish",
-   "wall": "Märzen · toasty, clean",
-   "offSince": "2026-10-06"
-  },
+   "wall": "Märzen · toasty, clean"
+  }
+ ],
+ "recent": [
   {
    "id": "kakou",
    "name": "KĀKOU",
