@@ -96,5 +96,13 @@
   "action": "restore_unknown",
   "item": "Transfusion cider",
   "text": "Transfusion cider is back in stock for a very short time so I grabbed a couple of kegs of that. Should be in tomorrow. For our next slushie, let's make it Peach Lemonade Vodka"
+ },
+ {
+  "ts": "1791329034.316289",
+  "action": "add",
+  "item": "Oktoberfest back",
+  "section": "menu",
+  "text": "<@U0C2GMAT8CD> add Oktoberfest back to the menu",
+  "logged": "2026-10-06 23:24"
  }
 ]
