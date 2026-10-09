@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:53:36+00:00",
- "updatedBy": "Half Acre Original Reaper wall line; La Cumbre Acclimated wall line; Tropicália IPA (CC) wall line",
+ "updated": "2026-10-09T20:28:36+00:00",
+ "updatedBy": "Grandma's Pumpkin Pie wall line",
  "beers": [
   {
    "id": "nutorious",
@@ -202,7 +202,7 @@
    "colorTop": "#e4bd78",
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "pumpkin pie spice, contains lactose"
+   "wall": "Pumpkin Nitro Ale · contains lactose"
   },
   {
    "id": "plattmosphere",
