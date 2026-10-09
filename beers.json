@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:31:29+00:00",
- "updatedBy": "added Creature Comforts Tropicalia; Creature Comforts Tropicalia wall line; Creature Comforts Tropicalia $8.50; Creature Comforts Tropicalia 10oz $5.25",
+ "updated": "2026-10-09T19:37:13+00:00",
+ "updatedBy": "86 Creature Comforts Tropicalia; Creature Comforts Tropicalia back on; Creature Comforts Tropicalia wall line; Creature Comforts Tropicalia $8.50; Creature Comforts Tropicalia 10oz $5.25",
  "beers": [
   {
    "id": "nutorious",
