@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:40:55+00:00",
- "updatedBy": "86 Creature Comforts Tropicalia; Creature Comforts Tropicalia back on; Creature Comforts Tropicalia wall line; Creature Comforts Tropicalia 10oz $5.25",
+ "updated": "2026-10-09T19:47:48+00:00",
+ "updatedBy": "86 Creature Comforts Tropicalia; added Tropicália IPA (CC); Tropicália IPA (CC) wall line; Tropicália IPA (CC) 10oz $5.25",
  "beers": [
   {
    "id": "nutorious",
@@ -265,8 +265,8 @@
    "wall": "guest tap · La Cumbre, Albuquerque"
   },
   {
-   "id": "creature-comforts-tropicalia",
-   "name": "Creature Comforts Tropicalia",
+   "id": "tropicalia-ipa-cc",
+   "name": "Tropicália IPA (CC)",
    "style": "Ipa",
    "abv": 6.6,
    "price": 8.5,
@@ -283,6 +283,24 @@
   }
  ],
  "recent": [
+  {
+   "id": "creature-comforts-tropicalia",
+   "name": "Creature Comforts Tropicalia",
+   "style": "Ipa",
+   "abv": 6.6,
+   "price": 8.5,
+   "price10": 5.25,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#d69a2b",
+   "colorTop": "#eebd55",
+   "rating": 0,
+   "note": "guest tap · Creature Comforts, Athens GA · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "guest tap · Creature Comforts, Athens GA",
+   "offSince": "2026-10-09"
+  },
   {
    "id": "oktoberfest",
    "name": "Oktoberfest",
