@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:47:48+00:00",
- "updatedBy": "86 Creature Comforts Tropicalia; added Tropicália IPA (CC); Tropicália IPA (CC) wall line; Tropicália IPA (CC) 10oz $5.25",
+ "updated": "2026-10-09T19:53:36+00:00",
+ "updatedBy": "Half Acre Original Reaper wall line; La Cumbre Acclimated wall line; Tropicália IPA (CC) wall line",
  "beers": [
   {
    "id": "nutorious",
@@ -245,7 +245,7 @@
    "colorTop": "#452a1c",
    "rating": 0,
    "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "guest tap · Half Acre, Chicago"
+   "wall": "guest tap · Stout · Chicago"
   },
   {
    "id": "la-cumbre-acclimated",
@@ -262,7 +262,7 @@
    "colorTop": "#eebd55",
    "rating": 0,
    "note": "guest tap · La Cumbre, Albuquerque · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "guest tap · La Cumbre, Albuquerque"
+   "wall": "guest tap · Pale Ale · Albuquerque"
   },
   {
    "id": "tropicalia-ipa-cc",
@@ -279,7 +279,7 @@
    "colorTop": "#eebd55",
    "rating": 0,
    "note": "guest tap · Creature Comforts, Athens GA · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "guest tap · Creature Comforts, Athens GA"
+   "wall": "guest tap · IPA · Creature Comforts, Athens GA"
   }
  ],
  "recent": [
