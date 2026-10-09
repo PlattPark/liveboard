@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:16:32+00:00",
- "updatedBy": "added Half Acre Original Reaper; added La Cumbre Acclimated",
+ "updated": "2026-10-09T19:21:10+00:00",
+ "updatedBy": "Half Acre Original Reaper wall line; La Cumbre Acclimated wall line; Half Acre Original Reaper 10oz $5.25; La Cumbre Acclimated $8.50; La Cumbre Acclimated 10oz $5.25; La Cumbre Acclimated level",
  "beers": [
   {
    "id": "nutorious",
@@ -236,7 +236,7 @@
    "style": "Stout",
    "abv": 6.0,
    "price": 8.5,
-   "price10": 5.36,
+   "price10": 5.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
    "remainingOz": 1984,
@@ -244,23 +244,25 @@
    "color": "#2a1810",
    "colorTop": "#452a1c",
    "rating": 0,
-   "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>"
+   "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "guest tap · Half Acre, Chicago"
   },
   {
    "id": "la-cumbre-acclimated",
    "name": "La Cumbre Acclimated",
    "style": "Pale Ale",
    "abv": 5.3,
-   "price": 7.5,
-   "price10": 4.72,
+   "price": 8.5,
+   "price10": 5.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
-   "remainingOz": 1984,
+   "remainingOz": 674,
    "tappedDaysAgo": 0,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
    "rating": 0,
-   "note": "guest tap · La Cumbre, Albuquerque · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>"
+   "note": "guest tap · La Cumbre, Albuquerque · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "guest tap · La Cumbre, Albuquerque"
   }
  ],
  "recent": [
