@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:21:10+00:00",
- "updatedBy": "Half Acre Original Reaper wall line; La Cumbre Acclimated wall line; Half Acre Original Reaper 10oz $5.25; La Cumbre Acclimated $8.50; La Cumbre Acclimated 10oz $5.25; La Cumbre Acclimated level",
+ "updated": "2026-10-09T19:31:29+00:00",
+ "updatedBy": "added Creature Comforts Tropicalia; Creature Comforts Tropicalia wall line; Creature Comforts Tropicalia $8.50; Creature Comforts Tropicalia 10oz $5.25",
  "beers": [
   {
    "id": "nutorious",
@@ -263,6 +263,23 @@
    "rating": 0,
    "note": "guest tap · La Cumbre, Albuquerque · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
    "wall": "guest tap · La Cumbre, Albuquerque"
+  },
+  {
+   "id": "creature-comforts-tropicalia",
+   "name": "Creature Comforts Tropicalia",
+   "style": "Ipa",
+   "abv": 6.6,
+   "price": 8.5,
+   "price10": 5.25,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#d69a2b",
+   "colorTop": "#eebd55",
+   "rating": 0,
+   "note": "guest tap · Creature Comforts, Athens GA · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "guest tap · Creature Comforts, Athens GA"
   }
  ],
  "recent": [
