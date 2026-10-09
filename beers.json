@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-09T19:12:57+00:00",
- "updatedBy": "Tropical Snow Dance last keg",
+ "updated": "2026-10-09T19:16:32+00:00",
+ "updatedBy": "added Half Acre Original Reaper; added La Cumbre Acclimated",
  "beers": [
   {
    "id": "nutorious",
@@ -229,6 +229,38 @@
      "show": "wall"
     }
    ]
+  },
+  {
+   "id": "half-acre-original-reaper",
+   "name": "Half Acre Original Reaper",
+   "style": "Stout",
+   "abv": 6.0,
+   "price": 8.5,
+   "price10": 5.36,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#2a1810",
+   "colorTop": "#452a1c",
+   "rating": 0,
+   "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>"
+  },
+  {
+   "id": "la-cumbre-acclimated",
+   "name": "La Cumbre Acclimated",
+   "style": "Pale Ale",
+   "abv": 5.3,
+   "price": 7.5,
+   "price10": 4.72,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#d69a2b",
+   "colorTop": "#eebd55",
+   "rating": 0,
+   "note": "guest tap · La Cumbre, Albuquerque · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>"
   }
  ],
  "recent": [
