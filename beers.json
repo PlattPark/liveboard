@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-08T20:10:01+00:00",
- "updatedBy": "Plattmosphere sash off",
+ "updated": "2026-10-09T19:12:57+00:00",
+ "updatedBy": "Tropical Snow Dance last keg",
  "beers": [
   {
    "id": "nutorious",
@@ -168,12 +168,12 @@
    "price10": 5.25,
    "price": 8.5,
    "rating": 3.74,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
    "tall": true,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
-   "remainingOz": 23808,
+   "remainingOz": 1091,
    "tappedDaysAgo": 0,
    "note": "all Mosaic · grapefruit, crisp",
    "wall": "Mosaic IPA · crisp",
@@ -184,7 +184,8 @@
      "year": 2025,
      "show": "site"
     }
-   ]
+   ],
+   "sash": "last keg"
   },
   {
    "id": "grandma-s-pumpkin-pie",
