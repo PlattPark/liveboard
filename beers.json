@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-10T22:01:54+00:00",
- "updatedBy": "Madagascar Dream level; Grandma's Pumpkin Pie level",
+ "updated": "2026-10-10T22:44:47+00:00",
+ "updatedBy": "86 Tropicália IPA (CC)",
  "beers": [
   {
    "id": "nutorious",
@@ -246,7 +246,9 @@
    "rating": 0,
    "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
    "wall": "guest tap · Stout · Chicago"
-  },
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
@@ -262,10 +264,9 @@
    "colorTop": "#eebd55",
    "rating": 0,
    "note": "guest tap · Creature Comforts, Athens GA · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "guest tap · IPA · Creature Comforts, Athens GA"
-  }
- ],
- "recent": [
+   "wall": "guest tap · IPA · Creature Comforts, Athens GA",
+   "offSince": "2026-10-10"
+  },
   {
    "id": "la-cumbre-acclimated",
    "name": "La Cumbre Acclimated",
