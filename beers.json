@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-10T00:15:41+00:00",
- "updatedBy": "86 La Cumbre Acclimated",
+ "updated": "2026-10-10T21:53:38+00:00",
+ "updatedBy": "Tropicália IPA (CC) level; Half Acre Original Reaper level",
  "beers": [
   {
    "id": "nutorious",
@@ -239,7 +239,7 @@
    "price10": 5.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
-   "remainingOz": 1984,
+   "remainingOz": 1706,
    "tappedDaysAgo": 0,
    "color": "#2a1810",
    "colorTop": "#452a1c",
@@ -256,7 +256,7 @@
    "price10": 5.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
-   "remainingOz": 1984,
+   "remainingOz": 714,
    "tappedDaysAgo": 0,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
