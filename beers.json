@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-10T23:12:55+00:00",
- "updatedBy": "86 Tropical Snow Dance",
+ "updated": "2026-10-10T23:50:10+00:00",
+ "updatedBy": "86 Grandma's Pumpkin Pie",
  "beers": [
   {
    "id": "nutorious",
@@ -161,23 +161,6 @@
    "pick": true
   },
   {
-   "id": "grandma-s-pumpkin-pie",
-   "name": "Grandma's Pumpkin Pie",
-   "style": "Spiced Ale · Nitro",
-   "abv": 5.5,
-   "price": 8.0,
-   "price10": 5.0,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "remainingOz": 32537,
-   "tappedDaysAgo": 0,
-   "color": "#d0a04a",
-   "colorTop": "#e4bd78",
-   "rating": 0,
-   "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "Pumpkin Nitro Ale · contains lactose"
-  },
-  {
    "id": "plattmosphere",
    "name": "Plattmosphere",
    "style": "Hazy IPA",
@@ -222,6 +205,24 @@
   }
  ],
  "recent": [
+  {
+   "id": "grandma-s-pumpkin-pie",
+   "name": "Grandma's Pumpkin Pie",
+   "style": "Spiced Ale · Nitro",
+   "abv": 5.5,
+   "price": 8.0,
+   "price10": 5.0,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "remainingOz": 32537,
+   "tappedDaysAgo": 0,
+   "color": "#d0a04a",
+   "colorTop": "#e4bd78",
+   "rating": 0,
+   "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "Pumpkin Nitro Ale · contains lactose",
+   "offSince": "2026-10-10"
+  },
   {
    "id": "tropical-snow-dance",
    "name": "Tropical Snow Dance",
