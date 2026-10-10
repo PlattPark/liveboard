@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-10T23:50:10+00:00",
- "updatedBy": "86 Grandma's Pumpkin Pie",
+ "updated": "2026-10-10T23:52:47+00:00",
+ "updatedBy": "Grandma's Pumpkin Pie back on",
  "beers": [
   {
    "id": "nutorious",
@@ -202,9 +202,7 @@
    "rating": 0,
    "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
    "wall": "guest tap · Stout · Chicago"
-  }
- ],
- "recent": [
+  },
   {
    "id": "grandma-s-pumpkin-pie",
    "name": "Grandma's Pumpkin Pie",
@@ -220,9 +218,10 @@
    "colorTop": "#e4bd78",
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "Pumpkin Nitro Ale · contains lactose",
-   "offSince": "2026-10-10"
-  },
+   "wall": "Pumpkin Nitro Ale · contains lactose"
+  }
+ ],
+ "recent": [
   {
    "id": "tropical-snow-dance",
    "name": "Tropical Snow Dance",
