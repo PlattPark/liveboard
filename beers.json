@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-10T21:53:38+00:00",
- "updatedBy": "Tropicália IPA (CC) level; Half Acre Original Reaper level",
+ "updated": "2026-10-10T22:01:54+00:00",
+ "updatedBy": "Madagascar Dream level; Grandma's Pumpkin Pie level",
  "beers": [
   {
    "id": "nutorious",
@@ -137,7 +137,7 @@
    "vesselLabel": "20 BBL",
    "color": "#c9973c",
    "colorTop": "#e6bd6e",
-   "remainingOz": 39680,
+   "remainingOz": 37299,
    "tappedDaysAgo": 21,
    "note": "Madagascar vanilla on nitro velvet",
    "wall": "Vanilla Cream · Nitro"
@@ -196,7 +196,7 @@
    "price10": 5.0,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 35712,
+   "remainingOz": 32537,
    "tappedDaysAgo": 0,
    "color": "#d0a04a",
    "colorTop": "#e4bd78",
