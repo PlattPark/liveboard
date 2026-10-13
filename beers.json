@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:57:14+00:00",
- "updatedBy": "86 Witbier",
+ "updated": "2026-10-13T20:57:50+00:00",
+ "updatedBy": "Witbier back on",
  "beers": [
   {
    "id": "half-acre-original-reaper",
@@ -229,9 +229,7 @@
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
    "wall": "Pumpkin Nitro Ale · contains lactose"
-  }
- ],
- "recent": [
+  },
   {
    "id": "witbier",
    "name": "Witbier",
@@ -244,12 +242,13 @@
    "vesselLabel": "10 BBL",
    "color": "#e6d9a0",
    "colorTop": "#f3ecc4",
-   "remainingOz": 1904,
-   "tappedDaysAgo": 4,
+   "remainingOz": 19840,
+   "tappedDaysAgo": 0,
    "note": "light Belgian wheat",
-   "wall": "Witbier · light wheat",
-   "offSince": "2026-10-13"
-  },
+   "wall": "Witbier · light wheat"
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
