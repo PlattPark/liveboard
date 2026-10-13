@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:03:15+00:00",
- "updatedBy": "Plattmosphere back on",
+ "updated": "2026-10-13T20:43:49+00:00",
+ "updatedBy": "86 Platty Lite",
  "beers": [
   {
    "id": "nutorious",
@@ -37,32 +37,6 @@
      "level": "silver",
      "year": 2025,
      "show": "site"
-    }
-   ]
-  },
-  {
-   "id": "platty-lite",
-   "name": "Platty Lite",
-   "style": "Light Lager",
-   "abv": 4,
-   "price10": 4.25,
-   "price": 6.5,
-   "rating": 3.56,
-   "vessel": "tank20",
-   "vesselLabel": "20 BBL",
-   "tall": true,
-   "color": "#e3c25a",
-   "colorTop": "#f2dc8a",
-   "remainingOz": 6745,
-   "tappedDaysAgo": 6,
-   "note": "the all-day lager",
-   "wall": "Light Lager · all-day",
-   "medals": [
-    {
-     "comp": "State Fair",
-     "level": "silver",
-     "year": 2026,
-     "show": "wall"
     }
    ]
   },
@@ -249,6 +223,33 @@
   }
  ],
  "recent": [
+  {
+   "id": "platty-lite",
+   "name": "Platty Lite",
+   "style": "Light Lager",
+   "abv": 4,
+   "price10": 4.25,
+   "price": 6.5,
+   "rating": 3.56,
+   "vessel": "tank20",
+   "vesselLabel": "20 BBL",
+   "tall": true,
+   "color": "#e3c25a",
+   "colorTop": "#f2dc8a",
+   "remainingOz": 6745,
+   "tappedDaysAgo": 6,
+   "note": "the all-day lager",
+   "wall": "Light Lager · all-day",
+   "medals": [
+    {
+     "comp": "State Fair",
+     "level": "silver",
+     "year": 2026,
+     "show": "wall"
+    }
+   ],
+   "offSince": "2026-10-13"
+  },
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
