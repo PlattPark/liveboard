@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:49:40+00:00",
- "updatedBy": "86 Chela Morena",
+ "updated": "2026-10-13T20:50:15+00:00",
+ "updatedBy": "Chela Morena back on",
  "beers": [
   {
    "id": "nutorious",
@@ -228,9 +228,7 @@
    "tappedDaysAgo": 0,
    "note": "jasmine rice, light and crispy",
    "wall": "Rice Lager · crisp"
-  }
- ],
- "recent": [
+  },
   {
    "id": "chela",
    "name": "Chela Morena",
@@ -243,13 +241,14 @@
    "vesselLabel": "10 BBL",
    "color": "#6e4a2a",
    "colorTop": "#8a5f38",
-   "remainingOz": 36902,
+   "remainingOz": 11904,
    "tappedDaysAgo": 0,
    "note": "the dark one that drinks light",
    "wall": "Mexican Dark Lager",
-   "pick": true,
-   "offSince": "2026-10-13"
-  },
+   "pick": true
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
