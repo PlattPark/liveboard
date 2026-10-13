@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:48:31+00:00",
- "updatedBy": "86 Nadare",
+ "updated": "2026-10-13T20:49:05+00:00",
+ "updatedBy": "Nadare back on",
  "beers": [
   {
    "id": "nutorious",
@@ -229,9 +229,7 @@
      "show": "wall"
     }
    ]
-  }
- ],
- "recent": [
+  },
   {
    "id": "nadare",
    "name": "Nadare",
@@ -244,12 +242,13 @@
    "vesselLabel": "10 BBL",
    "color": "#e8d58a",
    "colorTop": "#f5e9b3",
-   "remainingOz": 32140,
-   "tappedDaysAgo": 2,
+   "remainingOz": 15872,
+   "tappedDaysAgo": 0,
    "note": "jasmine rice, light and crispy",
-   "wall": "Rice Lager · crisp",
-   "offSince": "2026-10-13"
-  },
+   "wall": "Rice Lager · crisp"
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
