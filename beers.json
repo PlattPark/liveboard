@@ -1,45 +1,8 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:51:57+00:00",
- "updatedBy": "Astronaut Amber back on",
+ "updated": "2026-10-13T20:53:35+00:00",
+ "updatedBy": "86 Nutorious",
  "beers": [
-  {
-   "id": "nutorious",
-   "name": "Nutorious",
-   "style": "Pistachio Cream Ale",
-   "abv": 6,
-   "price10": 5,
-   "price": 8.5,
-   "rating": 3.88,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#b7893f",
-   "colorTop": "#d4a95c",
-   "remainingOz": 4999,
-   "tappedDaysAgo": 18,
-   "note": "pistachio, cream, a little sweet",
-   "wall": "Pistachio Cream Ale",
-   "medals": [
-    {
-     "comp": "US Open",
-     "level": "gold",
-     "year": 2026,
-     "show": "wall"
-    },
-    {
-     "comp": "US Open",
-     "level": "bronze",
-     "year": 2025,
-     "show": "menu"
-    },
-    {
-     "comp": "DIBC",
-     "level": "silver",
-     "year": 2025,
-     "show": "site"
-    }
-   ]
-  },
   {
    "id": "witbier",
    "name": "Witbier",
@@ -249,6 +212,44 @@
   }
  ],
  "recent": [
+  {
+   "id": "nutorious",
+   "name": "Nutorious",
+   "style": "Pistachio Cream Ale",
+   "abv": 6,
+   "price10": 5,
+   "price": 8.5,
+   "rating": 3.88,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#b7893f",
+   "colorTop": "#d4a95c",
+   "remainingOz": 4999,
+   "tappedDaysAgo": 18,
+   "note": "pistachio, cream, a little sweet",
+   "wall": "Pistachio Cream Ale",
+   "medals": [
+    {
+     "comp": "US Open",
+     "level": "gold",
+     "year": 2026,
+     "show": "wall"
+    },
+    {
+     "comp": "US Open",
+     "level": "bronze",
+     "year": 2025,
+     "show": "menu"
+    },
+    {
+     "comp": "DIBC",
+     "level": "silver",
+     "year": 2025,
+     "show": "site"
+    }
+   ],
+   "offSince": "2026-10-13"
+  },
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
