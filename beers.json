@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:56:01+00:00",
- "updatedBy": "86 Grandma's Pumpkin Pie",
+ "updated": "2026-10-13T20:56:38+00:00",
+ "updatedBy": "Grandma's Pumpkin Pie back on",
  "beers": [
   {
    "id": "witbier",
@@ -229,9 +229,7 @@
    "tappedDaysAgo": 0,
    "note": "Madagascar vanilla on nitro velvet",
    "wall": "Vanilla Cream · Nitro"
-  }
- ],
- "recent": [
+  },
   {
    "id": "grandma-s-pumpkin-pie",
    "name": "Grandma's Pumpkin Pie",
@@ -241,15 +239,16 @@
    "price10": 5.0,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 32537,
+   "remainingOz": 23808,
    "tappedDaysAgo": 0,
    "color": "#d0a04a",
    "colorTop": "#e4bd78",
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "Pumpkin Nitro Ale · contains lactose",
-   "offSince": "2026-10-13"
-  },
+   "wall": "Pumpkin Nitro Ale · contains lactose"
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
