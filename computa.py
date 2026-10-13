@@ -410,16 +410,30 @@ def parse_line(line, woke):
                         (KICKED_RE, "remove"), (BACK_RE, "back"), (LASTKEG_RE, "lastkeg")):
             m = rx.search(line)
             if m:
+                if act == "back" and not woke and chatter_tail(line[m.end():]):
+                    continue   # "Transfusion cider is back in stock for a very short time so I grabbed..." is talk, not a command
                 # "back" carries its own line so a multi-line batch reads each beer's level from its line
-                return act, m.group("item").strip(" .,-"), (line if act == "back" else None)
+                item = re.sub(r"^(?:re[- ]?add|add|put|bring)\s+", "", m.group("item").strip(" .,-"), flags=re.I)   # "add kakou back on"
+                return act, item.strip(" .,-"), (line if act == "back" else None)
         m = FLAVOR_RE.search(line)
         if m and not re.search(r"\b(back|kicked|out|low|fixed|broken)\b", m.group("flavor"), re.I):
             return "flavor", m.group("item").strip(" .,-"), m.group("flavor").strip(" .,-")
-        if woke:
-            m = ADD_RE.search(line)
-            if m:
-                return "add", m.group("item").strip(" .,-"), (m.group("section") or "").strip() or None
+        m = ADD_RE.search(line)
+        if m and (woke or re.match(r"^\s*(?:re[- ]?add|add|put)\b", line, re.I)):
+            item = re.sub(r"\s+back(?:\s+on|\s+up)?\s*$", "", m.group("item").strip(" .,-"), flags=re.I).strip(" .,-")
+            return "add", item, {"section": (m.group("section") or "").strip() or None, "line": line, "woke": bool(woke)}
     return None
+
+
+def chatter_tail(tail):
+    """What follows "X is back (on)" on the same line. A level, a short aside or nothing = a command;
+    a sentence that keeps going = someone talking about a beer, not to Computa."""
+    t = (tail or "").strip()
+    if not t or t[0] in ",;:-(!." or LEVEL_RE.search(t):
+        return False
+    if re.match(r"^(?:on\s+)?(?:tap|tonight|today|now|again|this\s+(?:morning|afternoon|evening))\b[.!]?\s*$", t, re.I):
+        return False
+    return len(t.split()) > 2
 
 
 def when_to_date(w):
@@ -536,6 +550,34 @@ def medal_tag(b):
     top = sorted(ms, key=lambda m: (MEDAL_RANK.get(m.get("level"), 0), m.get("year") or 0), reverse=True)[0]
     return " " + MEDAL_EMOJI.get(top.get("level"), ":medal:")
 
+
+COLBY = "U08T34X7G"
+_nudged = {}
+
+def nudge_colby(item, text, channel):
+    """Anything Computa punts goes to Colby as a DM with the original message - the queue file is only a log now."""
+    key = norm(item)[:40]
+    if time.time() - _nudged.get(key, 0) < 3600 or DRY:
+        return
+    _nudged[key] = time.time()
+    try:
+        slack("chat.postMessage", channel=COLBY,
+              text=":grey_question: Couldn't handle *%s* in #%s:\n> %s" % (item, CHANNELS.get(channel, channel), (text or "").replace("\n", " / ")[:300]))
+    except Exception as e:
+        print("  ! nudge: %s" % e)
+
+
+def whats_where(data):
+    """One line each: what's pouring, what came off recently, what's on the side panel."""
+    beers = data.get("beers", []); recent = data.get("recent", [])
+    out = ["Pouring: " + (" \u00b7 ".join(b["name"] for b in beers) or "nothing")]
+    if recent:
+        out.append("Recently off: " + " \u00b7 ".join(b["name"] for b in recent[:8]))
+    also = data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT
+    out.append("Also pouring: " + " \u00b7 ".join(x["name"] for x in also))
+    return "\n".join(out)
+
+
 def square_move(item, back):
     """An 86 (or a back) for something that isn't on the tap list: try the register.
     -> (ok, reply_or_None, label). Never raises."""
@@ -633,6 +675,10 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             b = None
         else:
             b = hits[0] if hits else None
+        gone = None if b or reply else match_beer(item, recent)
+        if gone:
+            reply = ":information_source: *%s* is already off the board%s. Say _\"%s is back on\"_ to bring it back." % (
+                gone["name"], (" (since %s)" % gone["offSince"]) if gone.get("offSince") else "", gone["name"])
         if b:
             beers.remove(b)
             b["offSince"] = datetime.now().strftime("%Y-%m-%d")
@@ -652,8 +698,8 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                 if ok: change = None          # nothing in beers.json changed; Square holds the state
             else:
                 queue.append({"ts": ts, "action": "remove_unmatched", "item": item, "text": msg.get("text", "")})
-                reply = (":grey_question: Couldn't match *%s* to anything pouring%s. Flagged it for Colby." %
-                         (item, " or at the register" if square and square.enabled() else ""))
+                nudge_colby(item, msg.get("text", ""), channel)
+                reply = ":grey_question: Didn't find *%s*.\n%s" % (item, whats_where(data))
 
     elif action == "back":
         b = match_beer(item, recent)
@@ -679,8 +725,9 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                 reply = sq_reply
             else:
                 queue.append({"ts": ts, "action": "restore_unknown", "item": item, "text": msg.get("text", "")})
-                reply = (":grey_question: *%s* isn't in the recently-off list%s, so I don't have its price "
-                         "and tank details. Colby needs to add it." % (item, " or at the register" if square and square.enabled() else ""))
+                nudge_colby(item, msg.get("text", ""), channel)
+                reply = (":grey_question: *%s* isn't on the recently-off list, so I don't have its price and tank. "
+                         "For a brand-new beer: _\"New beer: Name \u2014 Style, 5.2%%, notes\"_.\n%s" % (item, whats_where(data)))
 
     elif action == "pick":
         b = match_beer(item, beers)
@@ -799,6 +846,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
     elif action == "report":
         queue.append({"ts": ts, "action": "report", "item": item, "text": msg.get("text", ""),
                       "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
+        nudge_colby(item, msg.get("text", ""), channel)
         reply = ":eyes: Got it - flagged for Colby. If you want me to change it, tell me what it should say."
 
     elif action == "status":
@@ -926,13 +974,23 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                         ("\n" + beer["note"]) if beer.get("note") else "",
                         "; ".join(assumed)))
 
-    elif action in ("add", "needs_button"):
-        queue.append({"ts": ts, "action": action, "item": item, "section": extra,
-                      "text": msg.get("text", ""), "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
-        need = "a POS button" if action == "needs_button" else "a price, tank size and colour"
-        reply = (":pencil: Logged: *%s*%s\nNeeds %s before it can go up. Nothing publishes half-built."
-                 % (item, (" -> " + extra) if extra else "", need))
+    elif action == "add" and (match_beer(item, recent) or match_beer(item, beers)):
+        # "re add tropical snow dance" / "add Oktoberfest back to the menu": it's a restore, not a new beer
+        ex = extra if isinstance(extra, dict) else {}
+        return handle_one(msg, data, queue, channel, "back", item, ex.get("line") or msg.get("text", ""))
 
+    elif action in ("add", "needs_button"):
+        ex = extra if isinstance(extra, dict) else {}
+        section = ex.get("section") if isinstance(extra, dict) else extra
+        if action == "add" and not ex.get("woke", True):
+            return None   # plain chatter with the word "add" in it, no beer we know - stay quiet
+        queue.append({"ts": ts, "action": action, "item": item, "section": section,
+                      "text": msg.get("text", ""), "logged": datetime.now().strftime("%Y-%m-%d %H:%M")})
+        if action == "needs_button":
+            reply = ":pencil: Logged: *%s* needs a POS button." % item
+        else:
+            reply = (":grey_question: *%s* isn't a beer I know. For a brand-new one: _\"New beer: Name \u2014 Style, 5.2%%, notes\"_ "
+                     "and it goes up with a default price.\n%s" % (item, whats_where(data)))
     print("  [%s] %s -> %s" % (action, item if isinstance(item, str) else item.get("name"), change or "queued"))
     return change, (channel, ts, reply) if reply else None
 
