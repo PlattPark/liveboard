@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:46:55+00:00",
- "updatedBy": "Platty Lite back on",
+ "updated": "2026-10-13T20:48:31+00:00",
+ "updatedBy": "86 Nadare",
  "beers": [
   {
    "id": "nutorious",
@@ -39,23 +39,6 @@
      "show": "site"
     }
    ]
-  },
-  {
-   "id": "nadare",
-   "name": "Nadare",
-   "style": "Japanese Rice Lager",
-   "abv": 5.2,
-   "price10": 4.75,
-   "price": 7.5,
-   "rating": 3.37,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#e8d58a",
-   "colorTop": "#f5e9b3",
-   "remainingOz": 32140,
-   "tappedDaysAgo": 2,
-   "note": "jasmine rice, light and crispy",
-   "wall": "Rice Lager · crisp"
   },
   {
    "id": "astronaut-amber",
@@ -249,6 +232,24 @@
   }
  ],
  "recent": [
+  {
+   "id": "nadare",
+   "name": "Nadare",
+   "style": "Japanese Rice Lager",
+   "abv": 5.2,
+   "price10": 4.75,
+   "price": 7.5,
+   "rating": 3.37,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#e8d58a",
+   "colorTop": "#f5e9b3",
+   "remainingOz": 32140,
+   "tappedDaysAgo": 2,
+   "note": "jasmine rice, light and crispy",
+   "wall": "Rice Lager · crisp",
+   "offSince": "2026-10-13"
+  },
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
