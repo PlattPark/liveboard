@@ -176,6 +176,7 @@ function render(s){
     prev[beer.id]=beer.remainingOz;
     }catch(e){ console.error('tank render failed', beer&&beer.id, e); }
   }
+  if(window.__also && window.__also.length){ renderAlso(window.__also); }
   if(s.side){
     for(const it of s.side){
       const el=$('s-'+it.id); if(!el) continue;
@@ -244,7 +245,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
-        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || '';
+        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null;
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
         try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
@@ -275,6 +276,26 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
     window.__noData = true;
   }
 })();
+
+/* Also Pouring from data. Computa edits beers.json["also"] ("remove X from also pouring", "X is now Y",
+   "add X to also pouring: sub, $9"); the panel rebuilds from it. No "also" key = the markup in board.html. */
+var _alsoFp = '';
+function renderAlso(list){
+  var side = document.getElementById('side'); if(!side) return;
+  var fp = JSON.stringify(list); if(fp === _alsoFp) return; _alsoFp = fp;
+  var esc = function(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var html = '<div class="side-h">Also pouring</div>';
+  list.forEach(function(it){
+    var sub = esc(it.sub||'').replace(/\s*\u00b7\s*/g, ' &middot; ');
+    var frozen = /frozen/i.test(it.name||'');
+    if(frozen) sub = sub.replace(/ &middot; /g, '<br>');
+    var slug = String(it.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    html += '<div class="s-item' + (frozen?' frozen':'') + '" id="s-' + slug + '"><span class="s-name">' + esc(it.name) + '</span>' +
+            '<div class="s-row"><span class="s-flavor"' + (frozen?' id="sFlavor"':'') + '>' + sub + '</span><span class="s-price">' + esc(it.price||'') + '</span></div></div>';
+  });
+  html += '<div class="s-foot">Full bar &middot; NA options too</div>';
+  side.innerHTML = html;
+}
 
 async function checkTaps(){
   try{
@@ -331,7 +352,8 @@ function payload(){
 }
 
 
-function simulate(){ /* showcase heartbeat: one sim pint at a time, until Monday's real pours take over */
+function simulate(){ /* showcase heartbeat: one sim pint at a time - ONLY when there is no beers.json (demo/preview) */
+  if(window.__LIVE || (typeof _tapFp!=='undefined' && _tapFp)) return;   /* Oct 13 2026: with real beers.json levels this used to pin twelve tanks to a Sept 8 table and fake-pour them, so nothing anyone typed ever showed on the wall */
   // materialize each tank's volume once, so pours subtract from real numbers
   const REAL_LEVELS={"oktoberfest": 0.85, "plattmosphere": 0.12, "tropical-snow-dance": 0.261, "platty-lite": 0.96, "nutorious": 0.96, "nadare": 0.826, "astronaut-amber": 0.823, "madagascar-dream": 0.5, "kakou": 0.16, "watermelon-sour": 0.05, "pacific-detour": 0.6, "witbier": 0.64}; // Greg's Mon 9/8 inventory − his burn rates × 3.6 days (Square: this week ran 1.00× normal) + Jules's Wed notes
   try{ const snap=payload(); snap.beers.forEach(pb=>{ const sb=SIM.beers.find(x=>x.id===pb.id); if(!sb) return;
