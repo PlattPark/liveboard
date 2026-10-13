@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:54:48+00:00",
- "updatedBy": "86 Madagascar Dream",
+ "updated": "2026-10-13T20:55:24+00:00",
+ "updatedBy": "Madagascar Dream back on",
  "beers": [
   {
    "id": "witbier",
@@ -229,9 +229,7 @@
      "show": "site"
     }
    ]
-  }
- ],
- "recent": [
+  },
   {
    "id": "madagascar-dream",
    "name": "Madagascar Dream",
@@ -244,12 +242,13 @@
    "vesselLabel": "20 BBL",
    "color": "#c9973c",
    "colorTop": "#e6bd6e",
-   "remainingOz": 37299,
-   "tappedDaysAgo": 21,
+   "remainingOz": 27776,
+   "tappedDaysAgo": 0,
    "note": "Madagascar vanilla on nitro velvet",
-   "wall": "Vanilla Cream · Nitro",
-   "offSince": "2026-10-13"
-  },
+   "wall": "Vanilla Cream · Nitro"
+  }
+ ],
+ "recent": [
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
