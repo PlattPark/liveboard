@@ -188,6 +188,46 @@ NOLASTKEG_RE = re.compile(r"(?:^(?:remove|clear|take\s+off|drop)\s+(?:the\s+)?la
                           r"|^(?:the\s+)?(?P<item3>.{2,48}?)\s+last\s*keg\s+(?:sash\s+)?off"
                           r"|^(?:the\s+)?(?P<item4>.{2,48}?)\s+should\s*(?:n'?t|\s+not)\s+(?:say|be|show|read)\s+(?:on\s+)?last\s*keg)[.!]?\s*$", re.I)
 PRICE10_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+10\s*oz\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)[.!]?\s*$", re.I)
+# "Also Pouring" panel (ciders, kombucha, wine, cocktails) - lives in beers.json["also"]; seeded from this list the first time a command touches it
+ALSO_DEFAULT = [
+    {"name": "BrightCider",      "sub": "2 Towns \u00b7 dry cider",      "price": "$9"},
+    {"name": "Pumpkin Cider",    "sub": "2 Towns \u00b7 seasonal",       "price": "$9"},
+    {"name": "Boochcraft",       "sub": "kiwi citrus kombucha",         "price": "$9"},
+    {"name": "Bravazzi",         "sub": "hard Italian soda",            "price": "$9"},
+    {"name": "Wine",             "sub": "red \u00b7 white \u00b7 ros\u00e9", "price": "$9\u201311"},
+    {"name": "Draft Cocktail",   "sub": "Craftwell peach mojito",       "price": "$12"},
+    {"name": "Frozen Cocktails", "sub": "Mexican Firing Squad \u00b7 Transfusion", "price": "$12"},
+]
+ALSO_RM_RE  = re.compile(r"^(?:(?:remove|take|drop|pull|delete)\s+(?P<item>.{2,40}?)\s+(?:off|from|off\s+of|out\s+of)\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)|also\s+pouring\s*[:\-]\s*(?:remove|drop|delete)\s+(?P<item2>.{2,40}?))[.!]?\s*$", re.I)
+ALSO_ADD_RE = re.compile(r"^(?:add\s+)?(?P<item>.{2,40}?)\s+to\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)(?:\s*[:,\-\u2014]\s*(?P<sub>[^$]{0,70}?))?(?:\s*\$\s*(?P<price>\d+(?:\.\d+)?(?:\s*[-\u2013]\s*\d+(?:\.\d+)?)?))?[.!]?\s*$", re.I)
+
+def style_case(text):
+    """Title-case a style but keep the beer acronyms upright: IPA, DIPA, APA, NA, ESB, NEIPA, Marzen stays as typed."""
+    KEEP = {"ipa", "dipa", "tipa", "apa", "na", "esb", "neipa", "ddh", "bbl", "n/a"}
+    out = []
+    for w in (text or "").split():
+        core = w.strip("()·,")
+        out.append(w.upper() if core.lower() in KEEP else (w if w[:1].isupper() and w[1:].islower() else w.title()))
+    return " ".join(out)
+
+def also_list(data):
+    lst = data.get("also")
+    if not isinstance(lst, list):
+        lst = [dict(x) for x in ALSO_DEFAULT]
+        data["also"] = lst
+    return lst
+
+def match_also(name, lst):
+    q = norm(name)
+    if not q: return None
+    for it in lst:
+        n = norm(it.get("name", ""))
+        if q == n or q in n or n in q:
+            return it
+    return None
+
+GUEST_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:a\s+|our\s+)?guest\s+tap|guest\s+tap\s*[:=]?\s*(?P<state>on|yes|off|no)?|sash\s*[:=]\s*(?P<sash>.{2,24}?))[.!]?\s*$", re.I)
+ADJUNCT_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:contains|has|allergens?\s*[:=])\s*(?P<what>(?:lactose|wheat|gluten|nuts?|peanuts?|tree\s+nuts?|dairy|honey|coconut|none|nothing)(?:\s*(?:,|and|&|·)\s*(?:lactose|wheat|gluten|nuts?|peanuts?|tree\s+nuts?|dairy|honey|coconut))*)[.!]?\s*$", re.I)
 PRICE_RE   = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+now|now|is|=|->|to)\s+\$\s*(?P<price>\d+(?:\.\d{1,2})?)(?:\s*(?:a\s+)?(?:pint|pints))?[.!]?\s*$", re.I)
 ABV_RE     = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:now\s+)?|abv\s*(?:is|=|:)?\s*)(?P<abv>\d{1,2}(?:\.\d)?)\s*%(?:\s*abv)?[.!]?\s*$", re.I)
 FRESHKEG_RE= re.compile(r"^(?:a\s+)?(?:fresh|new)\s+keg\s+(?:of\s+)?(?:the\s+)?(?P<item>.{2,48}?)(?:\s+(?:is\s+)?(?:on|tapped|up|pouring))?[.!]?\s*$", re.I)
@@ -252,24 +292,56 @@ IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|
 
 NEWBEER_TRIGGER = re.compile(r"^\s*(?:computa+h?\s*[,!:]?\s*)?(?:new\s+beer|new\s+tap|just\s+tapped|now\s+pouring|on\s+tap\s+now)\b", re.I)
 
+# Messages sent through the Claude Slack app arrive with " *Sent using* <@U…|Claude>" on the end of the text
+# (inline, not on its own line). It broke every end-anchored command on Sept 30 2026; strip it before parsing.
+SENT_USING_RE = re.compile(r"\s*\*?Sent using\*?\s*<@U[A-Z0-9]+(?:\|[^>]*)?>\s*$", re.I)
+
+WOKE_RE = re.compile(r"^\s*(?:<@U[A-Z0-9]+(?:\|[^>]*)?>|%s\b)[\s,!:.\-]*" % WAKE, re.I)
+
 def parse(text):
-    body = text.strip()
-    # Announcements and essays are not commands: long, or formatted with backticks.
-    if len(body) > 220 or "`" in body:
-        return None
+    """First command in the message (kept for callers that want one)."""
+    cmds = parse_all(text)
+    return cmds[0] if cmds else None
+
+
+def mentioned(text):
+    return bool(WOKE_RE.match(SENT_USING_RE.sub("", text or "").strip()))
+
+
+def parse_all(text):
+    """Every command in the message, one per line. Oct 13 2026: Jules posted nine tank levels in one
+    @Computa message and nothing happened - the old guard dropped any message over 220 chars and the
+    line loop returned after the first hit. Now each line is judged on its own; a message that reads
+    like an announcement (backticks) is still ignored, as is any single line over 220 chars."""
+    body = SENT_USING_RE.sub("", text or "").strip()
+    if "`" in body or len(body) > 2000:
+        return []
     if newbeer and NEWBEER_TRIGGER.match(body):
         nb = newbeer.parse_new_beer(body)
         if nb and nb.get("name"):
-            return "newbeer", nb, body   # handle() turns this into a restore if the name is already known
+            return [("newbeer", nb, body)]   # handle() turns this into a restore if the name is already known
     # "@Computa 86 chela" arrives as "<@U0C2GMAT8CD> 86 chela" - the mention is the wake word
-    woke = re.match(r"^\s*(?:<@U[A-Z0-9]+(?:\|[^>]*)?>|%s\b)[\s,!:.\-]*" % WAKE, body, re.I)
+    woke = WOKE_RE.match(body)
     if woke:
         body = body[woke.end():].strip()
+    out = []
     for line in [l.strip() for l in body.split("\n") if l.strip()]:
-        if IGNORE.search(line):
+        if len(line) > 220 or IGNORE.search(line):
             continue
+        c = parse_line(line, woke)
+        if c:
+            out.append(c)
+            if c[0] in ("status", "nopick", "report"):
+                break
+    return out
+
+
+def parse_line(line, woke):
+    if True:
         if STATUS_RE.search(line) or (woke and ASKED_RE.search(line)):
             return "status", "", None
+        if re.match(r"^(?:sync|read|pull|check)\s+(?:the\s+)?(?:cellar|sheet|greg'?s?\s+sheet|inventory(?:\s+sheet)?|levels)\b|^levels\s+from\s+(?:the\s+)?sheet\b", line, re.I):
+            return "cellar", "", None
         if NOPICK_RE.search(line):
             return "nopick", "", None
         # "the board says nutorious is wrong" is a report, not a wall line for a beer called "the"
@@ -311,6 +383,20 @@ def parse(text):
         m = PRICE10_RE.search(line)
         if m:
             return "price10", m.group("item").strip(" .,-"), float(m.group("price"))
+        m = GUEST_RE.search(line)
+        if m:
+            st = (m.group("state") or "").lower(); sash = (m.group("sash") or "").strip()
+            if sash: return "sash", m.group("item").strip(" .,-"), (None if sash.lower() in ("off", "none", "clear") else sash)
+            return "sash", m.group("item").strip(" .,-"), (None if st in ("off", "no") else "guest tap")
+        m = ALSO_RM_RE.search(line)
+        if m:
+            return "also_rm", (m.group("item") or m.group("item2") or "").strip(" .,-"), None
+        m = ALSO_ADD_RE.search(line)
+        if m:
+            return "also_add", m.group("item").strip(" .,-"), {"sub": (m.group("sub") or "").strip(" .,-"), "price": m.group("price")}
+        m = ADJUNCT_RE.search(line)
+        if m:
+            return "adjunct", m.group("item").strip(" .,-"), m.group("what").strip(" .,-")
         m = PRICE_RE.search(line)
         if m:
             return "price", m.group("item").strip(" .,-"), float(m.group("price"))
@@ -319,12 +405,13 @@ def parse(text):
             return "abv", m.group("item").strip(" .,-"), float(m.group("abv"))
         m = FRESHKEG_RE.search(line)
         if m:
-            return "back", m.group("item").strip(" .,-"), None
+            return "back", m.group("item").strip(" .,-"), line
         for rx, act in ((NOBTN_RE, "needs_button"), (REMOVE_RE, "remove"),
                         (KICKED_RE, "remove"), (BACK_RE, "back"), (LASTKEG_RE, "lastkeg")):
             m = rx.search(line)
             if m:
-                return act, m.group("item").strip(" .,-"), None
+                # "back" carries its own line so a multi-line batch reads each beer's level from its line
+                return act, m.group("item").strip(" .,-"), (line if act == "back" else None)
         m = FLAVOR_RE.search(line)
         if m and not re.search(r"\b(back|kicked|out|low|fixed|broken)\b", m.group("flavor"), re.I):
             return "flavor", m.group("item").strip(" .,-"), m.group("flavor").strip(" .,-")
@@ -377,6 +464,7 @@ def read_level(text, beer):
         return ""
     have = float(m.group(1))
     beer["remainingOz"] = int(have * BBL_OZ)
+    beer["levelAt"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     if m.group(2):
         size = int(m.group(2))
         label = "%d BBL" % size
@@ -448,7 +536,6 @@ def medal_tag(b):
     top = sorted(ms, key=lambda m: (MEDAL_RANK.get(m.get("level"), 0), m.get("year") or 0), reverse=True)[0]
     return " " + MEDAL_EMOJI.get(top.get("level"), ":medal:")
 
-
 def square_move(item, back):
     """An 86 (or a back) for something that isn't on the tap list: try the register.
     -> (ok, reply_or_None, label). Never raises."""
@@ -499,21 +586,30 @@ def website_sync(data, queue):
                 pass
 
 
+DIDNT_CATCH = (":thinking_face: Didn't catch that. One command per line, like:\n"
+               "`86 nadare` · `nadare is back on, 4bbl in a 10bbl` · `nadare is on last keg` · "
+               "`nadare is now $8` · `nadare wall line: Rice Lager · crisp` · `New beer: Name — Style, 5.2%, notes`")
+
 def handle(msg, data, queue, channel):
-    p = parse(msg.get("text", ""))
-    if not p:
+    cmds = parse_all(msg.get("text", ""))
+    if not cmds:
+        # @mentioned and nothing understood: say so instead of failing silently (Sept 30 ask)
+        if mentioned(msg.get("text", "")):
+            return None, (channel, msg["ts"], DIDNT_CATCH)
         return None
-    action, item, extra = p
-    # "86 witbier and nadare": run the same action once per name, combine the replies
-    if action in ("remove", "back", "lastkeg") and isinstance(item, str) and len(split_items(item)) > 1:
-        changes, replies = [], []
-        for part in split_items(item):
+    changes, replies = [], []
+    for action, item, extra in cmds:
+        # "86 witbier and nadare": run the same action once per name
+        parts = split_items(item) if (action in ("remove", "back", "lastkeg") and isinstance(item, str)) else [item]
+        for part in parts:
             r = handle_one(msg, data, queue, channel, action, part, extra)
             if r:
                 if r[0]: changes.append(r[0])
                 if r[1]: replies.append(r[1][2])
-        return ("; ".join(changes) or None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
-    return handle_one(msg, data, queue, channel, action, item, extra)
+    if len(cmds) == 1 and len(changes) <= 1:
+        # single command: identical shape to before
+        return (changes[0] if changes else None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
+    return ("; ".join(changes) or None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
 
 
 def handle_one(msg, data, queue, channel, action, item, extra):
@@ -521,6 +617,13 @@ def handle_one(msg, data, queue, channel, action, item, extra):
     beers  = data.setdefault("beers", [])
     recent = data.setdefault("recent", [])
     reply = change = None
+
+    if action == "cellar":
+        try:
+            cellar_sync(force=True, reply=(channel, ts))
+        except Exception as e:
+            print("cellar: %s" % e)
+        return None
 
     if action == "remove":
         hits = match_beers(item, beers)
@@ -538,6 +641,10 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             reply = (":white_check_mark: 86'd *%s* - off the board, the menu and the website within a "
                      "couple of minutes.\nSay _\"%s is back on\"_ when it returns." % (b["name"], b["name"]))
             reply += square_aside(b["name"], back=False)
+        elif not reply and match_also(item, data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT):
+            side = match_also(item, also_list(data)); also_list(data).remove(side)
+            change = "also pouring: -%s" % side["name"]
+            reply = ":white_check_mark: *%s* is off the Also Pouring panel - the wall updates in a couple of minutes." % side["name"]
         elif not reply:
             ok, sq_reply, _ = square_move(item, back=False)
             if sq_reply:
@@ -554,16 +661,18 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         if b:
             recent.remove(b); b.pop("offSince", None)
             b["tappedDaysAgo"] = 0
-            lvl = read_level(msg.get("text", ""), b)
+            lvl = read_level(extra if isinstance(extra, str) else msg.get("text", ""), b)
             beers.append(b)
             change = b["name"] + " back on"
             reply = ":beer: *%s* is back on - it'll reappear shortly.%s" % (b["name"], lvl)
             reply += square_aside(b["name"], back=True)
         elif already:
-            lvl = read_level(msg.get("text", ""), already)
+            lvl = read_level(extra if isinstance(extra, str) else msg.get("text", ""), already)
             if lvl:
                 change = already["name"] + " level"
-            reply = ":beer: *%s* is already pouring - nothing to do.%s" % (already["name"], lvl)
+                reply = ":beer: *%s* is pouring -%s" % (already["name"], lvl)
+            else:
+                reply = ":beer: *%s* is already pouring - nothing to do. Add a level to update it: _\"%s is back on, 6bbl in a 10bbl\"_." % (already["name"], already["name"])
         else:
             ok, sq_reply, _ = square_move(item, back=True)
             if sq_reply:
@@ -706,14 +815,66 @@ def handle_one(msg, data, queue, channel, action, item, extra):
     elif action == "flavor":
         b = match_beer(item, beers)
         if b:
-            b["style"] = extra.title()
+            b["style"] = style_case(extra)
             change = "%s -> %s" % (b["name"], extra)
             reply = ":arrows_counterclockwise: *%s* updated to _%s_." % (b["name"], extra)
         else:
-            queue.append({"ts": ts, "action": "flavor_offlist", "item": item, "flavor": extra,
-                          "text": msg.get("text", "")})
-            reply = (":pencil: Logged: *%s* is now _%s_. That one lives in the 'Also Pouring' panel, "
-                     "not the tap list - Colby will swap it." % (item, extra))
+            side = match_also(item, also_list(data))
+            if side:
+                side["sub"] = extra; change = "also pouring: ~%s" % side["name"]
+                reply = ":pencil2: *%s* now reads _%s_ on the Also Pouring panel." % (side["name"], extra)
+            else:
+                queue.append({"ts": ts, "action": "flavor_offlist", "item": item, "flavor": extra,
+                              "text": msg.get("text", "")})
+                reply = ":grey_question: *%s* isn't on the tap list or the Also Pouring panel - logged for Colby." % item
+
+    elif action == "sash":
+        b = match_beer(item, beers)
+        if b:
+            if extra:
+                b["sash"] = extra; b["guest"] = (extra.lower() == "guest tap") or b.get("guest", False)
+                change = "%s sash: %s" % (b["name"], extra)
+                reply = ":label: *%s* now wears a *%s* sash on the wall." % (b["name"], extra.upper())
+            else:
+                b.pop("sash", None); b.pop("guest", None); change = b["name"] + " sash off"
+                reply = ":white_check_mark: Sash off *%s*." % b["name"]
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "also_rm":
+        lst = also_list(data); it = match_also(item, lst)
+        if it:
+            lst.remove(it); change = "also pouring: -%s" % it["name"]
+            reply = ":white_check_mark: *%s* is off the Also Pouring panel - the wall updates in a couple of minutes." % it["name"]
+        else:
+            reply = ":grey_question: *%s* isn't on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join(x["name"] for x in lst))
+
+    elif action == "also_add":
+        lst = also_list(data); it = match_also(item, lst)
+        sub = (extra or {}).get("sub") or ""; price = (extra or {}).get("price")
+        if it:
+            if sub: it["sub"] = sub
+            if price: it["price"] = "$" + price.replace(" ", "")
+            change = "also pouring: ~%s" % it["name"]
+            reply = ":pencil2: *%s* updated on Also Pouring: _%s_ %s" % (it["name"], it.get("sub", ""), it.get("price", ""))
+        else:
+            new = {"name": item.strip(), "sub": sub, "price": ("$" + price.replace(" ", "")) if price else ""}
+            lst.append(new); change = "also pouring: +%s" % new["name"]
+            reply = ":white_check_mark: *%s* added to Also Pouring%s." % (new["name"], "" if new["price"] else " - add a price with _\"%s to also pouring $9\"_" % new["name"])
+
+    elif action == "adjunct":
+        b = match_beer(item, beers)
+        if b:
+            adj = [a.strip() for a in re.split(r"\s*(?:,|and|&|·)\s*", extra) if a.strip() and a.strip().lower() not in ("none", "nothing")]
+            if adj:
+                b["adjuncts"] = adj
+                change = "%s contains %s" % (b["name"], ", ".join(adj))
+                reply = ":warning: *%s* now shows _contains %s_ under its name on the wall and the menu." % (b["name"], ", ".join(adj))
+            else:
+                b.pop("adjuncts", None); change = b["name"] + " adjuncts cleared"
+                reply = ":white_check_mark: *%s* allergen line cleared." % b["name"]
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the tap list." % item
 
     elif action == "price":
         b = match_beer(item, beers)
@@ -754,6 +915,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         elif match_beer(beer["name"], beers):
             reply = ":information_source: *%s* is already on the tap list." % beer["name"]
         else:
+            if re.search(r"\bguest\s+tap\b", msg.get("text", ""), re.I): beer["sash"] = "guest tap"; beer["guest"] = True
             beers.append(beer)
             change = "added " + beer["name"]
             reply = (":beer: *%s* is live on the board and the menu.\n"
@@ -879,6 +1041,112 @@ def run_once():
         print("%d item(s) waiting on a human - see %s" % (len(queue), QUEUE_PATH))
 
 
+# ---- cellar sync: Greg's weekly inventory sheet -> tank levels on the wall ----
+# Greg keeps one Google Sheet per month ("October 26") with a tab per week ("wk 1".."wk 5");
+# column D is the barrels left in the serving tank. A tiny Apps Script web app on Colby's
+# account (cellar_levels.gs) serves the newest tab as JSON; the URL lives in computa_config.json
+# ({"cellar_url": "..."}). Computa reads it every 30 minutes and only applies a reading once;
+# a level someone typed in Slack after the sheet was saved always wins.
+CELLAR_EVERY = 1800
+CELLAR_NAMES = {   # Greg's shorthand -> the name on the wall (anything else goes through match_beer)
+    "tropic": "Tropical Snow Dance", "astronaut": "Astronaut Amber", "wit": "Witbier",
+    "chela": "Chela Morena", "platty lite": "Platty Lite", "platty": "Platty Lite",
+    "kakou": "K\u0100KOU", "cream": "Madagascar Dream", "pumpkin": "Grandma's Pumpkin Pie",
+    "nadare": "Nadare", "pistachio": "Nutorious", "ofest": "Oktoberfest", "plattmo": "Plattmosphere",
+    "heffe": "Hefeweizen", "berliner": "Berliner", "phaded": "Phaded", "steam": "Steam",
+    "x pale": "X Pale", "west c lager": "West Coast Lager",
+}
+_cellar = {"checked": 0}
+
+def cellar_config():
+    d = gh("contents/computa_config.json")
+    if not d:
+        return {}
+    try:
+        return json.loads(base64.b64decode(d["content"]).decode())
+    except Exception:
+        return {}
+
+def cellar_fetch(url):
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "computa"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode())
+
+def cellar_apply(reading, data, state, force=False):
+    """Apply one sheet reading. Returns (changes list, summary lines list)."""
+    stamp = str(reading.get("updated") or "")
+    key = "%s|%s|%s" % (reading.get("sheet"), reading.get("tab"), stamp)
+    seen = state.setdefault("cellar", {})
+    if not force and seen.get("applied") == key:
+        return [], []
+    beers = data.setdefault("beers", [])
+    changes, lines, skipped, unknown = [], [], [], []
+    for row in reading.get("levels", []):
+        name = str(row.get("name") or "").strip()
+        try:
+            bbls = float(row.get("bbls") or 0)
+        except Exception:
+            bbls = 0
+        if not name or bbls <= 0:
+            continue
+        full = CELLAR_NAMES.get(name.lower())
+        b = match_beer(full or name, beers)
+        if not b:
+            unknown.append("%s %.1f" % (name, bbls))
+            continue
+        if not force and stamp and b.get("levelAt") and b["levelAt"] > stamp:
+            skipped.append(b["name"])          # someone set it in Slack after Greg saved the sheet
+            continue
+        if b.get("remainingOz") == int(bbls * BBL_OZ):
+            lines.append("%s %.1f" % (b["name"], bbls)); continue
+        b["remainingOz"] = int(bbls * BBL_OZ)
+        b["levelAt"] = stamp or datetime.now(timezone.utc).isoformat(timespec="seconds")
+        changes.append("%s level %.1f (sheet)" % (b["name"], bbls))
+        lines.append("%s %.1f" % (b["name"], bbls))
+    seen["applied"] = key
+    seen["at"] = datetime.now().isoformat(timespec="seconds")
+    summary = [":bar_chart: Levels from Greg's sheet (%s, %s): %s" % (reading.get("sheet"), reading.get("tab"), " \u00b7 ".join(lines) or "nothing on the wall")]
+    if skipped: summary.append("Kept the newer Slack number for " + ", ".join(skipped) + ".")
+    if unknown: summary.append("Not on the wall: " + ", ".join(unknown) + ".")
+    return changes, summary
+
+def cellar_sync(force=False, reply=None):
+    """Every 30 minutes (or on 'sync cellar'): read the sheet, update levels, say what changed."""
+    if DRY and not force:
+        return
+    if not force and time.time() - _cellar["checked"] < CELLAR_EVERY:
+        return
+    _cellar["checked"] = time.time()
+    url = cellar_config().get("cellar_url")
+    if not url:
+        if reply: slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text=":grey_question: No cellar sheet is connected yet (computa_config.json has no cellar_url).")
+        return
+    try:
+        reading = cellar_fetch(url)
+    except Exception as e:
+        print("cellar: fetch failed: %s" % e)
+        if reply: slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text=":warning: Couldn't read the sheet (%s)." % str(e)[:80])
+        return
+    state = load_json(STATE_PATH, {}) or {}
+    data, sha = fetch_beers()
+    if not validate(data):
+        return
+    changes, summary = cellar_apply(reading, data, state, force=force)
+    if changes:
+        if validate(data) and commit_beers(data, sha, "; ".join(changes)):
+            print("cellar: " + "; ".join(changes))
+        else:
+            print("cellar: commit failed, will retry"); state.get("cellar", {}).pop("applied", None)
+    if (changes or force) and summary:
+        if reply:
+            slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text="\n".join(summary))
+        else:
+            slack("chat.postMessage", channel="C0AQ68G7DRB", text="\n".join(summary))   # brew-x-bar
+    if not DRY:
+        json.dump(state, open(STATE_PATH, "w"), indent=1)
+
+
 # ---- five-second rule: one post to #bar-only each morning at 10:30 MT ----
 FIVE_SEC_CHANNEL = "C0B3E5GF6UR"  # bar-only
 FIVE_SEC_MARK = "Five seconds."
@@ -952,6 +1220,7 @@ if __name__ == "__main__":
                 run_once()
                 five_second_nudge()
                 scheduled_posts()
+                cellar_sync()
             except Exception as e:
                 print("error: %s" % e)
                 try: health("exception")
