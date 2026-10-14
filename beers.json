@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-13T20:57:50+00:00",
- "updatedBy": "Witbier back on",
+ "updated": "2026-10-14T14:07:49+00:00",
+ "updatedBy": "Astronaut Amber level; Witbier level; Chela Morena level; Madagascar Dream level; Grandma's Pumpkin Pie level; Nadare level; Nutorious level; Plattmosphere level",
  "beers": [
   {
    "id": "half-acre-original-reaper",
@@ -55,12 +55,12 @@
    "price10": 5.25,
    "price": 8.5,
    "rating": 3.82,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
+   "vessel": "tank20",
+   "vesselLabel": "20 BBL",
    "tall": true,
    "color": "#d9a83c",
    "colorTop": "#efc76a",
-   "remainingOz": 1091,
+   "remainingOz": 35712,
    "tappedDaysAgo": 0,
    "note": "the flagship hazy",
    "wall": "Hazy IPA · the flagship",
@@ -71,7 +71,8 @@
      "year": 2026,
      "show": "wall"
     }
-   ]
+   ],
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "platty-lite",
@@ -111,10 +112,11 @@
    "vesselLabel": "10 BBL",
    "color": "#e8d58a",
    "colorTop": "#f5e9b3",
-   "remainingOz": 15872,
+   "remainingOz": 18252,
    "tappedDaysAgo": 0,
    "note": "jasmine rice, light and crispy",
-   "wall": "Rice Lager · crisp"
+   "wall": "Rice Lager · crisp",
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "chela",
@@ -128,11 +130,12 @@
    "vesselLabel": "10 BBL",
    "color": "#6e4a2a",
    "colorTop": "#8a5f38",
-   "remainingOz": 11904,
+   "remainingOz": 14681,
    "tappedDaysAgo": 0,
    "note": "the dark one that drinks light",
    "wall": "Mexican Dark Lager",
-   "pick": true
+   "pick": true,
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "astronaut-amber",
@@ -146,7 +149,7 @@
    "vesselLabel": "10 BBL",
    "color": "#a8542a",
    "colorTop": "#c97648",
-   "remainingOz": 27776,
+   "remainingOz": 28172,
    "tappedDaysAgo": 0,
    "note": "malty, smooth, toasty",
    "wall": "Amber · malty, smooth",
@@ -157,7 +160,8 @@
      "year": 2025,
      "show": "site"
     }
-   ]
+   ],
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "nutorious",
@@ -171,7 +175,7 @@
    "vesselLabel": "10 BBL",
    "color": "#b7893f",
    "colorTop": "#d4a95c",
-   "remainingOz": 19840,
+   "remainingOz": 21427,
    "tappedDaysAgo": 0,
    "note": "pistachio, cream, a little sweet",
    "wall": "Pistachio Cream Ale",
@@ -194,7 +198,8 @@
      "year": 2025,
      "show": "site"
     }
-   ]
+   ],
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "madagascar-dream",
@@ -208,10 +213,11 @@
    "vesselLabel": "20 BBL",
    "color": "#c9973c",
    "colorTop": "#e6bd6e",
-   "remainingOz": 27776,
+   "remainingOz": 27379,
    "tappedDaysAgo": 0,
    "note": "Madagascar vanilla on nitro velvet",
-   "wall": "Vanilla Cream · Nitro"
+   "wall": "Vanilla Cream · Nitro",
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "grandma-s-pumpkin-pie",
@@ -222,13 +228,14 @@
    "price10": 5.0,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 23808,
+   "remainingOz": 25792,
    "tappedDaysAgo": 0,
    "color": "#d0a04a",
    "colorTop": "#e4bd78",
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "Pumpkin Nitro Ale · contains lactose"
+   "wall": "Pumpkin Nitro Ale · contains lactose",
+   "levelAt": "2026-10-14T14:07:49+00:00"
   },
   {
    "id": "witbier",
@@ -242,10 +249,11 @@
    "vesselLabel": "10 BBL",
    "color": "#e6d9a0",
    "colorTop": "#f3ecc4",
-   "remainingOz": 19840,
+   "remainingOz": 21427,
    "tappedDaysAgo": 0,
    "note": "light Belgian wheat",
-   "wall": "Witbier · light wheat"
+   "wall": "Witbier · light wheat",
+   "levelAt": "2026-10-14T14:07:49+00:00"
   }
  ],
  "recent": [
