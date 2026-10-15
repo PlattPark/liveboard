@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-14T15:02:42+00:00",
- "updatedBy": "Astronaut Amber level; Witbier level; Chela Morena level; Madagascar Dream level; Grandma's Pumpkin Pie level; Nadare level; Nutorious level; Plattmosphere level",
+ "updated": "2026-10-15T00:10:54+00:00",
+ "updatedBy": "86 Tropical Snow Dance",
  "beers": [
   {
    "id": "half-acre-original-reaper",
@@ -19,33 +19,6 @@
    "rating": 0,
    "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
    "wall": "guest tap · Stout · Chicago"
-  },
-  {
-   "id": "tropical-snow-dance",
-   "name": "Tropical Snow Dance",
-   "style": "West Coast IPA",
-   "abv": 6.9,
-   "price10": 5.25,
-   "price": 8.5,
-   "rating": 3.74,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "tall": true,
-   "color": "#d69a2b",
-   "colorTop": "#eebd55",
-   "remainingOz": 1091,
-   "tappedDaysAgo": 0,
-   "note": "all Mosaic · grapefruit, crisp",
-   "wall": "Mosaic IPA · crisp",
-   "medals": [
-    {
-     "comp": "DIBC",
-     "level": "silver",
-     "year": 2025,
-     "show": "site"
-    }
-   ],
-   "sash": "last keg"
   },
   {
    "id": "plattmosphere",
@@ -257,6 +230,34 @@
   }
  ],
  "recent": [
+  {
+   "id": "tropical-snow-dance",
+   "name": "Tropical Snow Dance",
+   "style": "West Coast IPA",
+   "abv": 6.9,
+   "price10": 5.25,
+   "price": 8.5,
+   "rating": 3.74,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "tall": true,
+   "color": "#d69a2b",
+   "colorTop": "#eebd55",
+   "remainingOz": 1091,
+   "tappedDaysAgo": 0,
+   "note": "all Mosaic · grapefruit, crisp",
+   "wall": "Mosaic IPA · crisp",
+   "medals": [
+    {
+     "comp": "DIBC",
+     "level": "silver",
+     "year": 2025,
+     "show": "site"
+    }
+   ],
+   "sash": "last keg",
+   "offSince": "2026-10-15"
+  },
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
