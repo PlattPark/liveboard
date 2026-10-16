@@ -1,25 +1,8 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-16T15:00:53+00:00",
- "updatedBy": "Tropical Snow Dance sash off",
+ "updated": "2026-10-16T23:48:11+00:00",
+ "updatedBy": "86 Half Acre Original Reaper",
  "beers": [
-  {
-   "id": "half-acre-original-reaper",
-   "name": "Half Acre Original Reaper",
-   "style": "Stout",
-   "abv": 6.0,
-   "price": 8.5,
-   "price10": 5.25,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "remainingOz": 1706,
-   "tappedDaysAgo": 0,
-   "color": "#2a1810",
-   "colorTop": "#452a1c",
-   "rating": 0,
-   "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
-   "wall": "guest tap · Stout · Chicago"
-  },
   {
    "id": "plattmosphere",
    "name": "Plattmosphere",
@@ -257,6 +240,24 @@
   }
  ],
  "recent": [
+  {
+   "id": "half-acre-original-reaper",
+   "name": "Half Acre Original Reaper",
+   "style": "Stout",
+   "abv": 6.0,
+   "price": 8.5,
+   "price10": 5.25,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1706,
+   "tappedDaysAgo": 0,
+   "color": "#2a1810",
+   "colorTop": "#452a1c",
+   "rating": 0,
+   "note": "guest tap · Half Acre, Chicago · half barrel\n(GABF weekend guest tap) *Sent using* <@U0AQE5QBJ4U>",
+   "wall": "guest tap · Stout · Chicago",
+   "offSince": "2026-10-16"
+  },
   {
    "id": "tropicalia-ipa-cc",
    "name": "Tropicália IPA (CC)",
