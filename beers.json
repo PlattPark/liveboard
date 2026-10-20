@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-20T20:57:26+00:00",
- "updatedBy": "Tropical Snow Dance level 6.7 (sheet); Astronaut Amber level 4.3 (sheet); Witbier level 4.9 (sheet); Chela Morena level 15.4 (sheet); Platty Lite level 2.6 (sheet); Madagascar Dream level 6.5 (sheet); Grandma's Pumpkin Pie level 5.9 (sheet); Nadare level 4.1 (sheet); Nutorious level 4.8 (sheet); Plattmosphere level 6.6 (sheet)",
+ "updated": "2026-10-20T21:03:26+00:00",
+ "updatedBy": "Chela Morena level",
  "beers": [
   {
    "id": "plattmosphere",
@@ -69,12 +69,12 @@
    "vesselLabel": "10 BBL",
    "color": "#6e4a2a",
    "colorTop": "#8a5f38",
-   "remainingOz": 61107,
+   "remainingOz": 39680,
    "tappedDaysAgo": 0,
    "note": "the dark one that drinks light",
    "wall": "Mexican Dark Lager",
    "pick": true,
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-10-20T21:03:26+00:00"
   },
   {
    "id": "astronaut-amber",
