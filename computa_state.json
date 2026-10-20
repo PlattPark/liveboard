@@ -26,5 +26,80 @@
    "opened": 1792526271.3666234
   }
  },
- "confirm": []
+ "confirm": [],
+ "shadow": {
+  "mirror_at": 1792528325.3216114,
+  "map": {
+   "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
+   "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
+   "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
+   "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
+   "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
+   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
+  },
+  "map_at": 1792528325.32162,
+  "last": {
+   "Plattmosphere": false,
+   "Platty Lite": false,
+   "Astronaut Amber": false,
+   "Tropical Snow Dance": false,
+   "Nadare": false,
+   "Oktoberfest": false
+  },
+  "sales_at": 1792528329.5322948,
+  "ledger": {
+   "Plattmosphere": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Platty Lite": {
+    "base": "",
+    "oz": 0,
+    "pints": 0
+   },
+   "Chela Morena": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Astronaut Amber": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Nutorious": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Madagascar Dream": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Grandma's Pumpkin Pie": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Witbier": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Tropical Snow Dance": {
+    "base": "2026-10-16T14:59:49+00:00",
+    "oz": 0,
+    "pints": 0
+   },
+   "Nadare": {
+    "base": "2026-10-14T15:02:42+00:00",
+    "oz": 0,
+    "pints": 0
+   }
+  },
+  "orders_since": "2026-10-20T20:32:09+00:00",
+  "pitcher_oz": 0
+ }
 }
