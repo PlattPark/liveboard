@@ -6,9 +6,9 @@ square.py - Platt Park Brewing
 
 HOW
   Square's catalog carries a per-location "sold out" flag on every item variation
-  (ItemVariationLocationOverrides.sold_out). The POS "Mark sold out" button sets the same flag,
+  By inventory: an 86 turns tracking on and counts zero (Square then shows sold out everywhere);
   Square Online reads it, and the DoorDash channel that runs through Square Online follows.
-  Nothing here touches inventory counts or prices.
+  'back' turns tracking off. The POS 'Mark sold out' flag is read-only to apps, so it is only read here, never set.
 
 RULES (Colby, Sept 18 2026)
   - A Slack 86 stays sold out until someone says it's back. No auto-restore at close.
@@ -140,38 +140,76 @@ def is_drink(item):
     return bool(DRINK_WORDS.search(" ".join(names)))
 
 
+def _counts(variation_ids):
+    """Inventory counts at our location, {variation_id: quantity (float)}. Missing = never counted."""
+    out = {}
+    for i in range(0, len(variation_ids), 100):
+        r = call("inventory/counts/batch-retrieve", "POST",
+                 {"catalog_object_ids": variation_ids[i:i+100], "location_ids": [LOCATION], "states": ["IN_STOCK"]})
+        for c in r.get("counts", []) or []:
+            try: out[c["catalog_object_id"]] = float(c.get("quantity") or 0)
+            except Exception: pass
+    return out
+
+
+def _tracked(v):
+    return bool((v.get("item_variation_data") or {}).get("track_inventory"))
+
+
 def sold_out_state(item):
-    """True if every variation is sold out here, False if none, None if mixed."""
+    """True if every variation is sold out here, False if none, None if mixed.
+    Sold out = the register's own flag (the POS 'Mark sold out' button) OR our inventory route: tracked and at zero."""
+    vs = item["item_data"].get("variations", [])
+    counts = _counts([v["id"] for v in vs if _tracked(v)]) if any(_tracked(v) for v in vs) else {}
     flags = []
-    for v in item["item_data"].get("variations", []):
+    for v in vs:
         ov = [o for o in v.get("item_variation_data", {}).get("location_overrides", []) or [] if o.get("location_id") == LOCATION]
-        flags.append(bool(ov and ov[0].get("sold_out")))
+        flagged = bool(ov and ov[0].get("sold_out"))
+        zero = _tracked(v) and counts.get(v["id"], 1) <= 0
+        flags.append(flagged or zero)
     if not flags:
         return False
     return True if all(flags) else (False if not any(flags) else None)
 
 
 def set_sold_out(item, sold_out, dry=False):
-    """Flip the flag on every variation of the item at our location. Returns the variation names touched."""
+    """86 / back for every variation of the item at our location, by inventory - the one route Square lets an app use.
+
+    Oct 14 2026: the Catalog API treats location_overrides.sold_out as READ-ONLY for applications, so the old
+    version of this function silently did nothing. Now: an 86 turns inventory tracking on and records a count
+    of zero, which makes the register, gatesdeli.com and DoorDash show it sold out by themselves; 'back' turns
+    tracking off again so the item sells without counts, exactly as it did before we touched it.
+    Returns the variation names touched."""
     touched = []
     for v in item["item_data"].get("variations", []):
         fresh = call("catalog/object/" + v["id"])["object"]          # latest version, or the upsert is rejected
         vd = fresh.setdefault("item_variation_data", {})
-        overrides = [o for o in vd.get("location_overrides", []) or []]
-        mine = next((o for o in overrides if o.get("location_id") == LOCATION), None)
-        if mine is None:
-            mine = {"location_id": LOCATION}
-            overrides.append(mine)
-        if bool(mine.get("sold_out")) == bool(sold_out):
-            touched.append((vd.get("name") or "Regular", "already"))
-            continue
-        mine["sold_out"] = bool(sold_out)
-        mine.pop("sold_out_valid_until", None)                        # ours is "until someone says it's back"
-        vd["location_overrides"] = overrides
-        if not dry:
-            call("catalog/object", "POST", {"idempotency_key": str(uuid.uuid4()), "object": fresh})
-        touched.append((vd.get("name") or "Regular", "set"))
+        name = vd.get("name") or "Regular"
+        if sold_out:
+            if not vd.get("track_inventory"):
+                vd["track_inventory"] = True
+                vd["stockable"] = True
+                if not dry:
+                    call("catalog/object", "POST", {"idempotency_key": str(uuid.uuid4()), "object": fresh})
+            if not dry:
+                call("inventory/changes/batch-create", "POST", {"idempotency_key": str(uuid.uuid4()), "changes": [{
+                    "type": "PHYSICAL_COUNT", "physical_count": {"catalog_object_id": v["id"], "state": "IN_STOCK",
+                    "location_id": LOCATION, "quantity": "0", "occurred_at": _now()}}]})
+            touched.append((name, "set"))
+        else:
+            if vd.get("track_inventory"):
+                vd["track_inventory"] = False
+                if not dry:
+                    call("catalog/object", "POST", {"idempotency_key": str(uuid.uuid4()), "object": fresh})
+                touched.append((name, "set"))
+            else:
+                touched.append((name, "already"))
     return touched
+
+
+def _now():
+    import datetime
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 
 def status():
@@ -183,10 +221,12 @@ def status():
             if it.get("is_deleted"):
                 continue
             names = []
-            for v in (it.get("item_data") or {}).get("variations", []):
+            vs = (it.get("item_data") or {}).get("variations", [])
+            counts = _counts([v["id"] for v in vs if _tracked(v)]) if any(_tracked(v) for v in vs) else {}
+            for v in vs:
                 ov = [o for o in v.get("item_variation_data", {}).get("location_overrides", []) or []
                       if o.get("location_id") == LOCATION and o.get("sold_out")]
-                if ov:
+                if ov or (_tracked(v) and counts.get(v["id"], 1) <= 0):
                     names.append(v["item_variation_data"].get("name") or "Regular")
             if names:
                 out.append((it["item_data"].get("name", "?"), names))
