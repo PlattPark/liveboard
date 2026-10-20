@@ -45,6 +45,10 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}        # the smart read; empty = patterns only
+          SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}    # 86 -> register / gatesdeli.com / DoorDash; empty = off
+          SPOTHOPPER_EMAIL: ${{ secrets.SPOTHOPPER_EMAIL }}          # website beer list; empty = off
+          SPOTHOPPER_PASSWORD: ${{ secrets.SPOTHOPPER_PASSWORD }}
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
