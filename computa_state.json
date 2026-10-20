@@ -14,7 +14,7 @@
  },
  "confirm": [],
  "shadow": {
-  "mirror_at": 1792539085.8078322,
+  "mirror_at": 1792539338.4422457,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -32,7 +32,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1792538420.972891,
+  "sales_at": 1792539338.7725868,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -66,8 +66,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 64.0,
-    "pints": 4.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -85,7 +85,7 @@
     "pints": 2.0
    }
   },
-  "orders_since": "2026-10-20T23:20:20+00:00",
+  "orders_since": "2026-10-20T23:35:38+00:00",
   "pitcher_oz": 0
  }
 }
