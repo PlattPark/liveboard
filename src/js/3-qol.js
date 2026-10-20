@@ -152,7 +152,7 @@ function festOverride(s){
     paint('.plate .price', dark ? '#e7eacd' : '');
     paint('.plate .price .tag', '#293d22');
     const p=moonPhase(), lit=(1-Math.cos(2*Math.PI*p))/2;                                                                          // moonlit: the night map brightens with the real moon
-    document.documentElement.style.setProperty('--moonlit', night ? (0.42+0.2*lit).toFixed(2) : '0.52');
+    document.documentElement.style.setProperty('--moonlit', night ? (0.8+0.2*lit).toFixed(2) : '1');   // Oct 20 2026: was .42-.62 / .52 - fine on a monitor, gone on the TV
     const mo=$('moon'); if(mo && night && !mo.dataset.p){ mo.innerHTML=moonSVG(p); mo.dataset.p='1'; }
     const hh=Math.floor(sunset), mm=Math.round((sunset-hh)*60), when=(hh>12?hh-12:hh)+':'+(mm<10?'0':'')+mm;
     let sky=''; if(!night && t>=sunset-1 && t<sunset) sky='sunset at '+when+' tonight'; else if(t>=sunset && t<sunset+2) sky='sun went down at '+when;
