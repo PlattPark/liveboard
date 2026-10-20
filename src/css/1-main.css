@@ -116,7 +116,7 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
 
   .unit{position:relative;display:flex;flex-direction:column;align-items:center;align-self:start;min-width:0}
   #floor{min-width:0}
-  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:256px}
+  .tankwrap{position:relative;width:100%;display:flex;justify-content:center;align-items:flex-end;height:228px}   /* Oct 20 2026: was 256 - the extra was empty space above every tank while the bottom row sat on the rail */
   /* featured beer gets the sun disc from the poster */
   .sun{
     position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
