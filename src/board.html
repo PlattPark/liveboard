@@ -12,7 +12,7 @@
 <style>/* the ranger's tagline is real type now, not pixels baked into the figure (see tools/fixart.py) */
 .ranger{flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
 .ranger .cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:3px;color:#5a8142;text-transform:uppercase;white-space:nowrap;opacity:.9}
-body.night .ranger .cap{color:#8fa27a}
+body.dark .ranger .cap{color:#8fa27a}
 .c-cap{font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;letter-spacing:6px;color:#5a8142;text-transform:uppercase;margin-top:-8px}
 .curtain.night .c-cap{color:#8fa27a}
 /* split-flap pint counter: each digit is a Solari tile; a tick folds the old top half down and the new bottom half up */
@@ -27,16 +27,16 @@ body.night .ranger .cap{color:#8fa27a}
 .fl::after{content:'';position:absolute;left:0;right:0;top:17px;height:2px;background:rgba(0,0,0,.42);z-index:3}
 .fl .t.go{animation:flTop .28s ease-in forwards;animation-delay:var(--d,0s);z-index:2} .fl .b.go{animation:flBot .3s ease-out forwards;animation-delay:calc(.28s + var(--d,0s));z-index:2;transform:rotateX(90deg)}
 @keyframes flTop{to{transform:rotateX(-90deg);filter:brightness(.7)}} @keyframes flBot{from{transform:rotateX(90deg);filter:brightness(.7)}to{transform:rotateX(0);filter:brightness(1)}}
-body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}
+body.dark .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state:paused}
 /* the pick band on the tank: plaque-sized, not a billboard; the masthead is always on, so the postmark stays too */
 .unit.pick .newtag{font-size:11.5px;letter-spacing:1.4px;padding:3px 8px;top:46%;transform:translateX(-50%) rotate(-4deg);box-shadow:2px 2px 0 rgba(41,61,34,.3)}
 #hero.on ~ .stamp{opacity:.42}
-.stamp{opacity:.42} body.night .stamp{opacity:.3}
+.stamp{opacity:.42} body.dark .stamp{opacity:.3}
 #hero .hn{font-size:44px} #hero .hn + .hk{margin-top:6px}
 /* 10oz price inside the gold tag: one line, ink on gold day and night, a size down so six plates still fit a row */
 .plate .price .tag.has10{font-size:19px;white-space:nowrap;padding:3px 8px 2px}
 .plate .price .tag .p10{font-size:11px;letter-spacing:1px;color:#5a8142;opacity:1;margin-right:-2px}
-.plate .price .tag .p10b, body.night .plate .price .tag .p10b{font-size:17px;color:#293d22;opacity:.85}
+.plate .price .tag .p10b, body.dark .plate .price .tag .p10b{font-size:17px;color:#293d22;opacity:.85}
 .plate .price .tag.has10 .dot{margin:0 1px}</style>
 </head>
 <body>
@@ -63,8 +63,8 @@ body.night .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-stat
   <div class="sidecol">
 <div class="side" id="side">
     <div class="side-h">Also pouring</div>
+    <div class="s-item"><span class="s-name">Pumpkin Cider</span><div class="s-row"><span class="s-flavor">2 Towns &middot; seasonal</span><span class="s-price">$9</span></div></div>
     <div class="s-item" id="s-cider"><span class="s-name">BrightCider</span><div class="s-row"><span class="s-flavor">2 Towns · dry cider</span><span class="s-price">$9</span></div></div>
-    <div class="s-item"><span class="s-name">Spiced Apple Cider</span><div class="s-row"><span class="s-flavor">2 Towns</span><span class="s-price">$9</span></div></div>
     <div class="s-item" id="s-seltzer"><span class="s-name">Boochcraft</span><div class="s-row"><span class="s-flavor">kiwi citrus kombucha</span><span class="s-price">$9</span></div></div>
     <div class="s-item"><span class="s-name">Bravazzi</span><div class="s-row"><span class="s-flavor">hard Italian soda</span><span class="s-price">$9</span></div></div>
     <div class="s-item"><span class="s-name">Wine</span><div class="s-row"><span class="s-flavor">red &middot; white &middot; ros&eacute;</span><span class="s-price">$9&ndash;11</span></div></div>
