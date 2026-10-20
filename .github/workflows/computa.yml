@@ -49,11 +49,12 @@ jobs:
           SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}    # 86 -> register / gatesdeli.com / DoorDash; empty = off
           SPOTHOPPER_EMAIL: ${{ secrets.SPOTHOPPER_EMAIL }}          # website beer list; empty = off
           SPOTHOPPER_PASSWORD: ${{ secrets.SPOTHOPPER_PASSWORD }}
+          MENU_PRICES: report                                        # QR menu prices vs register: report to #board; "apply" writes them
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
           persist() {
-            for f in computa_state.json computa_queue.json computa_health.json; do
+            for f in computa_state.json computa_queue.json computa_health.json menu.html menu_state.json; do
               [ -f "$f" ] && git add "$f"
             done
             git diff --cached --quiet && return 0
@@ -69,6 +70,8 @@ jobs:
             n=$((n+1))
             echo "--- cycle $n $(date -u +%H:%M:%S) ---"
             python3 computa.py || echo "cycle failed - continuing"
+            git pull -q --rebase --autostash origin main || echo "pull failed - continuing"   # fresh code + beers.json every cycle
+            python3 tools/menu_build.py || echo "menu build failed - continuing"            # QR menu follows the wall and the register
             persist || echo "persist failed - continuing"
             sleep 30
           done
