@@ -181,14 +181,19 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
 body.scene-industry .goldflag, body.dark .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
 body.scene-industry .plate .name, body.dark .plate .name{color:#e7eacd}
   .plate .note{color:#293d22;font-size:21px;font-weight:600;line-height:1.12;margin-top:4px;text-wrap:balance;max-width:214px;margin-left:auto;margin-right:auto}
+  .plate{display:flex;flex-direction:column;align-items:stretch} .plate .row2{margin-top:auto;padding-top:5px}   /* price tags share one baseline per row, however many lines the taste note takes */
+  .plate .taste{color:#5a8142;font-size:19px;font-weight:600;line-height:1.1;margin-top:2px;text-wrap:balance;max-width:224px;margin-left:auto;margin-right:auto}
+  .plate .taste{min-height:2.2em} .plate .taste:empty{display:block}   /* every card reserves two taste lines, so the price tags line up across the row */ .plate .taste.long{font-size:16.5px;max-width:230px}
+  body.scene-industry .plate .taste, body.dark .plate .taste{color:#b9c49a}
+  .plate .name.longname{font-size:30px;letter-spacing:-.2px;white-space:nowrap}
   .plate .note:empty{display:none} .plate .note.long{font-size:19px;max-width:222px;letter-spacing:-.15px;line-height:1.1}
 body.scene-industry .plate .note, body.dark .plate .note{color:#e7eacd}
   .plate .meta{display:none}
 body.scene-industry .plate .meta, body.dark .plate .meta{color:#b9c49a}
   .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:5px}
   .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
-  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
-  .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
+  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:16px;letter-spacing:1px;color:#5a8142}
+  .plate .price .p10b{font-family:'Archivo Black';font-size:20px;color:#293d22;opacity:.92}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
   .plate .price .dot{opacity:.45;margin:0 1px} .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#131f0f;letter-spacing:.5px;opacity:.85}
   body.dark .plate .price .abv{color:#131f0f}
