@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-10-20T17:59Z from src @ 5f8f002 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-10-20T19:00Z from src @ 3efb585 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -102,9 +102,9 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
   .side{
     flex:none;width:292px;align-self:flex-end;margin:0 4px 6px 8px;font-size:20px;
     background:#e7eacd;color:#293d22;border-radius:6px;
-    padding:16px 18px 14px;box-shadow:6px 6px 0 rgba(0,0,0,.35);
+    padding:16px 18px 14px;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.55), 0 0 46px 12px rgba(255,90,58,.30);   /* Oct 20 2026: a soft coral glow so the card reads from the room */
   }
-  body.scene-industry .side{background:#e7eacd;color:#293d22;box-shadow:5px 5px 0 rgba(0,0,0,.35)}
+  body.scene-industry .side{background:#e7eacd;color:#293d22;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.55), 0 0 46px 12px rgba(255,90,58,.30)}
   .side-h{font-family:'Archivo Black';font-size:24px;letter-spacing:2px;color:#f0553d;text-transform:uppercase;margin-bottom:8px}
   body.scene-industry .side-h{color:#ff5a3a}
   .s-item{padding:8px 0 9px;border-top:2px solid rgba(41,61,34,.18)}
@@ -123,7 +123,7 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
   .s-foot{margin-top:10px;font-size:16px;font-weight:700;letter-spacing:1.3px;color:#5a8142;text-transform:uppercase}
   .ranger{
     flex:none;width:176px;display:flex;align-items:flex-end;justify-content:center;
-    margin-left:2px;margin-bottom:-24px;transform:translateY(46px);
+    margin-left:2px;margin-bottom:0;transform:none;   /* Oct 20 2026: he used to ride 46px into the rail and lose his pint */
   }
   .ranger img{width:100%;height:auto;filter:drop-shadow(3px 3px 0 rgba(41,61,34,.18))}
 
@@ -211,7 +211,6 @@ body.scene-industry .plate .price, body.dark .plate .price{color:#e7eacd}
   .plate .adj:empty{display:none}
 body.scene-industry .plate .adj, body.dark .plate .adj{color:#ffb39f}
 body.scene-industry .plate .age, body.dark .plate .age{color:#93a077}
-
   /* ---------- rail ---------- */
   .rail{position:relative;z-index:6;height:70px;display:flex;margin-top:6px;
     background:#293d22;color:#e7eacd;box-shadow:0 -5px 0 rgba(41,61,34,.22)}
@@ -239,13 +238,13 @@ body.scene-industry .rail, body.dark .rail{background:#131f0f}
 .sun{transition:opacity .9s ease}
   /* spotlight cycle */
   .unit .vessel{transition:transform .7s cubic-bezier(.3,.9,.3,1.2)}
-  .unit.spotlight .vessel{transform:translateY(-9px) scale(1.05)}
-  .unit.spotlight .tbody{box-shadow:0 0 0 3px #ff5a3a}
+  .unit.spotlight .vessel{transform:none}   /* Oct 20 2026: the red highlight is retired - it drew a box that didn't fit the tank on the wall */
+  .unit.spotlight .tbody{box-shadow:none}
   .unit.low.spotlight .tbody{box-shadow:0 0 0 3px #eebf19}
   .spotcap{position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(-2deg);z-index:6;display:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;
     background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:16.5px;letter-spacing:1px;
     padding:5px 12px;border-radius:3px;white-space:nowrap;text-transform:uppercase;box-shadow:3px 3px 0 rgba(41,61,34,.35)}
-  .unit.spotlight .spotcap{display:block} .unit.featured .spotcap{top:2px}
+  .unit.featured .spotcap{top:2px}   /* the cap only shows for a real sash (hasSash, in 3-fit.css) */
   /* just tapped */
   .newtag{position:absolute;top:44%;left:50%;transform:translateX(-50%) rotate(-4deg);z-index:4;display:none;
     background:#ff5a3a;color:#e7eacd;font-family:'Archivo Black';font-size:15px;letter-spacing:1.5px;
