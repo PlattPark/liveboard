@@ -121,7 +121,7 @@ function render(s){
           <div class="cone"></div><div class="valve"></div>
         </div></div>
         <div class="plate">
-          <div class="name"></div><div class="note"></div><div class="meta"></div><div class="adj"></div>
+          <div class="name"></div><div class="note"></div><div class="taste"></div><div class="meta"></div><div class="adj"></div>
           <div class="row2"><span class="price"></span></div>
           <div class="age"></div>
         </div>`;
@@ -134,7 +134,8 @@ function render(s){
         bb.style.animationDelay=(-Math.random()*6).toFixed(2)+'s';
       });
     }
-    const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3*86400000;   // NEW for the first 3 days
+    const tappedMs = typeof beer.tappedAt==='string' ? Date.parse(beer.tappedAt) : beer.tappedAt;
+    const fresh = tappedMs && (Date.now()-tappedMs) < 7*86400000;   // NEW for the first week (Computa stamps tappedAt when a beer is added)
     const wm = wallMedal(beer);
     u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(wm?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'')+((beer.nitro||/\bnitro\b/i.test(beer.style||''))?' nitro':'');
     u.querySelector('.newtag').textContent=beer.pick?'Brewers\u2019 pick':'New';
@@ -162,7 +163,12 @@ function render(s){
       } else if(pl){ pl.remove(); }
     })();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
+    // Oct 20 2026: what it IS (style) on line one, what it TASTES like (the note) on line two - guests order on flavor
+    var styleLine = beer.note ? (beer.style||beer.wall||'') : (beer.wall||beer.style||'');
+    var tasteLine = String(beer.note||'').replace(/\s*\*?Sent using\*?.*$/i,'').trim();
+    u.querySelector('.note').textContent=styleLine; u.querySelector('.note').classList.toggle('long',styleLine.length>30);
+    u.querySelector('.taste').textContent=tasteLine; u.querySelector('.taste').classList.toggle('long',tasteLine.length>30);
+    u.querySelector('.name').classList.toggle('longname', String(beer.name||'').length>17);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
     u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+' <span class="dot">\u00b7</span> <span class="abv">'+beer.abv+'%</span></span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
