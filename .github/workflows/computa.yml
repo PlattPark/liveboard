@@ -49,7 +49,7 @@ jobs:
           SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}    # 86 -> register / gatesdeli.com / DoorDash; empty = off
           SPOTHOPPER_EMAIL: ${{ secrets.SPOTHOPPER_EMAIL }}          # website beer list; empty = off
           SPOTHOPPER_PASSWORD: ${{ secrets.SPOTHOPPER_PASSWORD }}
-          MENU_PRICES: report                                        # QR menu prices vs register: report to #board; "apply" writes them
+          MENU_PRICES: apply                                         # QR menu prices follow the register (#board is told); "report" = tell only
         run: |
           git config user.name  "computa"
           git config user.email "computa@plattparkbrewing.com"
