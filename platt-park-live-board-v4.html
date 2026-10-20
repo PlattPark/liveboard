@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-10-20T21:55Z from src @ 360a485 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-10-20T22:31Z from src @ 0aed6b0 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -200,14 +200,19 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
 body.scene-industry .goldflag, body.dark .goldflag{display:inline-block;background:#eebf19;color:#293d22;font-size:12.5px;letter-spacing:1px;padding:2px 7px;border-radius:3px;margin-right:7px;vertical-align:6px;box-shadow:2px 2px 0 rgba(41,61,34,.3)}
 body.scene-industry .plate .name, body.dark .plate .name{color:#e7eacd}
   .plate .note{color:#293d22;font-size:21px;font-weight:600;line-height:1.12;margin-top:4px;text-wrap:balance;max-width:214px;margin-left:auto;margin-right:auto}
+  .plate{display:flex;flex-direction:column;align-items:stretch} .plate .row2{margin-top:auto;padding-top:5px}   /* price tags share one baseline per row, however many lines the taste note takes */
+  .plate .taste{color:#5a8142;font-size:19px;font-weight:600;line-height:1.1;margin-top:2px;text-wrap:balance;max-width:224px;margin-left:auto;margin-right:auto}
+  .plate .taste{min-height:2.2em} .plate .taste:empty{display:block}   /* every card reserves two taste lines, so the price tags line up across the row */ .plate .taste.long{font-size:16.5px;max-width:230px}
+  body.scene-industry .plate .taste, body.dark .plate .taste{color:#b9c49a}
+  .plate .name.longname{font-size:30px;letter-spacing:-.2px;white-space:nowrap}
   .plate .note:empty{display:none} .plate .note.long{font-size:19px;max-width:222px;letter-spacing:-.15px;line-height:1.1}
 body.scene-industry .plate .note, body.dark .plate .note{color:#e7eacd}
   .plate .meta{display:none}
 body.scene-industry .plate .meta, body.dark .plate .meta{color:#b9c49a}
   .plate .row2{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:5px}
   .plate .price{font-family:'Archivo Black';font-size:22px;color:#293d22;letter-spacing:.3px}
-  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:14px;letter-spacing:1.5px;color:#5a8142}
-  .plate .price .p10b{font-family:'Archivo Black';font-size:19px;color:#293d22;opacity:.85}
+  .plate .price .p10{font-family:'Barlow';font-weight:700;font-size:16px;letter-spacing:1px;color:#5a8142}
+  .plate .price .p10b{font-family:'Archivo Black';font-size:20px;color:#293d22;opacity:.92}
   .plate .price .sep{font-size:16px;opacity:.5;letter-spacing:0}
   .plate .price .dot{opacity:.45;margin:0 1px} .plate .price .abv{font-family:'Barlow';font-weight:700;font-size:17px;color:#131f0f;letter-spacing:.5px;opacity:.85}
   body.dark .plate .price .abv{color:#131f0f}
@@ -438,7 +443,7 @@ body.dark .fl .h{background:#0c130a} body.curtained .fl .go{animation-play-state
     <div class="s-item"><span class="s-name">Bravazzi</span><div class="s-row"><span class="s-flavor">hard Italian soda</span><span class="s-price">$9</span></div></div>
     <div class="s-item"><span class="s-name">Wine</span><div class="s-row"><span class="s-flavor">red &middot; white &middot; ros&eacute;</span><span class="s-price">$9&ndash;11</span></div></div>
     <div class="s-item"><span class="s-name">Draft Cocktail</span><div class="s-row"><span class="s-flavor">Craftwell peach mojito</span><span class="s-price">$12</span></div></div>
-    <div class="s-item frozen"><span class="s-name">Frozen Cocktails</span><div class="s-row"><span class="s-flavor" id="sFlavor">Mexican Firing Squad<br>Transfusion</span><span class="s-price">$12</span></div></div>
+    <div class="s-item frozen"><span class="s-name">Frozen Drinks</span><div class="s-row"><span class="s-flavor" id="sFlavor">ask your bartender</span><span class="s-price">$12</span></div></div>
     <div class="s-foot">Full bar · NA options too</div>
       </div>
   <div class="ranger"><img src="img/ranger.png" alt=""><span class="cap">Brewed for adventure</span></div>
@@ -584,7 +589,7 @@ function render(s){
           <div class="cone"></div><div class="valve"></div>
         </div></div>
         <div class="plate">
-          <div class="name"></div><div class="note"></div><div class="meta"></div><div class="adj"></div>
+          <div class="name"></div><div class="note"></div><div class="taste"></div><div class="meta"></div><div class="adj"></div>
           <div class="row2"><span class="price"></span></div>
           <div class="age"></div>
         </div>`;
@@ -597,7 +602,8 @@ function render(s){
         bb.style.animationDelay=(-Math.random()*6).toFixed(2)+'s';
       });
     }
-    const fresh = beer.tappedAt && (Date.now()-beer.tappedAt) < 3*86400000;   // NEW for the first 3 days
+    const tappedMs = typeof beer.tappedAt==='string' ? Date.parse(beer.tappedAt) : beer.tappedAt;
+    const fresh = tappedMs && (Date.now()-tappedMs) < 7*86400000;   // NEW for the first week (Computa stamps tappedAt when a beer is added)
     const wm = wallMedal(beer);
     u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(wm?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'')+((beer.nitro||/\bnitro\b/i.test(beer.style||''))?' nitro':'');
     u.querySelector('.newtag').textContent=beer.pick?'Brewers\u2019 pick':'New';
@@ -625,7 +631,12 @@ function render(s){
       } else if(pl){ pl.remove(); }
     })();
     u.querySelector('.meta').textContent=`${beer.style} · ${beer.abv}%`;
-    u.querySelector('.note').textContent=beer.wall||beer.note||''; u.querySelector('.note').classList.toggle('long',(beer.wall||beer.note||'').length>30);
+    // Oct 20 2026: what it IS (style) on line one, what it TASTES like (the note) on line two - guests order on flavor
+    var styleLine = beer.note ? (beer.style||beer.wall||'') : (beer.wall||beer.style||'');
+    var tasteLine = String(beer.note||'').replace(/\s*\*?Sent using\*?.*$/i,'').trim();
+    u.querySelector('.note').textContent=styleLine; u.querySelector('.note').classList.toggle('long',styleLine.length>30);
+    u.querySelector('.taste').textContent=tasteLine; u.querySelector('.taste').classList.toggle('long',tasteLine.length>30);
+    u.querySelector('.name').classList.toggle('longname', String(beer.name||'').length>17);
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
     u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+' <span class="dot">\u00b7</span> <span class="abv">'+beer.abv+'%</span></span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
@@ -994,10 +1005,10 @@ function festOverride(s){
     const {dow,t,date}=denver(), ctx={}, w=window.__wx; const H=(window.__hours||{});
     if(!PREVIEW){ if((H.closed||[]).indexOf(date)>=0) ctx.curtain='closed'; else if(t<OPEN) ctx.curtain=(t<1.5?'goodnight':'preopen'); else if(t>=closeFor(dow,date)) ctx.curtain='goodnight'; }   // ?preview: crew check, never the curtain
     if(!ctx.curtain){
-      if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'Everything, all day, food included \u00b7 clock-out slip, schedule or work shirt gets you in'}; ctx.eventPhase='run'; }
+      if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'25% off all day, food included \u00b7 32oz pitchers $11 / $13, 3\u201311pm \u00b7 $30 game-day bundle'}; ctx.eventPhase='run'; }
       else if(dow==='Tue'){ const live=(t>=19&&t<21);
         ctx.event={title:'Trivia Tuesday',promo:'Team Trivia tonight \u00b7 7pm',banner:'Team Trivia \u00b7 happening now'}; ctx.eventPhase=live?'run':'promote'; }
-      else if(dow==='Wed'){ ctx.event={title:'Wing Wednesday',banner:'A dozen wings for $12 \u00b7 every other day it\u2019s seven',wingCounter:false}; ctx.eventPhase='run'; }
+      else if(dow==='Wed'){ ctx.event={title:'Pitcher night',banner:'32oz pitchers $12 \u00b7 Platty Lite $10 \u00b7 a dozen wings $12',wingCounter:false}; ctx.eventPhase='run'; }
     }
     let scene='default', banner;
     if(w && SNOW.includes(w.code)){ scene='snow'; banner='Snow day. Nitro pours lead the board.'; }
@@ -1091,16 +1102,15 @@ function festOverride(s){
   window.__rotNow=function(){};
 
   // rail cell cycles true facts
-  const DAY=[
-    ['Weekend','breakfast at Gates \u00b7 8am'],
-    ['Tonight','industry night \u00b7 MNF on the big screen'],
-    ['Tonight','trivia 7pm \u00b7 bring a team'],
-    ['Tonight','wing wednesday \u00b7 dozen for $12'],
-    ['To go','crowlers from $12 \u00b7 filled at the bar'],
-    ['To go','crowlers from $12 \u00b7 filled at the bar'],
-    ['Weekend','breakfast at Gates \u00b7 sat + sun 8am']
+  // Oct 20 2026: this cell never repeats the band above (trivia showed twice); it sells what helps a guest decide
+  const BASE=[
+    ['Can\u2019t decide?','tasters from $2 \u00b7 ask for a few'],
+    ['To go','4-packs + crowlers \u00b7 at the bar'],
+    ['Every beer','comes in a 10oz too']
   ];
-  const FACTS=[DAY[new Date().getDay()]];
+  const WEEKEND=['Weekend','breakfast at Gates \u00b7 sat + sun 8am'];
+  const dow0=new Date().getDay();
+  const FACTS=(dow0===0||dow0===6)?[WEEKEND].concat(BASE):BASE;
   let fi=0;
   function rotFact(){ if(window.__LIVE) return;
     const k=$('mostK'), v=$('most');
@@ -1144,8 +1154,9 @@ function festOverride(s){
 
     'every beer pours in a 10oz too \u00b7 just ask', 'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
-    'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
-    'industry night mondays \u00b7 Monday Night Football on the big screen',
+    'trivia tuesdays 7pm \u00b7 pitcher night wednesdays \u00b7 32oz <em>$12</em>, Platty Lite <em>$10</em>',
+    'industry night mondays \u00b7 25% off all day \u00b7 Monday Night Football on the big screen',
+    'can\u2019t decide? tasters from <em>$2</em> \u00b7 ask for a few',
     ...MEDAL_LINES,
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
@@ -1153,14 +1164,20 @@ function festOverride(s){
     'Westword Best of Denver 2020 \u00b7 best walk-up beer + sandwiches',
     'kids eat too \u00b7 dino nuggs or a Vienna dog \u00b7 goldfish, apple slices, capri-sun',
 
-    'K\u0100KOU pours like a stout, drinks like a vacation',
     'pint <em>#1,000,000</em> poured Thanksgiving 2025 \u00b7 now pouring million two',
-    'crowlers to go \u00b7 from <em>$12</em> \u00b7 sealed at the bar',
+    'crowlers to go \u00b7 <em>$14\u201320</em> \u00b7 sealed at the bar',
     'Gates Deli out the sidewalk window \u00b7 sandwiches worth the walk'
   ];
   let liveItems=[];
   window.__wirePour=function(name){ liveItems.unshift('<span class="wi pour">just poured \u00b7 '+name+'</span>'); liveItems=liveItems.slice(0,6); buildWire(); };
-  function wireItems(){ return [...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
+  /* 4-packs to go, straight from the register's live buttons (tools/menu_build.py keeps menu_state.json) */
+  window.__packWire='';
+  function loadPacks(){ try{ var x=new XMLHttpRequest(); x.open('GET','menu_state.json?t='+Date.now(),true);
+    x.onload=function(){ try{ var j=JSON.parse(x.responseText); var t=String(j.four_packs||'').replace(/^4-packs to go:\s*/i,'').replace(/\s*\u00b7\s*also at gatesdeli\.com for pickup\.?$/i,'');
+      var line=t?'4-packs to go \u00b7 '+t.replace(/\$(\d+)/g,'<em>$$$1</em>'):''; if(line!==window.__packWire){ window.__packWire=line; buildWire(); } }catch(e){} };
+    x.onerror=function(){}; x.send(); }catch(e){} }
+  setTimeout(loadPacks,3000); setInterval(loadPacks,600000);
+  function wireItems(){ return [...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
   function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;
