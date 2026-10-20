@@ -217,7 +217,7 @@ body.scene-industry .rail, body.dark .rail{background:#131f0f}
   .rail .cell:nth-child(2){flex:0 0 auto}
   .rail .cell:nth-child(4){flex:1;min-width:0}
   .rail .cell + .cell::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;background:#ff5a3a;border-radius:2px}
-  .rail .k{font-family:'Archivo Black';font-size:16.5px;letter-spacing:2px;color:#eebf19;text-transform:uppercase}
+  .rail .k{font-family:'Archivo Black';font-size:16.5px;letter-spacing:2px;color:#eebf19;text-transform:uppercase;flex:none;white-space:nowrap;margin-right:6px}   /* never squeezed into the text beside it (seen on the TV Oct 20) */
   .rail .big{font-family:'Archivo Black';font-size:27px;color:#e7eacd;font-variant-numeric:tabular-nums}
   .rail .qrcell{flex:none;padding:0 22px;gap:11px}
   .rail .qrcell img{height:56px;width:56px;border-radius:4px;border:2.5px solid #e7eacd}
