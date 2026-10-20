@@ -8,8 +8,9 @@ WHAT IT OWNS (everything else in menu.html is left exactly as designed)
   also         the "Also Pouring" section   <- beers.json also    (same categories as the wall panel)
   4-packs      the "4-packs to go" sentence <- Square: live 4-pack buttons, grouped by price
   prices       every other priced line      <- Square, checked by exact name.
-               MENU_PRICES=report (default): mismatches are posted to #board, nothing changes.
-               MENU_PRICES=apply: the register price is written onto the menu.
+               MENU_PRICES=apply (default): the register price is written onto the menu and #board is told.
+               MENU_PRICES=report: mismatches are posted to #board, nothing changes.
+               LINKS below tie a menu line to the register button(s) it is priced from.
 
 RUN
   python3 tools/menu_build.py            # writes menu.html if anything changed
@@ -27,7 +28,36 @@ STATE = ROOT / "menu_state.json"
 BOARD_CHANNEL = "C0CALA09Z35"
 LOCATION = "1SEFN6DR2HWSV"
 GATES_SITE = "CH_aCf602ueFMnyWfOZqBq7NggyDdxQaeOcZEnh5PlQuYC"   # gatesdeli.com channel
-MODE = os.environ.get("MENU_PRICES", "report").strip().lower()
+MODE = os.environ.get("MENU_PRICES", "apply").strip().lower()
+
+# Menu line -> register button(s). {Register Name} = that button's price; {Register Name|Variation} = one size.
+# Any line not listed here is priced from the register button with the same name.
+LINKS = {
+    "Flying Buffalo": "{Flying Buffalo (Sando)}",
+    "Nachos": "{Buffalo Nachos} / \u00bd {1/2 Order Nachos}",
+    "Soup": "{Cup of soup (tomato)} / {Bowl of Soup (Tomato)}",
+    "Grilled Cheese": "{Regular Grilled Cheese}",
+    "Soup & Grilled Cheese": "{Cup tomato & Grilled Cheese} / {Tomato Soup Bowl & Grilled Cheese}",
+    "Single Taco": "{Single Pork TACO}",
+    "Wings": "{Buffalo Wings}",
+    "Packaged Candy & Snacks": "{Candy Bars}",
+    "Ros\u00e9": "{Rose}",
+    "Sparkling Ros\u00e9": "{Sparkling Rose}",
+    "Iced Tea": "{ICE T}",
+    "Bottled Root Beer": "{CO Soda ROOT BEER}",
+    "Red Wine": "Regular {Red Wine|Regular} / Bottle {Red Wine|Bottle}",
+    # Also Pouring categories -> the register button the bar rings
+    "Seasonal Cider": "{Fruited Cider}",
+    "Hard Italian Soda": "{Italian Soda}",
+    "Hard Seltzer": "{Hard Seltzer}",
+    "Frozen Drinks": "{Frozen Cocktail}",
+}
+# Shown on the menu's Also Pouring under the wall's categories (things the wall doesn't need to carry)
+ALSO_EXTRAS = [("Cider Taster", "$4", "a small pour of either cider")]       # price is a fallback; the register's wins
+# Lines the menu no longer carries (they live in Also Pouring now)
+DROP_LINES = ["Frozen Cocktail"]
+# Wall categories the menu already covers in its own section
+ALSO_SKIP_ON_MENU = {"wine"}
 CHECK = "--check" in sys.argv
 
 ITEM = '<div class="it"><div class="ir"><span class="in">{n}</span><span class="dots"></span><span class="ip">{p}</span></div>{d}</div>'
@@ -69,12 +99,18 @@ def beer_rows(data):
     return "".join(out)
 
 
-def also_rows(data):
+def also_rows(data, known=None):
+    """known = last register price per category (so the menu shows what guests pay, and doesn't flip each cycle)."""
+    known = known or {}
     out = []
     for a in data.get("also") or []:
+        if norm(a.get("name")) in ALSO_SKIP_ON_MENU:
+            continue
         sub = SENT_USING.sub("", a.get("sub") or "").strip()
-        out.append(ITEM.format(n=esc(a.get("name", "")), p=esc(a.get("price", "")),
+        out.append(ITEM.format(n=esc(a.get("name", "")), p=esc(known.get(norm(a.get("name"))) or a.get("price", "")),
                                d='<div class="id">%s</div>' % esc(sub) if sub else ""))
+    for name, price, sub in ALSO_EXTRAS:
+        out.append(ITEM.format(n=esc(name), p=esc(known.get(norm(name)) or price), d='<div class="id">%s</div>' % esc(sub) if sub else ""))
     return "".join(out)
 
 
@@ -166,28 +202,49 @@ def four_pack_sentence(items, beer_names):
     return "4-packs to go: " + " · ".join(parts) + " · also at gatesdeli.com for pickup."
 
 
+def register_price(template, by):
+    """'{Buffalo Nachos} / \u00bd {1/2 Order Nachos}' -> '$16 / \u00bd $8', or None if a button is missing or ambiguous."""
+    def one(m):
+        name, _, var = m.group(1).partition("|")
+        hits = by.get(norm(name), [])
+        if len(hits) != 1:
+            raise KeyError(name)
+        vs = (hits[0].get("item_data") or {}).get("variations", [])
+        if var:
+            vs = [v for v in vs if norm((v.get("item_variation_data") or {}).get("name")) == norm(var)]
+        ps = sorted({(v.get("item_variation_data") or {}).get("price_money", {}).get("amount", 0) / 100.0 for v in vs
+                     if (v.get("item_variation_data") or {}).get("price_money")})
+        if len(ps) != 1:
+            raise KeyError(name)
+        return money(ps[0])
+    try:
+        return re.sub(r"\{([^}]+)\}", one, template)
+    except KeyError as e:
+        return None
+
+
 def price_check(menu_html, items, skip_names):
-    """Lines whose name matches exactly one live register item with a single price."""
+    """Every priced line, against the register button(s) it is linked to (LINKS, else the same name)."""
     by = {}
     for it in items:
         if live_here(it):
             by.setdefault(norm((it.get("item_data") or {}).get("name", "")), []).append(it)
+    links = {norm(k): v for k, v in LINKS.items()}
     diffs, unmatched = [], []
     for m in re.finditer(r'<span class="in">(.*?)</span><span class="dots"></span><span class="ip">(.*?)</span>', menu_html):
-        name, shown = m.group(1), html.unescape(m.group(2))
-        k = norm(name)
+        raw, shown = m.group(1), html.unescape(m.group(2))
+        label = html.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
+        label = re.sub(r"^NEW\s+", "", label)
+        k = norm(raw)
         if k in skip_names:
             continue
-        hits = by.get(k, [])
-        if len(hits) != 1:
-            unmatched.append(html.unescape(re.sub(r"<[^>]+>", "", name)))
+        template = links.get(k) or ("{%s}" % label)
+        reg = register_price(template, by)
+        if reg is None:
+            unmatched.append(label)
             continue
-        ps = prices_of(hits[0])
-        if len(ps) != 1:
-            continue                                            # several sizes - the menu's own wording wins
-        reg = money(ps[0])
-        if shown.strip() != reg:
-            diffs.append((m.start(2), m.end(2), html.unescape(re.sub(r"<[^>]+>", "", name)), shown, reg))
+        if html.unescape(shown).strip() != html.unescape(reg):
+            diffs.append((m.start(2), m.end(2), label, shown, esc(reg)))
     return diffs, unmatched
 
 
@@ -211,6 +268,9 @@ def main():
     data = json.loads(BEERS.read_text(encoding="utf-8"))
     s = s0
     notes = []
+    state = json.loads(STATE.read_text()) if STATE.exists() else {}
+    for gone in DROP_LINES:
+        s = re.sub(r'<div class="it"><div class="ir"><span class="in">%s</span>.*?</div>(?:<div class="id">.*?</div>)?</div>' % re.escape(gone), "", s, count=1)
 
     # beers: everything between the tank intro and the Pitcher line
     s, old = replace_between(s, r'<div class="tankintro">.*?</div></div>',
@@ -218,9 +278,8 @@ def main():
     # also pouring: the section that used to be "Cider & Kombucha"
     s = s.replace("<section><h2>Cider &amp; Kombucha</h2>", "<section><h2>Also Pouring</h2>")
     s = s.replace("<section><h2>Cider & Kombucha</h2>", "<section><h2>Also Pouring</h2>")
-    s, _ = replace_between(s, r'<section><h2>Also Pouring</h2>', r'</section>', also_rows(data), "Also Pouring")
+    s, _ = replace_between(s, r'<section><h2>Also Pouring</h2>', r'</section>', also_rows(data, state.get("also_reg")), "Also Pouring")
 
-    state = json.loads(STATE.read_text()) if STATE.exists() else {}
     import time
     square_due = time.time() - state.get("square_at", 0) >= int(os.environ.get("MENU_SQUARE_EVERY", "600"))
     if os.environ.get("SQUARE_ACCESS_TOKEN") and (square_due or CHECK):
@@ -235,21 +294,42 @@ def main():
             sent = four_pack_sentence(items, beer_names)
             if sent:
                 s = re.sub(r"4-packs to go: .*?(?=</div>)", sent, s, count=1)
-            skip = {norm(b["name"]) for b in data.get("beers", [])} | {norm(a.get("name")) for a in data.get("also") or []}
-            skip |= {norm("Pitcher (32 oz)")}
+            skip = {norm(b["name"]) for b in data.get("beers", [])} | {norm("Pitcher (32 oz)")}
             diffs, unmatched = price_check(s, items, skip)
+            wall_fix = []
+            by = {}
+            for it in items:
+                if live_here(it):
+                    by.setdefault(norm((it.get("item_data") or {}).get("name", "")), []).append(it)
+            links = {norm(k): v for k, v in LINKS.items()}
+            also_reg = {}
+            for name, _, _ in ALSO_EXTRAS:
+                r = register_price(links.get(norm(name)) or "{%s}" % name, by)
+                if r: also_reg[norm(name)] = r
+            for a in data.get("also") or []:
+                if norm(a.get("name")) in ALSO_SKIP_ON_MENU:
+                    continue
+                reg = register_price(links.get(norm(a.get("name"))) or "{%s}" % a.get("name"), by)
+                if reg: also_reg[norm(a["name"])] = reg
+                if reg and reg != a.get("price"):
+                    wall_fix.append("%s: wall %s, register %s - type _%s to also pouring %s_" % (a["name"], a.get("price"), reg, a["name"].lower(), reg))
+            state["also_reg"] = also_reg
             if diffs and MODE == "apply":
                 for a, b, name, shown, reg in sorted(diffs, reverse=True):
                     s = s[:a] + reg + s[b:]
                 notes.append("prices updated from the register: " + "; ".join("%s %s -> %s" % (n, sh, r) for _, _, n, sh, r in diffs))
             report = sorted(["%s: menu %s, register %s" % (n, sh, r) for _, _, n, sh, r in diffs])
-            key = hashlib.sha1(json.dumps([report, sorted(unmatched)]).encode()).hexdigest()
-            if MODE != "apply" and key != state.get("report_key"):
-                msg = [":page_facing_up: QR menu vs register check"]
-                msg.append(("*Prices that differ* (menu unchanged until you say apply):\n" + "\n".join("• " + r for r in report)) if report else "Every matched price agrees with the register.")
+            key = hashlib.sha1(json.dumps([report if MODE != "apply" else [], sorted(unmatched), wall_fix]).encode()).hexdigest()
+            if key != state.get("report_key"):
+                msg = []
+                if report and MODE != "apply":
+                    msg.append("*QR menu prices that differ from the register* (menu unchanged in report mode):\n" + "\n".join("\u2022 " + r for r in report))
+                if wall_fix:
+                    msg.append("*Also Pouring price on the wall differs from the register:*\n" + "\n".join("\u2022 " + r for r in wall_fix))
                 if unmatched:
-                    msg.append("_No exact register match, left as written:_ " + ", ".join(sorted(set(unmatched))))
-                slack("\n".join(msg))
+                    msg.append("*QR menu lines with no register button to price from* (left as written - add the button or a link in tools/menu_build.py): " + ", ".join(sorted(set(unmatched))))
+                if msg:
+                    slack(":page_facing_up: " + "\n".join(msg))
                 state["report_key"] = key
 
     if s != s0:
