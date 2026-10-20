@@ -1325,7 +1325,7 @@ def cellar_apply(reading, data, state, force=False):
     if not force and seen.get("applied") == key:
         return [], []
     beers = data.setdefault("beers", [])
-    changes, lines, skipped, unknown = [], [], [], []
+    changes, lines, skipped, unknown, offtank = [], [], [], [], []
     for row in reading.get("levels", []):
         name = str(row.get("name") or "").strip()
         try:
@@ -1338,6 +1338,12 @@ def cellar_apply(reading, data, state, force=False):
         b = match_beer(full or name, beers)
         if not b:
             unknown.append("%s %.1f" % (name, bbls))
+            continue
+        # Oct 20 2026: Chela went to kegs and cans, and the sheet's 15.4 bbl (everything left, wherever it sits)
+        # landed in a 10 BBL tank drawing. Only a beer that is actually in a serving tank - column C on Greg's
+        # sheet - gets its level from the sheet. Kegs, cans and fermenters are reported, never drawn.
+        if not str(row.get("sv") or "").strip() or b.get("vessel") in ("keg", "keg-half"):
+            offtank.append("%s %.1f" % (b["name"], bbls))
             continue
         if not force and stamp and b.get("levelAt") and b["levelAt"] > stamp:
             skipped.append(b["name"])          # someone set it in Slack after Greg saved the sheet
@@ -1352,6 +1358,7 @@ def cellar_apply(reading, data, state, force=False):
     seen["at"] = datetime.now().isoformat(timespec="seconds")
     summary = [":bar_chart: Levels from Greg's sheet (%s, %s): %s" % (reading.get("sheet"), reading.get("tab"), " \u00b7 ".join(lines) or "nothing on the wall")]
     if skipped: summary.append("Kept the newer Slack number for " + ", ".join(skipped) + ".")
+    if offtank: summary.append("Not in a serving tank (kegs / cans / fermenter), left as the wall has it: " + ", ".join(offtank) + ".")
     if unknown: summary.append("Not on the wall: " + ", ".join(unknown) + ".")
     return changes, summary
 
