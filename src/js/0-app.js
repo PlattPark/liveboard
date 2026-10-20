@@ -183,7 +183,7 @@ function render(s){
       const bar=el.querySelector('.s-bar i'); if(bar) bar.style.width=(it.pct*100)+'%';
       el.classList.toggle('low-side', it.pct<=0.15);
     }
-    if(s.side.find(x=>x.id==='frozen')) $('sFlavor').innerHTML=s.side.find(x=>x.id==='frozen').flavor;
+    if(!window.__also && s.side.find(x=>x.id==='frozen') && $('sFlavor')) $('sFlavor').innerHTML=s.side.find(x=>x.id==='frozen').flavor;   // demo only: live data owns the frozen line (Oct 20 2026 - this used to overwrite it with the sample flavors)
   }
   // odometer + kick detection
   for(const beer of s.beers){
@@ -215,7 +215,7 @@ const SIM={beers:[
  {id:'madagascar-dream',name:'Madagascar Dream',style:'Vanilla Cream · Nitro',abv:6.0,price10:5.0,price:8.0,rating:3.75,vessel:'tank10',vesselLabel:'10 BBL',color:'#c9973c',colorTop:'#e6bd6e',remainingOz:19840,tappedAt:Date.now()-86400000*21},
  {id:'kakou',name:'KĀKOU',style:'Golden Stout · Nitro',abv:5.8,price10:5.25,price:8.5,rating:3.9,vessel:'tank10',vesselLabel:'10 BBL',color:'#dfa93c',colorTop:'#eec468',remainingOz:1267,tappedAt:Date.now()-86400000*8},
 ]
-,poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'chela':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad<br>Transfusion'}]};
+,poured:{'oktoberfest':16,'platty-lite':16,'plattmosphere':16,'astronaut-amber':16,'chela':10},wings:847,side:[{id:'cider',pct:.62},{id:'seltzer',pct:.34},{id:'frozen',flavor:'Mexican Firing Squad'}]};
 
 /* ── LIVE TAP DATA ───────────────────────────────────────────────────
    What's pouring lives in beers.json, not in this file.
