@@ -352,7 +352,11 @@ function payload(){
         low:(oz/cap)<=0.10,kicked:false,tappedAt:null,pouredTodayPints:0};
     }
     return{...b,capacityOz:cap,pct:b.remainingOz/cap,pintsLeft:Math.floor(b.remainingOz/16),low:b.remainingOz>0&&b.remainingOz/cap<=0.05,kicked:b.remainingOz<=0,pouredTodayPints:Math.round((SIM.poured[b.id]||0)/16)}});
-  beers.sort((x,y)=>y.capacityOz-x.capacityOz);
+  /* Oct 20 2026: the wall reads light to dark, left to right, top row first - by each beer's own liquid colour,
+     so a new beer slots itself in. Ties (same colour) fall back to the bigger tank first. */
+  const lum = c => { const h=String(c||'').replace('#',''); if(h.length<6) return 0.5;
+    const [r,g,b]=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255); return 0.2126*r+0.7152*g+0.0722*b; };
+  beers.sort((x,y)=> (lum(y.color)-lum(x.color)) || (y.capacityOz-x.capacityOz));
   let most=null,mx=0;for(const b of beers)if(b.pouredTodayPints>mx){mx=b.pouredTodayPints;most=b}
   return{beers,side:SIM.side,wingsToday:SIM.wings,mostPoured:most,weather:sc.weather,context:sc.context,mode:'demo'};
 }
