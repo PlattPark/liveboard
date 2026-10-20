@@ -197,13 +197,15 @@ PRICE10_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+10\s*oz\s+(?:is\s+now
 ALSO_DEFAULT = [
     {"name": "BrightCider",      "sub": "2 Towns \u00b7 dry cider",      "price": "$9"},
     {"name": "Pumpkin Cider",    "sub": "2 Towns \u00b7 seasonal",       "price": "$9"},
-    {"name": "Boochcraft",       "sub": "kiwi citrus kombucha",         "price": "$9"},
-    {"name": "Bravazzi",         "sub": "hard Italian soda",            "price": "$9"},
+    {"name": "Hard Kombucha",    "sub": "Boochcraft kiwi citrus",       "price": "$9"},
+    {"name": "Hard Italian Soda","sub": "Bravazzi",                     "price": "$9"},
     {"name": "Wine",             "sub": "red \u00b7 white \u00b7 ros\u00e9", "price": "$9\u201311"},
     {"name": "Draft Cocktail",   "sub": "Craftwell peach mojito",       "price": "$12"},
-    {"name": "Frozen Cocktails", "sub": "Mexican Firing Squad \u00b7 Transfusion", "price": "$12"},
+    {"name": "Frozen Drinks",    "sub": "Mexican Firing Squad",         "price": "$12"},
 ]
 ALSO_RM_RE  = re.compile(r"^(?:(?:remove|take|drop|pull|delete)\s+(?P<item>.{2,40}?)\s+(?:off|from|off\s+of|out\s+of)\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)|also\s+pouring\s*[:\-]\s*(?:remove|drop|delete)\s+(?P<item2>.{2,40}?))[.!]?\s*$", re.I)
+ALSO_FLAVOR_ADD_RE = re.compile(r"^(?:add|put)\s+(?P<flavor>.{2,40}?)\s+(?:to|on|under|in)\s+(?:the\s+)?(?P<cat>(?!menu\b|board\b|wall\b|tap\s*list\b|list\b|taps\b|also\s+pouring\b|side\s+panel\b).{2,30}?)[.!]?\s*$", re.I)
+ALSO_REPLACE_RE = re.compile(r"^(?:replace|swap)\s+(?:the\s+)?(?P<old>.{2,40}?)\s+(?:with|for)\s+(?P<new>[^:,$\u2014]{2,40}?)(?:\s*[:,\-\u2014]\s*(?P<sub>[^$]{0,70}?))?(?:\s*,?\s*\$\s*(?P<price>\d+(?:\.\d+)?(?:\s*[-\u2013]\s*\d+(?:\.\d+)?)?))?[.!]?\s*$", re.I)
 ALSO_ADD_RE = re.compile(r"^(?:add\s+)?(?P<item>.{2,40}?)\s+to\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)(?:\s*[:,\-\u2014]\s*(?P<sub>[^$]{0,70}?))?(?:\s*\$\s*(?P<price>\d+(?:\.\d+)?(?:\s*[-\u2013]\s*\d+(?:\.\d+)?)?))?[.!]?\s*$", re.I)
 
 def style_case(text):
@@ -222,14 +224,45 @@ def also_list(data):
         data["also"] = lst
     return lst
 
+# Oct 20 2026: every Also Pouring row is a CATEGORY (Frozen Drinks, Hard Kombucha); the line under it is what's
+# pouring in that category right now. These are the words the crew actually uses for each category.
+ALSO_ALIASES = {
+    "frozen": "frozen", "frozens": "frozen", "frozen drink": "frozen", "frozen drinks": "frozen",
+    "frozen cocktail": "frozen", "frozen cocktails": "frozen", "slushie": "frozen", "slushies": "frozen", "frozen machine": "frozen",
+    "kombucha": "kombucha", "booch": "kombucha", "hard kombucha": "kombucha", "boochcraft": "kombucha",
+    "seltzer": "seltzer", "hard seltzer": "seltzer", "seltzers": "seltzer",
+    "italian soda": "italian soda", "hard italian soda": "italian soda", "bravazzi": "italian soda",
+    "draft cocktail": "draft cocktail", "cocktail on draft": "draft cocktail", "craftwell": "draft cocktail",
+    "dry cider": "dry cider", "seasonal cider": "seasonal cider", "wine": "wine",
+}
+NO_FLAVOR = "ask your bartender"
+
+def _flavors(it):
+    sub = (it.get("sub") or "").strip()
+    return [] if not sub or sub.lower() == NO_FLAVOR else [f.strip() for f in sub.split("\u00b7") if f.strip()]
+
 def match_also(name, lst):
     q = norm(name)
     if not q: return None
+    key = norm(ALSO_ALIASES.get((name or "").strip().lower(), ""))
     for it in lst:
         n = norm(it.get("name", ""))
-        if q == n or q in n or n in q:
+        if q == n or q in n or n in q or (key and key in n):
             return it
     return None
+
+def match_flavor(name, lst):
+    """'transfusion' -> (the Frozen Drinks row, 'Transfusion') when it is one of the things listed under a category."""
+    q = norm(name)
+    if len(q) < 4: return None, None
+    for it in lst:
+        for f in _flavors(it):
+            if norm(f) == q or (len(q) >= 5 and q in norm(f)):
+                return it, f
+    return None, None
+
+def set_flavors(it, flavors):
+    it["sub"] = " \u00b7 ".join(flavors) if flavors else NO_FLAVOR
 
 GUEST_RE    = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:is\s+(?:a\s+|our\s+)?guest\s+tap|guest\s+tap\s*[:=]?\s*(?P<state>on|yes|off|no)?|sash\s*[:=]\s*(?P<sash>.{2,24}?))[.!]?\s*$", re.I)
 ADJUNCT_RE = re.compile(r"^(?:the\s+)?(?P<item>.{2,48}?)\s+(?:contains|has|allergens?\s*[:=])\s*(?P<what>(?:lactose|wheat|gluten|nuts?|peanuts?|tree\s+nuts?|dairy|honey|coconut|none|nothing)(?:\s*(?:,|and|&|·)\s*(?:lactose|wheat|gluten|nuts?|peanuts?|tree\s+nuts?|dairy|honey|coconut))*)[.!]?\s*$", re.I)
@@ -399,6 +432,12 @@ def parse_line(line, woke):
         m = ALSO_ADD_RE.search(line)
         if m:
             return "also_add", m.group("item").strip(" .,-"), {"sub": (m.group("sub") or "").strip(" .,-"), "price": m.group("price")}
+        m = ALSO_REPLACE_RE.search(line)
+        if m:
+            return "also_replace", m.group("old").strip(" .,-"), {"new": m.group("new").strip(" .,-"), "sub": (m.group("sub") or "").strip(" .,-"), "price": m.group("price")}
+        m = ALSO_FLAVOR_ADD_RE.search(line)
+        if m and (ALSO_ALIASES.get(m.group("cat").strip().lower()) or re.search(r"cider|wine|cocktail|kombucha|seltzer|soda|frozen", m.group("cat"), re.I)):
+            return "also_flavor_add", m.group("cat").strip(" .,-"), m.group("flavor").strip(" .,-")
         m = ADJUNCT_RE.search(line)
         if m:
             return "adjunct", m.group("item").strip(" .,-"), m.group("what").strip(" .,-")
@@ -808,6 +847,12 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             side = match_also(item, also_list(data)); also_list(data).remove(side)
             change = "also pouring: -%s" % side["name"]
             reply = ":white_check_mark: *%s* is off the Also Pouring panel - the wall updates in a couple of minutes." % side["name"]
+        elif not reply and match_flavor(item, also_list(data))[0]:
+            row, fl = match_flavor(item, also_list(data))
+            left = [f for f in _flavors(row) if f != fl]
+            set_flavors(row, left)
+            change = "also pouring: %s -%s" % (row["name"], fl)
+            reply = (":white_check_mark: *%s* is off - %s now reads _%s_." % (fl, row["name"], row["sub"]))
         elif not reply:
             ok, sq_reply, _ = square_move(item, back=False)
             if sq_reply:
@@ -1026,6 +1071,31 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             new = {"name": item.strip(), "sub": sub, "price": ("$" + price.replace(" ", "")) if price else ""}
             lst.append(new); change = "also pouring: +%s" % new["name"]
             reply = ":white_check_mark: *%s* added to Also Pouring%s." % (new["name"], "" if new["price"] else " - add a price with _\"%s to also pouring $9\"_" % new["name"])
+
+    elif action == "also_flavor_add":
+        lst = also_list(data); row = match_also(item, lst)
+        if row:
+            fl = extra.strip()
+            have = _flavors(row)
+            if norm(fl) not in [norm(f) for f in have]:
+                have.append(style_case(fl))
+            set_flavors(row, have)
+            change = "also pouring: %s +%s" % (row["name"], fl)
+            reply = ":pencil2: %s now reads _%s_." % (row["name"], row["sub"])
+        else:
+            reply = ":grey_question: *%s* isn't a category on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join(x["name"] for x in lst))
+
+    elif action == "also_replace":
+        lst = also_list(data); row = match_also(item, lst)
+        if row:
+            old = row["name"]
+            row["name"] = " ".join(w if w[:1].isupper() else w.capitalize() for w in extra["new"].split())
+            row["sub"] = extra.get("sub") or NO_FLAVOR
+            if extra.get("price"): row["price"] = "$" + extra["price"].replace(" ", "")
+            change = "also pouring: %s -> %s" % (old, row["name"])
+            reply = ":arrows_counterclockwise: *%s* replaced by *%s* in the same spot: _%s_ %s" % (old, row["name"], row["sub"], row.get("price", ""))
+        else:
+            reply = ":grey_question: *%s* isn't on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join(x["name"] for x in lst))
 
     elif action == "adjunct":
         b = match_beer(item, beers)
