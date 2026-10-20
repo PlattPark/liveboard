@@ -1151,6 +1151,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             reply = ":information_source: *%s* is already on the tap list." % beer["name"]
         else:
             if re.search(r"\bguest\s+tap\b", msg.get("text", ""), re.I): beer["sash"] = "guest tap"; beer["guest"] = True
+            beer["tappedAt"] = int(time.time() * 1000)   # the wall shows NEW on it for its first week
             beers.append(beer)
             change = "added " + beer["name"]
             reply = (":beer: *%s* is live on the board and the menu.\n"
