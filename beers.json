@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-20T19:23:40+00:00",
- "updatedBy": "also pouring: ~Frozen Cocktails",
+ "updated": "2026-10-20T19:55:38+00:00",
+ "updatedBy": "86 Nadare",
  "beers": [
   {
    "id": "plattmosphere",
@@ -55,24 +55,6 @@
      "show": "wall"
     }
    ]
-  },
-  {
-   "id": "nadare",
-   "name": "Nadare",
-   "style": "Japanese Rice Lager",
-   "abv": 5.2,
-   "price10": 4.75,
-   "price": 7.5,
-   "rating": 3.37,
-   "vessel": "tank10",
-   "vesselLabel": "10 BBL",
-   "color": "#e8d58a",
-   "colorTop": "#f5e9b3",
-   "remainingOz": 18252,
-   "tappedDaysAgo": 0,
-   "note": "jasmine rice, light and crispy",
-   "wall": "Rice Lager · crisp",
-   "levelAt": "2026-10-14T15:02:42+00:00"
   },
   {
    "id": "chela",
@@ -240,6 +222,25 @@
   }
  ],
  "recent": [
+  {
+   "id": "nadare",
+   "name": "Nadare",
+   "style": "Japanese Rice Lager",
+   "abv": 5.2,
+   "price10": 4.75,
+   "price": 7.5,
+   "rating": 3.37,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "color": "#e8d58a",
+   "colorTop": "#f5e9b3",
+   "remainingOz": 18252,
+   "tappedDaysAgo": 0,
+   "note": "jasmine rice, light and crispy",
+   "wall": "Rice Lager · crisp",
+   "levelAt": "2026-10-14T15:02:42+00:00",
+   "offSince": "2026-10-20"
+  },
   {
    "id": "half-acre-original-reaper",
    "name": "Half Acre Original Reaper",
