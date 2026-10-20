@@ -294,6 +294,7 @@ def main():
             sent = four_pack_sentence(items, beer_names)
             if sent:
                 s = re.sub(r"4-packs to go: .*?(?=</div>)", sent, s, count=1)
+                state["four_packs"] = sent                       # the wall's ticker reads this (menu_state.json)
             skip = {norm(b["name"]) for b in data.get("beers", [])} | {norm("Pitcher (32 oz)")}
             diffs, unmatched = price_check(s, items, skip)
             wall_fix = []
