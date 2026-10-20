@@ -230,7 +230,6 @@ function festOverride(s){
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
     'trivia tuesdays 7pm \u00b7 pitcher night wednesdays \u00b7 32oz <em>$12</em>, Platty Lite <em>$10</em>',
     'industry night mondays \u00b7 25% off all day \u00b7 Monday Night Football on the big screen',
-    'can\u2019t decide? tasters from <em>$2</em> \u00b7 ask for a few',
     ...MEDAL_LINES,
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
