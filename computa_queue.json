@@ -116,5 +116,11 @@
   "action": "remove_unmatched",
   "item": "original reaper stout half screw from the menu",
   "text": "<@U0C2GMAT8CD> 86 original reaper stout half screw from the menu "
+ },
+ {
+  "ts": "1792529369.490329",
+  "action": "remove_unmatched",
+  "item": "transfusion",
+  "text": "86 transfusion"
  }
 ]
