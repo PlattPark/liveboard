@@ -27,3 +27,8 @@ body.bn .stage{transform:scale(.878)}
    was competing with the beer names mid-board. Applies to every season's map. */
 body::before{-webkit-mask-image:radial-gradient(ellipse 60% 64% at 50% 50%, rgba(0,0,0,.42) 0%, rgba(0,0,0,.62) 45%, rgba(0,0,0,.9) 80%, #000 100%);
   mask-image:radial-gradient(ellipse 60% 64% at 50% 50%, rgba(0,0,0,.42) 0%, rgba(0,0,0,.62) 45%, rgba(0,0,0,.9) 80%, #000 100%)}
+
+/* Oct 20 2026: the ranger stands on the rail directly over the QR code - he points the room at the full menu.
+   The stage scales differently with and without the top band, so each case has its own offset. */
+.ranger{transform:translate(171px,36px)}
+body.bn .ranger{transform:translate(257px,37px)}
