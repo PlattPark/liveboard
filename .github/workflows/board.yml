@@ -53,6 +53,7 @@ jobs:
           python3 tools/mapstrip.py
           python3 tools/board.py build
           cp -r fonts ouray.svg beers.json maps dist/   # maps/ too: the board loads maps/maps.json at boot and the render check counts a 404 as a failure
+          cp menu_state.json dist/ 2>/dev/null || echo '{}' > dist/menu_state.json   # the ticker's 4-pack line (kept by tools/menu_build.py)
 
       - name: Render check
         run: |
@@ -75,4 +76,8 @@ jobs:
           git add platt-park-live-board-v4.html img src/img/ranger.png maps
           [ "$ACTION" = "split" ] && git add src
           git commit -m "board: build from src (${GITHUB_SHA::7}) [skip ci]" || { echo "nothing changed"; exit 0; }
-          git fetch -q origin main; [ "$(git rev-parse origin/main)" = "$GITHUB_SHA" ] || { echo "main moved on since this build - the newer commit's own run publishes"; exit 0; }; git push
+          git fetch -q origin main
+          # Oct 20 2026: Computa commits state every few minutes, so "main moved on" was nearly always true and board
+          # changes were silently dropped. Only stand down if the BOARD SOURCE changed since this build; otherwise rebase and publish.
+          if ! git diff --quiet "$GITHUB_SHA" origin/main -- src tools; then echo "board source changed since this build - the newer commit's own run publishes"; exit 0; fi
+          git pull -q --rebase origin main && git push
