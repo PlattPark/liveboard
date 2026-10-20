@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-10-20T17:56Z from src @ 65dcd93 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-10-20T17:59Z from src @ 5f8f002 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1036,11 +1036,27 @@ function festOverride(s){
     const {t}=denver(); const sunset=window.__sunset||19;
     const night = (t>=sunset+0.5) || (!PREVIEW && (t<OPEN || ((window.__hours||{}).closed||[]).indexOf(denver().date)>=0));      // half an hour after sunset until doors
     const dusk = !night && t>=sunset-0.75 && t<sunset+0.5;                                                                        // golden hour: the paper warms 45 min before sunset
-    document.body.classList.toggle('night', night); document.body.classList.toggle('dusk', dusk);
-    document.documentElement.style.background = (night || document.body.classList.contains('scene-industry')) ? '#1c2818' : dusk ? '#e9dfb6' : '#e7eacd';
-    document.body.style.backgroundColor = night ? '#1c2818' : dusk ? '#e9dfb6' : '';   // inline too: on Sept 22 the wall's browser painted cream paper under cream names - the class alone wasn't enough there
+    // explicit add/remove, not toggle(name, force): the wall's browser has now shown two opposite failures with the class-based
+    // night colours (cream names on cream paper on Sept 22, ink names on dark paper on Sept 27), so nothing a guest reads
+    // is allowed to depend on the class any more. The class still drives the small stuff; the paper and every plate colour are set inline.
+    var cl=document.body.classList;
+    if(night) cl.add('night'); else cl.remove('night');
+    if(dusk) cl.add('dusk'); else cl.remove('dusk');
+    cl.add('dark');                          // Sept 29: the crew prefers the green - the board is dark all day now; night only decides the moon and the weather word
+    var dark = true;
+    document.documentElement.style.background = dark ? '#1c2818' : dusk ? '#e9dfb6' : '#e7eacd';
+    document.body.style.backgroundColor = dark ? '#1c2818' : dusk ? '#e9dfb6' : '#e7eacd';
+    var paint=function(sel,val){ var els=document.querySelectorAll(sel); for(var i=0;i<els.length;i++) els[i].style.color=val; };
+    paint('.plate .name', dark ? '#e7eacd' : '');
+    paint('.plate .note', dark ? '#e7eacd' : '');
+    paint('.plate .meta', dark ? '#b9c49a' : '');
+    paint('.plate .age',  dark ? '#93a077' : '');
+    paint('.plate .adj',  dark ? '#ffb39f' : '');
+    paint('#hero .hn',    dark ? '#e7eacd' : '');
+    paint('.plate .price', dark ? '#e7eacd' : '');
+    paint('.plate .price .tag', '#293d22');
     const p=moonPhase(), lit=(1-Math.cos(2*Math.PI*p))/2;                                                                          // moonlit: the night map brightens with the real moon
-    document.documentElement.style.setProperty('--moonlit',(0.42+0.2*lit).toFixed(2));
+    document.documentElement.style.setProperty('--moonlit', night ? (0.42+0.2*lit).toFixed(2) : '0.52');
     const mo=$('moon'); if(mo && night && !mo.dataset.p){ mo.innerHTML=moonSVG(p); mo.dataset.p='1'; }
     const hh=Math.floor(sunset), mm=Math.round((sunset-hh)*60), when=(hh>12?hh-12:hh)+':'+(mm<10?'0':'')+mm;
     let sky=''; if(!night && t>=sunset-1 && t<sunset) sky='sunset at '+when+' tonight'; else if(t>=sunset && t<sunset+2) sky='sun went down at '+when;
