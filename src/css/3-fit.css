@@ -16,7 +16,12 @@ body.bn .stage{transform:scale(.878)}
 /* dense mode: wakes at 15+ taps so the board survives a fuller wall */
 .floor.dense{gap:6px 10px}
 .floor.dense .unit{min-width:0}
-.floor.dense .name{font-size:19px;letter-spacing:0}
+.unit .plate{width:100%;min-width:0;max-width:100%;flex:1}
+#floor .unit{align-self:stretch}
+.plate .age:empty{display:none}
+#floor .plate .row2{margin-top:auto}   /* price tags sit at the bottom of every card (an older 5px margin was overriding this) */   /* cards in a row share one height, so the price tags share one baseline however much text wraps */   /* the text block is its column's width, never wider (a full wall spilled names into the next beer) */
+.floor.dense .plate .taste, .floor.dense .plate .note{max-width:100%}
+.floor.dense .name, .floor.dense .plate .name.longname, .floor.dense .plate .name.xlongname{font-size:19px;letter-spacing:0;white-space:normal}   /* a full wall's sizes win over the long-name sizes */
 .floor.dense .meta{font-size:15px}
 .floor.dense .price{font-size:13.5px;padding:3px 8px;line-height:1.2}
 .floor.dense .tbody{height:150px}
