@@ -83,9 +83,15 @@ body.scene-industry .quiet .wxword, body.dark .quiet .wxword{color:#eebf19}
   .side{
     flex:none;width:292px;align-self:flex-end;margin:0 4px 6px 8px;font-size:20px;
     background:#e7eacd;color:#293d22;border-radius:6px;
-    padding:16px 18px 14px;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.55), 0 0 46px 12px rgba(255,90,58,.30);   /* Oct 20 2026: a soft coral glow so the card reads from the room */
+    padding:16px 18px 14px;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.6);position:relative;   /* Oct 20 2026: coral edge; the glow is the ::before below */
   }
-  body.scene-industry .side{background:#e7eacd;color:#293d22;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.55), 0 0 46px 12px rgba(255,90,58,.30)}
+  body.scene-industry .side{background:#e7eacd;color:#293d22;box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.6)}
+  /* the glow breathes: medium coral, a slow 7s swell and ebb - enough to draw the eye from the room, never a blink.
+     It's a layer under the card animating opacity only, so the wall's browser composites it for free. */
+  .side::before{content:'';position:absolute;inset:-6px;border-radius:10px;z-index:-1;pointer-events:none;
+    box-shadow:0 0 58px 18px rgba(255,90,58,.44);opacity:.55;animation:sideglow 7s ease-in-out infinite alternate}
+  @keyframes sideglow{from{opacity:.4}to{opacity:1}}
+  body.curtained .side::before{animation-play-state:paused}
   .side-h{font-family:'Archivo Black';font-size:24px;letter-spacing:2px;color:#f0553d;text-transform:uppercase;margin-bottom:8px}
   body.scene-industry .side-h{color:#ff5a3a}
   .s-item{padding:8px 0 9px;border-top:2px solid rgba(41,61,34,.18)}
@@ -192,6 +198,7 @@ body.scene-industry .plate .price, body.dark .plate .price{color:#e7eacd}
   .plate .adj:empty{display:none}
 body.scene-industry .plate .adj, body.dark .plate .adj{color:#ffb39f}
 body.scene-industry .plate .age, body.dark .plate .age{color:#93a077}
+
   /* ---------- rail ---------- */
   .rail{position:relative;z-index:6;height:70px;display:flex;margin-top:6px;
     background:#293d22;color:#e7eacd;box-shadow:0 -5px 0 rgba(41,61,34,.22)}
