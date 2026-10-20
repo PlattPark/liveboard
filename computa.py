@@ -62,8 +62,11 @@ from datetime import datetime, timezone
 CHANNELS = {                       # every channel Computa listens in
     "C0B3E5GF6UR": "bar-only",     # bartenders: 86s, last keg, back on
     "C0AQ68G7DRB": "brew-x-bar",   # brewers (Jules, Greg): new beers
+    "C0CALA09Z35": "board",        # Oct 20 2026: the admin side - levels, panel edits, tests, shadow reports
 }
-ALERT_CHANNEL = "C0B3E5GF6UR"      # where health warnings go
+BOARD_CHANNEL = "C0CALA09Z35"
+ALERT_CHANNEL = BOARD_CHANNEL      # health warnings go to #board, never the bartenders' channel
+ON_CALL = "U0AQDQ7JH5G"            # Christian: gets a DM when Computa breaks, and texts Colby
 REPO       = "PlattPark/liveboard"
 BEERS_PATH = "beers.json"
 STATE_PATH = "computa_state.json"
@@ -137,16 +140,18 @@ def health(status):
         if h.get("alerted"):
             slack("chat.postMessage", channel=ALERT_CHANNEL,
                   text=":white_check_mark: Computa is back and caught up.")
+            slack("chat.postMessage", channel=ON_CALL, text=":white_check_mark: Computa is back - nothing to do.")
         h = {"fails": 0, "alerted": False, "last_ok": now}
     else:
         h["fails"] = h.get("fails", 0) + 1
         h["last_error"] = status
         h["last_fail"] = now
         if h["fails"] >= ALERT_AFTER and not h.get("alerted"):
-            slack("chat.postMessage", channel=ALERT_CHANNEL,
-                  text=":warning: Computa can't reach GitHub (%s). Board and menu won't "
-                       "update until it's fixed - Colby, check the Beelink. "
-                       "I'll say when it's back." % status)
+            msg = (":warning: Computa can't update the wall right now (%s). The board and menu are frozen as they "
+                   "are until it's fixed - 86s still work at the register as normal. Christian: please text Colby. "
+                   "I'll post here when it's back." % status)
+            slack("chat.postMessage", channel=ALERT_CHANNEL, text=msg)
+            slack("chat.postMessage", channel=ON_CALL, text=msg)
             h["alerted"] = True
     if not DRY:
         # only touch the file when fails/alerted actually change - the loop
@@ -765,6 +770,7 @@ def handle(msg, data, queue, channel):
         return (changes[0] if changes else None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
     return ("; ".join(changes) or None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
 
+
 def handle_one(msg, data, queue, channel, action, item, extra):
     ts = msg["ts"]
     beers  = data.setdefault("beers", [])
@@ -1137,6 +1143,7 @@ def run_once():
         state["last_ts"] = {cid: state["last_ts"] for cid in CHANNELS}
     for cid in CHANNELS:                       # a channel added later starts from now
         state["last_ts"].setdefault(cid, now_ts)
+
     # gather new messages from every channel, tagged with where they came from
     msgs = []
     # ...and anything typed under a thread we answered in the last 30 minutes
@@ -1196,7 +1203,7 @@ def run_once():
 
     for cid, ts_, text in replies:
         if not DRY:
-            slack("chat.postMessage", channel=cid, thread_ts=ts_, text=text)
+            acknowledge(cid, ts_, text)
         # remember the thread so a correction typed under our reply is seen
         state.setdefault("threads", {})[ts_] = {"channel": cid, "last": ts_, "opened": time.time()}
         if changes:   # and come back to this thread once the wall has actually picked the change up
@@ -1210,6 +1217,38 @@ def run_once():
     health("ok")
     if queue:
         print("%d item(s) waiting on a human - see %s" % (len(queue), QUEUE_PATH))
+
+
+# ---- the receipt: a reaction, not a paragraph (Colby, Oct 20 2026 - the bot's replies were crowding the crew's channel) ----
+# A routine command that simply worked gets a :white_check_mark: on the message and no reply. Text still goes in the
+# thread when there is something to say: a question, a "read that as", a warning, a status. If the bot lacks the
+# reactions:write scope the reply is posted as before, so nothing is lost either way.
+QUIET_OK = (":white_check_mark:", ":beer:", ":hourglass:", ":pencil2:", ":moneybag:", ":test_tube:", ":label:", ":arrows_counterclockwise:", ":star:")
+_no_reactions = {"flag": False}
+
+def react(cid, ts_, name):
+    """Add one reaction; True if it landed. Remembers a missing scope so we stop trying."""
+    if _no_reactions["flag"]:
+        return False
+    r = slack("reactions.add", channel=cid, timestamp=ts_, name=name)
+    if r.get("ok") or r.get("error") == "already_reacted":
+        return True
+    if r.get("error") in ("missing_scope", "not_allowed_token_type", "invalid_auth"):
+        _no_reactions["flag"] = True
+    return False
+
+def acknowledge(cid, ts_, text):
+    """Routine success -> reaction. Anything with a question, warning, read-as or more than one line -> the thread."""
+    first = (text or "").strip().split("\n")[0]
+    routine = (first.startswith(QUIET_OK) and "\n" not in (text or "").strip() and ":grey_question:" not in text
+               and ":warning:" not in text and ":sparkles:" not in text and "which one" not in text)
+    # a routine 86 reply has a second line ("Say ... is back on ..."); that line is the only reason it's two lines
+    if not routine and first.startswith(QUIET_OK) and ":sparkles:" not in text and ":warning:" not in text and ":grey_question:" not in text:
+        rest = [l for l in (text or "").strip().split("\n")[1:] if l.strip()]
+        routine = all(l.strip().startswith(("Say _", ":convenience_store:")) for l in rest)
+    if routine and react(cid, ts_, "white_check_mark"):
+        return
+    slack("chat.postMessage", channel=cid, thread_ts=ts_, text=text)
 
 
 # ---- confirm from the wall: "off the board in two minutes" is checked, not promised ----
@@ -1235,7 +1274,8 @@ def confirm_from_wall():
     keep = []
     for c in pending:
         if live and c.get("stamp") and live >= c["stamp"]:
-            slack("chat.postMessage", channel=c["channel"], thread_ts=c["ts"], text=":tv: On the wall.")
+            if not react(c["channel"], c["ts"], "tv"):
+                slack("chat.postMessage", channel=c["channel"], thread_ts=c["ts"], text=":tv: On the wall.")
         elif time.time() - c.get("at", 0) > CONFIRM_AFTER:
             slack("chat.postMessage", channel=c["channel"], thread_ts=c["ts"],
                   text=":warning: Six minutes and the wall hasn't picked this up yet. The data is right; the page may be slow to publish - give it a few more, then tell Colby if it still shows the old list.")
@@ -1346,9 +1386,156 @@ def cellar_sync(force=False, reply=None):
         if reply:
             slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text="\n".join(summary))
         else:
-            slack("chat.postMessage", channel="C0AQ68G7DRB", text="\n".join(summary))   # brew-x-bar
+            slack("chat.postMessage", channel=BOARD_CHANNEL, text="\n".join(summary))   # #board
     if not DRY:
         json.dump(state, open(STATE_PATH, "w"), indent=1)
+
+
+# ---- SHADOW MODE (Oct 20 2026, built while Colby is away; nothing here changes the wall) ----
+# 1. Register mirror: when a bartender marks "<Beer> Pint" sold out at the POS, say in #board what the wall WOULD do.
+# 2. Sales-driven levels: pints / 10oz / crowlers rung since the last measured level, turned into barrels, posted
+#    once a morning next to the level on the wall - compare with Greg's Monday number before trusting it.
+# MIRROR / SALES_LEVELS env: "shadow" (default) posts only; "off" stops; "on" is reserved for after the review.
+MIRROR_MODE = os.environ.get("MIRROR", "shadow").strip().lower()
+SALES_MODE  = os.environ.get("SALES_LEVELS", "shadow").strip().lower()
+OZ_BY_SIZE  = (("pint", 16), ("10oz", 10), ("10 oz", 10), ("crowler", 32), ("taster", 4))
+
+def _mt_now():
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Denver"))
+    except Exception:
+        return datetime.now()
+
+def _pint_items(names):
+    """{wall name: Square item id} for '<name> Pint', exact name only - never a guess."""
+    out = {}
+    for n in names:
+        try:
+            for score, it in square.search(n + " Pint"):
+                if norm(it["item_data"]["name"]) == norm(n + " Pint"):
+                    out[n] = it["id"]; break
+        except Exception as e:
+            print("  shadow map %s: %s" % (n, e))
+    return out
+
+def shadow_mirror(state, data):
+    if MIRROR_MODE == "off" or not (square and square.enabled()):
+        return
+    sh = state.setdefault("shadow", {})
+    if time.time() - sh.get("mirror_at", 0) < 240:          # every ~4 minutes is plenty
+        return
+    sh["mirror_at"] = time.time()
+    wall = [b["name"] for b in data.get("beers", [])]
+    recent = [b["name"] for b in data.get("recent", [])][:12]
+    m = sh.setdefault("map", {})
+    missing = [n for n in wall + recent if n not in m]
+    if missing and time.time() - sh.get("map_at", 0) > 3600:
+        sh["map_at"] = time.time(); m.update(_pint_items(missing))
+    ids = [m[n] for n in wall + recent if m.get(n)]
+    if not ids:
+        return
+    try:
+        objs = square.call("catalog/batch-retrieve", "POST", {"object_ids": ids}).get("objects", [])
+    except Exception as e:
+        print("  shadow mirror: %s" % e); return
+    byid = {o["id"]: o for o in objs}
+    last = sh.setdefault("last", {})
+    t = _mt_now().strftime("%-I:%M%p").lower()
+    for n in wall + recent:
+        o = byid.get(m.get(n))
+        if not o:
+            continue
+        so = square.sold_out_state(o)
+        prev = last.get(n)
+        last[n] = so
+        if prev is None or so == prev:
+            continue
+        if so is True and n in wall:
+            msg = ":ghost: Shadow · %s - the register marked *%s Pint* sold out. With the mirror on, I'd take *%s* off the wall now. (It's still up.)" % (t, n, n)
+        elif so is False and n in recent:
+            msg = ":ghost: Shadow · %s - *%s Pint* is back in stock at the register. With the mirror on, I'd put *%s* back on the wall. (It's still off.)" % (t, n, n)
+        elif so is True and n in recent:
+            msg = ":ghost: Shadow · %s - the register marked *%s Pint* sold out; the wall already has it off. Match." % (t, n)
+        else:
+            msg = ":ghost: Shadow · %s - *%s Pint* is back in stock at the register; the wall already shows it. Match." % (t, n)
+        if not DRY:
+            slack("chat.postMessage", channel=BOARD_CHANNEL, text=msg)
+        print("  " + msg)
+
+def shadow_sales(state, data):
+    if SALES_MODE == "off" or not (square and square.enabled()):
+        return
+    sh = state.setdefault("shadow", {})
+    if time.time() - sh.get("sales_at", 0) < 900:           # every 15 minutes
+        return
+    sh["sales_at"] = time.time()
+    beers = {b["name"]: b for b in data.get("beers", [])}
+    led = sh.setdefault("ledger", {})                         # name -> {"base": levelAt, "oz": sold since}
+    for n, b in beers.items():
+        base = b.get("levelAt") or ""
+        if led.get(n, {}).get("base") != base:
+            led[n] = {"base": base, "oz": 0, "pints": 0}
+    since = sh.get("orders_since") or (datetime.now(timezone.utc).replace(microsecond=0).isoformat())
+    now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    q = {"location_ids": [square.LOCATION], "limit": 500, "return_entries": False,
+         "query": {"filter": {"state_filter": {"states": ["COMPLETED"]},
+                              "date_time_filter": {"closed_at": {"start_at": since, "end_at": now_iso}}}}}
+    cursor, unattributed = None, sh.get("pitcher_oz", 0)
+    try:
+        while True:
+            if cursor: q["cursor"] = cursor
+            r = square.call("orders/search", "POST", q)
+            for o in r.get("orders", []):
+                for li in o.get("line_items", []) or []:
+                    nm = (li.get("name") or "").strip(); qty = float(li.get("quantity") or 0)
+                    low = nm.lower()
+                    if low.startswith("pitcher") or "pitcher" in low:
+                        unattributed += 32 * qty; continue
+                    for bn, b in beers.items():
+                        if low.startswith(bn.lower() + " "):
+                            for word, oz in OZ_BY_SIZE:
+                                if low.endswith(word):
+                                    led[bn]["oz"] += oz * qty
+                                    if word == "pint": led[bn]["pints"] += qty
+                                    break
+                            break
+            cursor = r.get("cursor")
+            if not cursor: break
+    except Exception as e:
+        print("  shadow sales: %s" % e); return
+    sh["orders_since"] = now_iso; sh["pitcher_oz"] = unattributed
+    # one report a morning, before doors
+    mt = _mt_now(); day = mt.strftime("%Y-%m-%d")
+    if mt.hour == 10 and sh.get("sales_posted") != day:
+        lines = []
+        for n, b in beers.items():
+            l = led.get(n) or {}
+            if not l.get("oz"): continue
+            wall = (b.get("remainingOz") or 0) / BBL_OZ
+            lines.append("%s %.1f -> %.1f bbl (%d pints)" % (n, wall, max(0.0, wall - l["oz"] / BBL_OZ), l.get("pints", 0)))
+        if lines:
+            msg = (":ghost: Shadow levels · what sales say since each tank's last measured level: " + " \u00b7 ".join(lines)
+                   + ("\nPitchers rung without a beer name: %d (%.2f bbl, not counted above)." % (unattributed / 32, unattributed / BBL_OZ) if unattributed else "")
+                   + "\nCompare with Greg's Monday numbers - the wall itself is unchanged.")
+            if not DRY:
+                slack("chat.postMessage", channel=BOARD_CHANNEL, text=msg)
+        sh["sales_posted"] = day; sh["pitcher_oz"] = 0
+
+def shadow_tick():
+    if not (square and square.enabled()) or (MIRROR_MODE == "off" and SALES_MODE == "off"):
+        return
+    try:
+        state = load_json(STATE_PATH, {}) or {}
+        data, _ = fetch_beers()
+        shadow_mirror(state, data)
+        shadow_sales(state, data)
+        if not DRY:
+            fresh = load_json(STATE_PATH, {}) or {}          # run_once may have written since we loaded
+            fresh["shadow"] = state.get("shadow", {})
+            json.dump(fresh, open(STATE_PATH, "w"), indent=1)
+    except Exception as e:
+        print("shadow: %s" % e)
 
 
 # ---- five-second rule: one post to #bar-only each morning at 10:30 MT ----
@@ -1423,6 +1610,7 @@ if __name__ == "__main__":
             try:
                 run_once()
                 confirm_from_wall()
+                shadow_tick()
                 five_second_nudge()
                 scheduled_posts()
                 cellar_sync()
@@ -1434,5 +1622,6 @@ if __name__ == "__main__":
     else:
         run_once()
         confirm_from_wall()
+        shadow_tick()
         five_second_nudge()
         scheduled_posts()
