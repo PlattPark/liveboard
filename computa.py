@@ -628,15 +628,125 @@ def website_sync(data, queue):
                 pass
 
 
+# ---- the smart read: when the patterns above miss, ask Claude what the message meant ----
+# Only when a key exists (repo secret ANTHROPIC_API_KEY), only for messages that name a beer we know or
+# @mention Computa, and only through the same actions, validation and replies as the typed commands -
+# Claude proposes, the code disposes. A fraction of a cent per message, about two seconds.
+ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+LLM_MODEL = os.environ.get("COMPUTA_MODEL", "claude-haiku-5-5")
+LLM_SYSTEM = (
+    "You translate one Slack message from brewery staff into commands for Computa, the tap-board bot at "
+    "Platt Park Brewing. You are given the message, the beers pouring, the beers recently taken off, and the "
+    "Also Pouring side panel (ciders, kombucha, wine, cocktails). Reply with JSON only: "
+    '{"commands":[...]} where each command is one of:\n'
+    '{"action":"remove","item":NAME}  - 86 / kicked / out / gone / take it off\n'
+    '{"action":"back","item":NAME,"bbl":NUMBER_OR_NULL,"size":10_OR_20_OR_NULL}  - back on / tapped / level update\n'
+    '{"action":"lastkeg","item":NAME}  {"action":"nolastkeg","item":NAME}\n'
+    '{"action":"price","item":NAME,"price":NUMBER}  {"action":"price10","item":NAME,"price":NUMBER}\n'
+    '{"action":"abv","item":NAME,"abv":NUMBER}\n'
+    '{"action":"wall","item":NAME,"text":SHORT_LINE}  {"action":"note","item":NAME,"text":LINE}\n'
+    '{"action":"sash","item":NAME,"sash":"guest tap"|null}\n'
+    '{"action":"adjunct","item":NAME,"what":"lactose, wheat"}\n'
+    '{"action":"also_rm","item":NAME}  {"action":"also_add","item":NAME,"sub":TEXT,"price":"9"}\n'
+    '{"action":"status"}\n'
+    "Use the exact beer name from the lists. Only commands the message clearly intends; several if it says several. "
+    "Conversation, questions, plans for later, maintenance talk, or anything ambiguous -> {\"commands\":[]}. "
+    "Food and register items are not beers - leave them out."
+)
+
+def llm_parse(text, data, woke):
+    if not ANTHROPIC_KEY:
+        return []
+    beers  = [b["name"] for b in data.get("beers", [])]
+    recent = [b["name"] for b in data.get("recent", [])]
+    also   = [x.get("name", "") for x in (data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT)]
+    payload = {"model": LLM_MODEL, "max_tokens": 500, "system": LLM_SYSTEM,
+               "messages": [{"role": "user", "content": json.dumps({
+                   "message": text, "pouring": beers, "recently_off": recent, "also_pouring": also,
+                   "computa_mentioned": bool(woke)})}]}
+    req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(payload).encode(),
+                                 headers={"x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01",
+                                          "content-type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=25) as r:
+            out = json.load(r)
+        raw = "".join(c.get("text", "") for c in out.get("content", []) if c.get("type") == "text")
+        raw = re.sub(r"^```(?:json)?|```$", "", raw.strip(), flags=re.M).strip()
+        cmds = json.loads(raw).get("commands", [])
+    except Exception as e:
+        print("  ! llm: %s" % e)
+        return []
+    out = []
+    for c in cmds[:12]:
+        if not isinstance(c, dict): continue
+        a = c.get("action"); item = str(c.get("item") or "").strip()
+        try:
+            if a == "status": out.append(("status", "", None))
+            elif a in ("remove", "lastkeg", "nolastkeg", "also_rm") and item: out.append((a, item, None))
+            elif a == "back" and item:
+                line = "%s is back on" % item
+                if c.get("bbl"):
+                    line += ", %sbbl" % c["bbl"] + (" in a %sbbl" % int(c["size"]) if c.get("size") else "")
+                out.append(("back", item, line))
+            elif a in ("price", "price10") and item: out.append((a, item, float(c["price"])))
+            elif a == "abv" and item: out.append(("abv", item, float(c["abv"])))
+            elif a in ("wall", "note") and item and c.get("text"): out.append((a, item, str(c["text"]).strip()))
+            elif a == "sash" and item: out.append(("sash", item, c.get("sash") or None))
+            elif a == "adjunct" and item: out.append(("adjunct", item, str(c.get("what") or "none")))
+            elif a == "also_add" and item: out.append(("also_add", item, {"sub": str(c.get("sub") or ""), "price": (str(c["price"]) if c.get("price") else None)}))
+        except Exception:
+            continue
+    return out
+
+def about_a_beer(text, data):
+    """Cheap gate before spending an API call: does the message name something we know?"""
+    t = norm(text)
+    names = [b.get("name", "") for b in data.get("beers", [])] + [b.get("name", "") for b in data.get("recent", [])]
+    names += [x.get("name", "") for x in (data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT)]
+    toks = [x for x in re.findall(r"[a-z0-9]+", text.lower()) if len(x) >= 3]
+    for n in names:
+        if not n: continue
+        if norm(n) and norm(n) in t: return True
+        for w in re.split(r"[\s\-/]+", n):
+            w = norm(w)
+            if len(w) < 3: continue
+            for x in toks:
+                # "wit" -> Witbier, "plattmo" -> Plattmosphere, "nadara" -> Nadare
+                if x == w or x in ("wit", "tsd") or (len(x) >= 5 and (w.startswith(x) or difflib.SequenceMatcher(None, w, x).ratio() >= 0.8)):
+                    return True
+    return False
+
+def describe(cmds):
+    """'86 Witbier · Plattmosphere back on 9bbl' - what Claude read, so people learn the phrasing."""
+    bits = []
+    for a, item, extra in cmds:
+        if a == "remove": bits.append("86 " + item)
+        elif a == "back": bits.append(extra if isinstance(extra, str) else item + " is back on")
+        elif a in ("price", "price10"): bits.append("%s %s$%.2f" % (item, "10oz " if a == "price10" else "", extra))
+        elif a == "abv": bits.append("%s %s%%" % (item, extra))
+        elif a == "lastkeg": bits.append(item + " on last keg")
+        elif a == "nolastkeg": bits.append(item + " not on last keg")
+        elif a == "status": bits.append("status")
+        else: bits.append("%s %s" % (a.replace("_", " "), item))
+    return " \u00b7 ".join(bits)
+
+
 DIDNT_CATCH = (":thinking_face: Didn't catch that. One command per line, like:\n"
                "`86 nadare` · `nadare is back on, 4bbl in a 10bbl` · `nadare is on last keg` · "
                "`nadare is now $8` · `nadare wall line: Rice Lager · crisp` · `New beer: Name — Style, 5.2%, notes`")
 
 def handle(msg, data, queue, channel):
-    cmds = parse_all(msg.get("text", ""))
+    text = msg.get("text", "")
+    cmds = parse_all(text)
+    read_as = ""
+    if not cmds and ANTHROPIC_KEY and "`" not in text and len(text) <= 600 and (mentioned(text) or about_a_beer(text, data)):
+        cmds = llm_parse(SENT_USING_RE.sub("", text), data, mentioned(text))
+        if cmds:
+            read_as = ":sparkles: Read that as: " + describe(cmds) + "\n"
+            print("  [llm] " + describe(cmds))
     if not cmds:
         # @mentioned and nothing understood: say so instead of failing silently (Sept 30 ask)
-        if mentioned(msg.get("text", "")):
+        if mentioned(text):
             return None, (channel, msg["ts"], DIDNT_CATCH)
         return None
     changes, replies = [], []
@@ -648,11 +758,12 @@ def handle(msg, data, queue, channel):
             if r:
                 if r[0]: changes.append(r[0])
                 if r[1]: replies.append(r[1][2])
+    if read_as and replies:
+        replies[0] = read_as + replies[0]
     if len(cmds) == 1 and len(changes) <= 1:
         # single command: identical shape to before
         return (changes[0] if changes else None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
     return ("; ".join(changes) or None), ((channel, msg["ts"], "\n".join(replies)) if replies else None)
-
 
 def handle_one(msg, data, queue, channel, action, item, extra):
     ts = msg["ts"]
@@ -991,6 +1102,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         else:
             reply = (":grey_question: *%s* isn't a beer I know. For a brand-new one: _\"New beer: Name \u2014 Style, 5.2%%, notes\"_ "
                      "and it goes up with a default price.\n%s" % (item, whats_where(data)))
+
     print("  [%s] %s -> %s" % (action, item if isinstance(item, str) else item.get("name"), change or "queued"))
     return change, (channel, ts, reply) if reply else None
 
@@ -1025,7 +1137,6 @@ def run_once():
         state["last_ts"] = {cid: state["last_ts"] for cid in CHANNELS}
     for cid in CHANNELS:                       # a channel added later starts from now
         state["last_ts"].setdefault(cid, now_ts)
-
     # gather new messages from every channel, tagged with where they came from
     msgs = []
     # ...and anything typed under a thread we answered in the last 30 minutes
@@ -1088,6 +1199,8 @@ def run_once():
             slack("chat.postMessage", channel=cid, thread_ts=ts_, text=text)
         # remember the thread so a correction typed under our reply is seen
         state.setdefault("threads", {})[ts_] = {"channel": cid, "last": ts_, "opened": time.time()}
+        if changes:   # and come back to this thread once the wall has actually picked the change up
+            state.setdefault("confirm", []).append({"channel": cid, "ts": ts_, "stamp": data.get("updated"), "at": time.time()})
 
     for cid, m in msgs:
         state["last_ts"][cid] = max(state["last_ts"][cid], m["ts"], key=float)
@@ -1097,6 +1210,39 @@ def run_once():
     health("ok")
     if queue:
         print("%d item(s) waiting on a human - see %s" % (len(queue), QUEUE_PATH))
+
+
+# ---- confirm from the wall: "off the board in two minutes" is checked, not promised ----
+WALL_JSON = "https://plattpark.github.io/liveboard/beers.json"
+CONFIRM_AFTER = 360     # seconds before we stop waiting and say so
+
+def wall_stamp():
+    import urllib.request
+    try:
+        req = urllib.request.Request(WALL_JSON + "?t=%d" % int(time.time()), headers={"User-Agent": "computa", "Cache-Control": "no-cache"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return (json.load(r) or {}).get("updated")
+    except Exception as e:
+        print("  wall: %s" % e)
+        return None
+
+def confirm_from_wall():
+    state = load_json(STATE_PATH, {}) or {}
+    pending = state.get("confirm") or []
+    if not pending or DRY:
+        return
+    live = wall_stamp()
+    keep = []
+    for c in pending:
+        if live and c.get("stamp") and live >= c["stamp"]:
+            slack("chat.postMessage", channel=c["channel"], thread_ts=c["ts"], text=":tv: On the wall.")
+        elif time.time() - c.get("at", 0) > CONFIRM_AFTER:
+            slack("chat.postMessage", channel=c["channel"], thread_ts=c["ts"],
+                  text=":warning: Six minutes and the wall hasn't picked this up yet. The data is right; the page may be slow to publish - give it a few more, then tell Colby if it still shows the old list.")
+        else:
+            keep.append(c)
+    state["confirm"] = keep
+    json.dump(state, open(STATE_PATH, "w"), indent=1)
 
 
 # ---- cellar sync: Greg's weekly inventory sheet -> tank levels on the wall ----
@@ -1276,6 +1422,7 @@ if __name__ == "__main__":
         while True:
             try:
                 run_once()
+                confirm_from_wall()
                 five_second_nudge()
                 scheduled_posts()
                 cellar_sync()
@@ -1286,5 +1433,6 @@ if __name__ == "__main__":
             time.sleep(POLL_SEC)
     else:
         run_once()
+        confirm_from_wall()
         five_second_nudge()
         scheduled_posts()
