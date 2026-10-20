@@ -79,10 +79,10 @@ function festOverride(s){
     const {dow,t,date}=denver(), ctx={}, w=window.__wx; const H=(window.__hours||{});
     if(!PREVIEW){ if((H.closed||[]).indexOf(date)>=0) ctx.curtain='closed'; else if(t<OPEN) ctx.curtain=(t<1.5?'goodnight':'preopen'); else if(t>=closeFor(dow,date)) ctx.curtain='goodnight'; }   // ?preview: crew check, never the curtain
     if(!ctx.curtain){
-      if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'Everything, all day, food included \u00b7 clock-out slip, schedule or work shirt gets you in'}; ctx.eventPhase='run'; }
+      if(dow==='Mon'){ ctx.event={title:'Industry night',banner:'25% off all day, food included \u00b7 32oz pitchers $11 / $13, 3\u201311pm \u00b7 $30 game-day bundle'}; ctx.eventPhase='run'; }
       else if(dow==='Tue'){ const live=(t>=19&&t<21);
         ctx.event={title:'Trivia Tuesday',promo:'Team Trivia tonight \u00b7 7pm',banner:'Team Trivia \u00b7 happening now'}; ctx.eventPhase=live?'run':'promote'; }
-      else if(dow==='Wed'){ ctx.event={title:'Wing Wednesday',banner:'A dozen wings for $12 \u00b7 every other day it\u2019s seven',wingCounter:false}; ctx.eventPhase='run'; }
+      else if(dow==='Wed'){ ctx.event={title:'Pitcher night',banner:'32oz pitchers $12 \u00b7 Platty Lite $10 \u00b7 a dozen wings $12',wingCounter:false}; ctx.eventPhase='run'; }
     }
     let scene='default', banner;
     if(w && SNOW.includes(w.code)){ scene='snow'; banner='Snow day. Nitro pours lead the board.'; }
@@ -176,16 +176,15 @@ function festOverride(s){
   window.__rotNow=function(){};
 
   // rail cell cycles true facts
-  const DAY=[
-    ['Weekend','breakfast at Gates \u00b7 8am'],
-    ['Tonight','industry night \u00b7 MNF on the big screen'],
-    ['Tonight','trivia 7pm \u00b7 bring a team'],
-    ['Tonight','wing wednesday \u00b7 dozen for $12'],
-    ['To go','crowlers from $12 \u00b7 filled at the bar'],
-    ['To go','crowlers from $12 \u00b7 filled at the bar'],
-    ['Weekend','breakfast at Gates \u00b7 sat + sun 8am']
+  // Oct 20 2026: this cell never repeats the band above (trivia showed twice); it sells what helps a guest decide
+  const BASE=[
+    ['Can\u2019t decide?','tasters from $2 \u00b7 ask for a few'],
+    ['To go','4-packs + crowlers \u00b7 at the bar'],
+    ['Every beer','comes in a 10oz too']
   ];
-  const FACTS=[DAY[new Date().getDay()]];
+  const WEEKEND=['Weekend','breakfast at Gates \u00b7 sat + sun 8am'];
+  const dow0=new Date().getDay();
+  const FACTS=(dow0===0||dow0===6)?[WEEKEND].concat(BASE):BASE;
   let fi=0;
   function rotFact(){ if(window.__LIVE) return;
     const k=$('mostK'), v=$('most');
@@ -229,8 +228,9 @@ function festOverride(s){
 
     'every beer pours in a 10oz too \u00b7 just ask', 'this room sold antique cash registers \u2014 then the tanks moved in',
     "GABF <em>silver</em> our very first year \u2014 Gump's Vienna Lager",
-    'trivia tuesdays 7pm \u00b7 wing wednesdays \u00b7 dozen for <em>$12</em>',
-    'industry night mondays \u00b7 Monday Night Football on the big screen',
+    'trivia tuesdays 7pm \u00b7 pitcher night wednesdays \u00b7 32oz <em>$12</em>, Platty Lite <em>$10</em>',
+    'industry night mondays \u00b7 25% off all day \u00b7 Monday Night Football on the big screen',
+    'can\u2019t decide? tasters from <em>$2</em> \u00b7 ask for a few',
     ...MEDAL_LINES,
     '\u201cBest Sandwich Shop in Denver\u201d \u2014 Mom',
     'bagged ice <em>$3</em> \u00b7 fill your cooler <em>$5</em> \u00b7 yes, really',
@@ -238,14 +238,20 @@ function festOverride(s){
     'Westword Best of Denver 2020 \u00b7 best walk-up beer + sandwiches',
     'kids eat too \u00b7 dino nuggs or a Vienna dog \u00b7 goldfish, apple slices, capri-sun',
 
-    'K\u0100KOU pours like a stout, drinks like a vacation',
     'pint <em>#1,000,000</em> poured Thanksgiving 2025 \u00b7 now pouring million two',
-    'crowlers to go \u00b7 from <em>$12</em> \u00b7 sealed at the bar',
+    'crowlers to go \u00b7 <em>$14\u201320</em> \u00b7 sealed at the bar',
     'Gates Deli out the sidewalk window \u00b7 sandwiches worth the walk'
   ];
   let liveItems=[];
   window.__wirePour=function(name){ liveItems.unshift('<span class="wi pour">just poured \u00b7 '+name+'</span>'); liveItems=liveItems.slice(0,6); buildWire(); };
-  function wireItems(){ return [...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
+  /* 4-packs to go, straight from the register's live buttons (tools/menu_build.py keeps menu_state.json) */
+  window.__packWire='';
+  function loadPacks(){ try{ var x=new XMLHttpRequest(); x.open('GET','menu_state.json?t='+Date.now(),true);
+    x.onload=function(){ try{ var j=JSON.parse(x.responseText); var t=String(j.four_packs||'').replace(/^4-packs to go:\s*/i,'').replace(/\s*\u00b7\s*also at gatesdeli\.com for pickup\.?$/i,'');
+      var line=t?'4-packs to go \u00b7 '+t.replace(/\$(\d+)/g,'<em>$$$1</em>'):''; if(line!==window.__packWire){ window.__packWire=line; buildWire(); } }catch(e){} };
+    x.onerror=function(){}; x.send(); }catch(e){} }
+  setTimeout(loadPacks,3000); setInterval(loadPacks,600000);
+  function wireItems(){ return [...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
   function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;
