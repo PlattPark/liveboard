@@ -142,7 +142,7 @@ function render(s){
     var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
     u.querySelector('.size').textContent=beer.vesselLabel;
     const liq=u.querySelector('.liquid');
-    const shown=Math.max(0,beer.pct*0.94);
+    const shown=Math.min(1,Math.max(0,beer.pct))*0.94;   // never draw past full: a level bigger than the tank (Oct 20 2026, Chela 15.4 bbl in a 10) shows a full tank, not beer floating above it
     liq.style.transform=`translateY(${(1-shown)*100}%)`;
     liq.style.background=`linear-gradient(${beer.colorTop},${beer.color})`;
     liq.querySelector('.wave').style.fill=beer.colorTop;
