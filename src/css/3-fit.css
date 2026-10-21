@@ -37,3 +37,12 @@ body::before{-webkit-mask-image:radial-gradient(ellipse 60% 64% at 50% 50%, rgba
    The stage scales differently with and without the top band, so each case has its own offset. */
 .ranger{transform:translate(171px,36px)}
 body.bn .ranger{transform:translate(257px,37px)}
+
+/* Oct 21 2026 (seen on the ProDesk): the header was a third of the wall's chrome - mostly logo. Smaller logo and postmark,
+   the room goes back to the tanks; the "tapped N days ago" line is retired (fresh beers carry the NEW tag on the tank). */
+.brand img{width:108px}
+header{padding-top:10px}
+.stamp{width:104px;height:104px;top:4px;right:70px}
+.plate .age{display:none !important}
+.ranger{transform:translate(171px,84px)}          /* re-seated on the rail after the header shrank */
+body.bn .ranger{transform:translate(257px,90px)}
