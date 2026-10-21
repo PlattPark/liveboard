@@ -144,7 +144,7 @@ async function open(browser, file, iso, freeze, opt) {
     const n = sc.name;
     say(errors.length === 0, `${n}: no page errors` + (errors.length ? ' -> ' + errors.slice(0, 2).join(' | ') : ''));
     if (L.curtained) { await page.close(); continue; }
-    say(L.lowest <= L.rail.t - 4, `${n}: every beer card clears the rail (lowest ${Math.round(L.lowest)}, rail ${Math.round(L.rail.t)})`);
+    say(L.lowest <= L.rail.t - 24, `${n}: every beer card clears the rail by 24px+ (lowest ${Math.round(L.lowest)}, rail ${Math.round(L.rail.t)})`);
     say(L.rowSpread <= 8, `${n}: price tags line up across each row (spread ${Math.round(L.rowSpread)}px)`);
     const bad = L.names.filter(x => x.over > 2 || x.nb > 6 || x.na > 6);
     say(bad.length === 0, `${n}: every beer name fits its column` + (bad.length ? ' -> ' + bad.map(x => x.name).join(', ') : ''));
