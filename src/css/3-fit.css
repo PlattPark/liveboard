@@ -46,3 +46,18 @@ header{padding-top:10px}
 .plate .age{display:none !important}
 .ranger{transform:translate(171px,84px)}          /* re-seated on the rail after the header shrank */
 body.bn .ranger{transform:translate(257px,90px)}
+
+/* Oct 21 2026: bigger, easier-to-read type under the tanks - the smaller header freed the room.
+   (A full 15+ tap wall keeps its own dense sizes above.) */
+#floor:not(.dense) .plate .name{font-size:38px;height:72px}
+#floor:not(.dense) .plate .name.longname{font-size:31px}
+#floor:not(.dense) .plate .name.xlongname{font-size:30px}
+#floor:not(.dense) .plate .note{font-size:24px;max-width:240px}
+#floor:not(.dense) .plate .note.long{font-size:21.5px;max-width:246px}
+#floor:not(.dense) .plate .taste{font-size:21px;max-width:246px}
+#floor:not(.dense) .plate .taste.long{font-size:19px;max-width:250px}
+#floor:not(.dense) .plate .price{font-size:26px}
+#floor:not(.dense) .plate .price .p10b{font-size:23px}
+#floor:not(.dense) .plate .price .p10{font-size:18px}
+#floor:not(.dense) .plate .price .abv{font-size:20px}
+#floor:not(.dense) .plate .price .sep{font-size:18px}
