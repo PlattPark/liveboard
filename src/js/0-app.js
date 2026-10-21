@@ -168,7 +168,7 @@ function render(s){
     var tasteLine = String(beer.note||'').replace(/\s*\*?Sent using\*?.*$/i,'').trim();
     u.querySelector('.note').textContent=styleLine; u.querySelector('.note').classList.toggle('long',styleLine.length>30);
     u.querySelector('.taste').textContent=tasteLine; u.querySelector('.taste').classList.toggle('long',tasteLine.length>30);
-    var nlen=String(beer.name||'').length; u.querySelector('.name').classList.toggle('longname', nlen>17 && nlen<=24); u.querySelector('.name').classList.toggle('xlongname', nlen>24);   // 18-24 chars: one smaller line; longer: smaller, may wrap
+    var nlen=String(beer.name||'').length; u.querySelector('.name').classList.toggle('longname', nlen>15 && nlen<=24); u.querySelector('.name').classList.toggle('xlongname', nlen>24);   // 16-24 chars: one smaller line; longer: smaller, may wrap
     u.querySelector('.adj').textContent=(beer.adjuncts&&beer.adjuncts.length)?'contains '+beer.adjuncts.join(' · '):'';
     u.querySelector('.price').innerHTML='<span class="tag">$'+beer.price.toFixed(2).replace(/\.00$/,'')+((beer.pourNote||beer.tenOzOnly)?' <span class="p10">10oz</span>':'')+' <span class="dot">\u00b7</span> <span class="abv">'+beer.abv+'%</span></span>';
     u.querySelector('.age').textContent=daysAgo(beer.tappedAt);
