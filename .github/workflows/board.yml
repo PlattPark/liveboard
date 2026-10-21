@@ -10,6 +10,9 @@ on:
   push:
     branches: [main]
     paths: ['src/**', 'tools/**']
+  schedule:
+    - cron: "0 15 * * *"     # 9am Denver (8am in winter): check the live wall before opening
+    - cron: "0 23 * * *"     # 5pm Denver (4pm in winter): and before the evening rush
   workflow_dispatch:
     inputs:
       action:
@@ -29,7 +32,7 @@ jobs:
   board:
     runs-on: ubuntu-latest
     env:
-      ACTION: ${{ inputs.action || 'build' }}
+      ACTION: ${{ inputs.action || (github.event_name == 'schedule' && 'check') || 'build' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,14 +60,35 @@ jobs:
 
       - name: Render check
         run: |
+          set -o pipefail
           export CHROME_PATH=$(which google-chrome)
           if [ "$ACTION" = "check" ]; then
-            node tools/check.js platt-park-live-board-v4.html
+            node tools/check.js platt-park-live-board-v4.html 2>&1 | tee check_out.txt   # scheduled: the live wall with today's beers.json
           elif [ "$ACTION" = "split" ]; then
             node tools/check.js dist/platt-park-live-board-v4.html --compare platt-park-live-board-v4.html
           else
             node tools/check.js dist/platt-park-live-board-v4.html
           fi
+
+      - name: "Tell #board if the live wall fails its check"
+        if: failure() && github.event_name == 'schedule'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: |
+          python3 - <<'EOF'
+          import os, json, urllib.request, urllib.parse
+          try: out = open("check_out.txt").read()
+          except Exception: out = "the check crashed before it could report"
+          fails = [l.strip()[5:].strip() for l in out.splitlines() if l.strip().startswith("FAIL")][:8]
+          text = (":warning: *The live wall failed its twice-daily check* - the TV still shows it, but something in today's "
+                  "beer list breaks the layout:\n" + "\n".join("\u2022 " + f for f in fails) +
+                  "\nDetails: " + os.environ.get("GITHUB_SERVER_URL", "") + "/" + os.environ.get("GITHUB_REPOSITORY", "") +
+                  "/actions/runs/" + os.environ.get("GITHUB_RUN_ID", ""))
+          req = urllib.request.Request("https://slack.com/api/chat.postMessage",
+              data=urllib.parse.urlencode({"channel": "C0CALA09Z35", "text": text}).encode(),
+              headers={"Authorization": "Bearer " + os.environ["SLACK_BOT_TOKEN"]})
+          print(urllib.request.urlopen(req, timeout=20).read()[:200])
+          EOF
 
       - name: Publish
         if: env.ACTION != 'check'
