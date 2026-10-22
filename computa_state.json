@@ -1,12 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1792587975.016790",
+  "C0B3E5GF6UR": "1792699832.848019",
   "C0AQ68G7DRB": "1792608617.381579",
   "C0CALA09Z35": "1792587975.016790"
  },
  "started": "2026-10-21T13:06:15",
  "shadow": {
-  "mirror_at": 1792699577.6366212,
+  "mirror_at": 1792699836.122863,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -81,5 +81,19 @@
   "pitcher_oz": 0,
   "sales_posted": "2026-10-22"
  },
- "threads": {}
+ "threads": {
+  "1792699832.848019": {
+   "channel": "C0B3E5GF6UR",
+   "last": "1792699832.848019",
+   "opened": 1792699835.7680635
+  }
+ },
+ "confirm": [
+  {
+   "channel": "C0B3E5GF6UR",
+   "ts": "1792699832.848019",
+   "stamp": "2026-10-22T20:10:33+00:00",
+   "at": 1792699835.7680671
+  }
+ ]
 }
