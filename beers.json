@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-22T20:10:33+00:00",
- "updatedBy": "Plattmosphere $90.00",
+ "updated": "2026-10-23T23:16:00+00:00",
+ "updatedBy": "also pouring: -Seasonal Cider",
  "beers": [
   {
    "id": "plattmosphere",
@@ -371,11 +371,6 @@
   {
    "name": "Dry Cider",
    "sub": "2 Towns",
-   "price": "$9"
-  },
-  {
-   "name": "Seasonal Cider",
-   "sub": "2 Towns Pumpkin",
    "price": "$9"
   },
   {
