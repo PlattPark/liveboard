@@ -1,12 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1792797002.851629",
+  "C0B3E5GF6UR": "1792797125.353129",
   "C0AQ68G7DRB": "1792786229.727767",
   "C0CALA09Z35": "1792786229.727767"
  },
  "started": "2026-10-23T20:10:29",
  "shadow": {
-  "mirror_at": 1792796895.9139698,
+  "mirror_at": 1792797160.636141,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -85,6 +85,11 @@
    "channel": "C0B3E5GF6UR",
    "last": "1792797002.851629",
    "opened": 1792796963.012616
+  },
+  "1792797125.353129": {
+   "channel": "C0B3E5GF6UR",
+   "last": "1792797125.353129",
+   "opened": 1792797160.437063
   }
  }
 }
