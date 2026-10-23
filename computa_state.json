@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1792766417.323622",
-  "C0AQ68G7DRB": "1792784661.215049",
-  "C0CALA09Z35": "1792766417.323622"
+  "C0B3E5GF6UR": "1792786229.727767",
+  "C0AQ68G7DRB": "1792786229.727767",
+  "C0CALA09Z35": "1792786229.727767"
  },
- "started": "2026-10-23T14:40:17",
+ "started": "2026-10-23T20:10:29",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1792786058.9762905,
-=======
-  "mirror_at": 1792786194.1689546,
->>>>>>> Stashed changes
+  "mirror_at": 1792786229.99747,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -19,11 +15,7 @@
    "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1792785301.3450212,
-=======
-  "map_at": 1792786194.168964,
->>>>>>> Stashed changes
+  "map_at": 1792786229.9974766,
   "last": {
    "Plattmosphere": false,
    "Platty Lite": false,
@@ -32,11 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1792785587.6705317,
-=======
-  "sales_at": 1792786197.3501134,
->>>>>>> Stashed changes
+  "sales_at": 1792786233.5244575,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -55,8 +43,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -65,8 +53,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 0,
+    "pints": 0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -80,22 +68,16 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 0,
+    "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-10-23T19:59:47+00:00",
-=======
-  "orders_since": "2026-10-23T20:09:57+00:00",
->>>>>>> Stashed changes
-  "pitcher_oz": 0,
-  "sales_posted": "2026-10-23"
- },
- "threads": {}
+  "orders_since": "2026-10-23T20:10:33+00:00",
+  "pitcher_oz": 0
+ }
 }
