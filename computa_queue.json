@@ -135,5 +135,11 @@
   "item": "Plattmosphere 16oz says price $90, price should be $9.00",
   "text": "<@U0C2GMAT8CD> Plattmosphere 16oz says price $90, price should be $9.00",
   "logged": "2026-10-23 22:09"
+ },
+ {
+  "ts": "1792797268.751449",
+  "action": "remove_unmatched",
+  "item": "seasonal pumpkin",
+  "text": "<@U0C2GMAT8CD>  86 seasonal pumpkin "
  }
 ]
