@@ -128,5 +128,12 @@
   "action": "remove_unmatched",
   "item": "transfusion frozen cocktail",
   "text": "86 transfusion frozen cocktail"
+ },
+ {
+  "ts": "1792793396.835799",
+  "action": "report",
+  "item": "Plattmosphere 16oz says price $90, price should be $9.00",
+  "text": "<@U0C2GMAT8CD> Plattmosphere 16oz says price $90, price should be $9.00",
+  "logged": "2026-10-23 22:09"
  }
 ]
