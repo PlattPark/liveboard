@@ -6,23 +6,25 @@
  },
  "started": "2026-10-23T20:10:29",
  "shadow": {
-  "mirror_at": 1792865359.1252077,
+  "mirror_at": 1792865601.8334782,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
    "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
    "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
-   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
+   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5",
+   "Phaded": "AJIA6WNT5F5DNA2MQRMFJ27S"
   },
-  "map_at": 1792861778.2463522,
+  "map_at": 1792865601.8334858,
   "last": {
    "Plattmosphere": false,
    "Platty Lite": false,
    "Astronaut Amber": false,
    "Tropical Snow Dance": false,
    "Nadare": false,
-   "Oktoberfest": false
+   "Oktoberfest": false,
+   "Phaded": false
   },
   "sales_at": 1792865324.961084,
   "ledger": {
