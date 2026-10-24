@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-23T23:16:00+00:00",
- "updatedBy": "also pouring: -Seasonal Cider",
+ "updated": "2026-10-24T18:02:29+00:00",
+ "updatedBy": "added my dude",
  "beers": [
   {
    "id": "plattmosphere",
@@ -238,6 +238,22 @@
    "note": "jasmine rice, light and crispy",
    "wall": "Rice Lager · crisp",
    "levelAt": "2026-10-19T18:10:29.035Z"
+  },
+  {
+   "id": "my-dude",
+   "name": "my dude",
+   "style": "Ale",
+   "abv": 5.0,
+   "price": 7.5,
+   "price10": 4.72,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "remainingOz": 39680,
+   "tappedDaysAgo": 0,
+   "color": "#d0a04a",
+   "colorTop": "#e4bd78",
+   "rating": 0,
+   "tappedAt": 1792864949350
   }
  ],
  "recent": [
