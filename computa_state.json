@@ -6,7 +6,7 @@
  },
  "started": "2026-10-23T20:10:29",
  "shadow": {
-  "mirror_at": 1792864843.2391915,
+  "mirror_at": 1792865086.6405106,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -123,18 +123,5 @@
    "opened": 1792865018.5379424
   }
  },
- "confirm": [
-  {
-   "channel": "C0AQ68G7DRB",
-   "ts": "1792864984.892089",
-   "stamp": "2026-10-24T18:03:37+00:00",
-   "at": 1792865018.3465226
-  },
-  {
-   "channel": "C0AQ68G7DRB",
-   "ts": "1792865001.713909",
-   "stamp": "2026-10-24T18:03:37+00:00",
-   "at": 1792865018.537947
-  }
- ]
+ "confirm": []
 }
