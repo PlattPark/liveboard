@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-24T18:11:40+00:00",
- "updatedBy": "added Phaded",
+ "updated": "2026-10-25T07:25:24+00:00",
+ "updatedBy": "Plattmosphere $8.50; Phaded 10oz $4.75; Phaded level; Phaded note line; also pouring: +seasonal cider; also pouring: ~Hard Italian Soda",
  "beers": [
   {
    "id": "plattmosphere",
@@ -9,7 +9,7 @@
    "style": "Hazy IPA",
    "abv": 6.9,
    "price10": 5.25,
-   "price": 90.0,
+   "price": 8.5,
    "rating": 3.82,
    "vessel": "tank20",
    "vesselLabel": "20 BBL",
@@ -245,16 +245,17 @@
    "style": "Pale Ale",
    "abv": 5.4,
    "price": 7.5,
-   "price10": 4.72,
+   "price10": 4.75,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 39680,
+   "remainingOz": 35712,
    "tappedDaysAgo": 0,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
    "rating": 0,
-   "note": "$7.50 for 16oz, $4.75 for 10oz",
-   "tappedAt": 1792865500378
+   "note": "our pale ale",
+   "tappedAt": 1792865500378,
+   "levelAt": "2026-10-25T07:25:24+00:00"
   }
  ],
  "recent": [
@@ -414,7 +415,7 @@
   },
   {
    "name": "Hard Italian Soda",
-   "sub": "Bravazzi",
+   "sub": "Bravazzi Lemonata",
    "price": "$9"
   },
   {
@@ -431,6 +432,11 @@
    "name": "Frozen Drinks",
    "sub": "Mexican Firing Squad",
    "price": "$12"
+  },
+  {
+   "name": "seasonal cider",
+   "sub": "2 Towns Mango Cosmic Crisp",
+   "price": "$9"
   }
  ]
 }
