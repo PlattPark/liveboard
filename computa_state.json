@@ -6,7 +6,7 @@
  },
  "started": "2026-10-25T10:43:20",
  "shadow": {
-  "mirror_at": 1792975467.1856492,
+  "mirror_at": 1792975735.0751483,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -110,12 +110,5 @@
    "opened": 1792975668.6741238
   }
  },
- "confirm": [
-  {
-   "channel": "C0B3E5GF6UR",
-   "ts": "1792975662.418619",
-   "stamp": "2026-10-26T00:47:47+00:00",
-   "at": 1792975668.6741269
-  }
- ]
+ "confirm": []
 }
