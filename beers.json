@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-25T07:25:24+00:00",
- "updatedBy": "Plattmosphere $8.50; Phaded 10oz $4.75; Phaded level; Phaded note line; also pouring: +seasonal cider; also pouring: ~Hard Italian Soda",
+ "updated": "2026-10-26T00:32:41+00:00",
+ "updatedBy": "also pouring: -Hard Kombucha; also pouring: +Hard Kombucha",
  "beers": [
   {
    "id": "plattmosphere",
@@ -409,11 +409,6 @@
    "price": "$9"
   },
   {
-   "name": "Hard Kombucha",
-   "sub": "Boochcraft kiwi citrus",
-   "price": "$9"
-  },
-  {
    "name": "Hard Italian Soda",
    "sub": "Bravazzi Lemonata",
    "price": "$9"
@@ -437,6 +432,11 @@
    "name": "seasonal cider",
    "sub": "2 Towns Mango Cosmic Crisp",
    "price": "$9"
+  },
+  {
+   "name": "Hard Kombucha",
+   "sub": "Boochcraft Limonata",
+   "price": ""
   }
  ]
 }
