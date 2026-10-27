@@ -61,3 +61,11 @@ body.bn .ranger{transform:translate(257px,90px)}
 #floor:not(.dense) .plate .price .p10{font-size:18px}
 #floor:not(.dense) .plate .price .abv{font-size:20px}
 #floor:not(.dense) .plate .price .sep{font-size:18px}
+/* Oct 27 2026: six-across tag sizes back; 16-24 char names may wrap to two lines */
+#floor:not(.dense) .plate .price .tag.has10{font-size:20px;letter-spacing:.2px}
+#floor:not(.dense) .plate .price .tag.has10 .p10b{font-size:18px}
+#floor:not(.dense) .plate .price .tag.has10 .p10{font-size:12px;letter-spacing:.8px}
+#floor:not(.dense) .plate .price .tag.has10 .abv{font-size:17px}
+#floor:not(.dense) .plate .price .tag.has10 .sep{font-size:15px}
+#floor:not(.dense) .plate .name.longname{white-space:normal;text-wrap:balance}
+#floor:not(.dense) .plate .name.xlongname{font-size:26px;white-space:normal;text-wrap:balance}
