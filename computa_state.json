@@ -6,7 +6,11 @@
  },
  "started": "2026-10-28T04:47:11",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1793202347.6859765,
+=======
+  "mirror_at": 1793202459.1807277,
+>>>>>>> Stashed changes
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -16,7 +20,11 @@
    "Phaded": "AJIA6WNT5F5DNA2MQRMFJ27S",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
+<<<<<<< Updated upstream
   "map_at": 1793200795.9723668,
+=======
+  "map_at": 1793202459.180737,
+>>>>>>> Stashed changes
   "last": {
    "Plattmosphere": false,
    "Platty Lite": false,
@@ -26,7 +34,11 @@
    "Phaded": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1793202347.9128988,
+=======
+  "sales_at": 1793202464.5162177,
+>>>>>>> Stashed changes
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -84,7 +96,11 @@
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-10-28T15:45:47+00:00",
+=======
+  "orders_since": "2026-10-28T15:47:44+00:00",
+>>>>>>> Stashed changes
   "pitcher_oz": 0
  }
 }
