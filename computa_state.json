@@ -6,7 +6,7 @@
  },
  "started": "2026-10-28T15:48:19",
  "shadow": {
-  "mirror_at": 1793224296.4092708,
+  "mirror_at": 1793224550.997581,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -26,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793223634.2345765,
+  "sales_at": 1793224551.2634208,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -84,8 +84,8 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-10-28T21:40:34+00:00",
-  "pitcher_oz": 320.0,
+  "orders_since": "2026-10-28T21:55:51+00:00",
+  "pitcher_oz": 352.0,
   "sales_posted": "2026-10-28"
  }
 }
