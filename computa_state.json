@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1793202499.053023",
-  "C0AQ68G7DRB": "1793202499.053023",
-  "C0CALA09Z35": "1793202499.053023"
+  "C0B3E5GF6UR": "1793242168.968774",
+  "C0AQ68G7DRB": "1793242168.968774",
+  "C0CALA09Z35": "1793242168.968774"
  },
- "started": "2026-10-28T15:48:19",
+ "started": "2026-10-29T02:49:28",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1793241999.9090455,
-=======
-  "mirror_at": 1793242136.8982618,
->>>>>>> Stashed changes
+  "mirror_at": 1793242169.2391107,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -20,7 +16,7 @@
    "Phaded": "AJIA6WNT5F5DNA2MQRMFJ27S",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-  "map_at": 1793240731.32104,
+  "map_at": 1793242169.2391155,
   "last": {
    "Plattmosphere": false,
    "Platty Lite": false,
@@ -30,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793241967.0663264,
+  "sales_at": 1793242176.398128,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -49,8 +45,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 112.0,
-    "pints": 7.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -59,13 +55,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 0,
+    "pints": 0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 192.0,
-    "pints": 12.0
+    "oz": 0,
+    "pints": 0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -74,22 +70,21 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 602.0,
-    "pints": 37.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 202.0,
-    "pints": 12.0
+    "oz": 0,
+    "pints": 0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
-    "oz": 4.0,
+    "oz": 0,
     "pints": 0
    }
   },
-  "orders_since": "2026-10-29T02:46:07+00:00",
-  "pitcher_oz": 704.0,
-  "sales_posted": "2026-10-28"
+  "orders_since": "2026-10-29T02:49:36+00:00",
+  "pitcher_oz": 0
  }
 }
