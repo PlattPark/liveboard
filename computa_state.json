@@ -1,12 +1,12 @@
 {
  "last_ts": {
   "C0B3E5GF6UR": "1793281834.594795",
-  "C0AQ68G7DRB": "1793329728.722119",
+  "C0AQ68G7DRB": "1793337075.103019",
   "C0CALA09Z35": "1793281834.594795"
  },
  "started": "2026-10-29T13:50:34",
  "shadow": {
-  "mirror_at": 1793336826.8369117,
+  "mirror_at": 1793337079.036797,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -88,11 +88,5 @@
   "pitcher_oz": 0,
   "sales_posted": "2026-10-29"
  },
- "threads": {
-  "1793329723.770309": {
-   "channel": "C0AQ68G7DRB",
-   "last": "1793329723.770309",
-   "opened": 1793329724.8404112
-  }
- }
+ "threads": {}
 }
