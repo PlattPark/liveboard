@@ -6,7 +6,7 @@
  },
  "started": "2026-10-29T13:50:34",
  "shadow": {
-  "mirror_at": 1793324661.7983038,
+  "mirror_at": 1793324912.4300785,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -26,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793323998.8724034,
+  "sales_at": 1793324912.6853468,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -45,8 +45,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 298.0,
-    "pints": 18.0
+    "oz": 346.0,
+    "pints": 21.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -70,13 +70,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 420.0,
-    "pints": 25.0
+    "oz": 500.0,
+    "pints": 30.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 270.0,
-    "pints": 13.0
+    "oz": 286.0,
+    "pints": 14.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -84,7 +84,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-10-30T01:33:18+00:00",
+  "orders_since": "2026-10-30T01:48:32+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-10-29"
  }
