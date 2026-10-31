@@ -26,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793422487.1403964,
+  "sales_at": 1793423417.4551141,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -75,8 +75,8 @@
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 64.0,
+    "pints": 4.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -84,7 +84,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-10-31T04:54:47+00:00",
+  "orders_since": "2026-10-31T05:10:17+00:00",
   "pitcher_oz": 0
  }
 }
