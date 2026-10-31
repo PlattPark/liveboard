@@ -6,7 +6,7 @@
  },
  "started": "2026-10-30T11:52:44",
  "shadow": {
-  "mirror_at": 1793413469.3075163,
+  "mirror_at": 1793413725.5223582,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -26,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793412804.7084563,
+  "sales_at": 1793413725.8065858,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -70,8 +70,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 724.0,
-    "pints": 44.0
+    "oz": 740.0,
+    "pints": 45.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -84,7 +84,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-10-31T02:13:24+00:00",
+  "orders_since": "2026-10-31T02:28:45+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-10-30"
  },
