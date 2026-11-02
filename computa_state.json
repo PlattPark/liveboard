@@ -26,7 +26,7 @@
    "Phaded": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793644860.4665782,
+  "sales_at": 1793645769.9493427,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -70,8 +70,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -84,7 +84,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-02T18:41:00+00:00",
+  "orders_since": "2026-11-02T18:56:09+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-02"
  }
