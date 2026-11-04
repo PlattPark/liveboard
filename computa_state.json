@@ -1,44 +1,30 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1793797281.363599",
-  "C0AQ68G7DRB": "1793810570.210809",
-  "C0CALA09Z35": "1793797281.363599"
+  "C0B3E5GF6UR": "1793817118.462291",
+  "C0AQ68G7DRB": "1793817118.462291",
+  "C0CALA09Z35": "1793817118.462291"
  },
- "started": "2026-11-04T13:01:21",
+ "started": "2026-11-04T18:31:58",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1793816878.8848267,
-=======
-  "mirror_at": 1793817081.5381286,
->>>>>>> Stashed changes
+  "mirror_at": 1793817118.858128,
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
    "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
    "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
-   "Phaded": "AJIA6WNT5F5DNA2MQRMFJ27S",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1793816370.955519,
-=======
-  "map_at": 1793817081.5381386,
->>>>>>> Stashed changes
+  "map_at": 1793817118.8581352,
   "last": {
    "Plattmosphere": false,
    "Platty Lite": false,
    "Astronaut Amber": false,
    "Tropical Snow Dance": false,
    "Nadare": false,
-   "Phaded": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1793816595.4566312,
-=======
-  "sales_at": 1793817085.8651943,
->>>>>>> Stashed changes
+  "sales_at": 1793817124.515792,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -96,19 +82,7 @@
     "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-04T18:23:15+00:00",
-=======
-  "orders_since": "2026-11-04T18:31:25+00:00",
->>>>>>> Stashed changes
-  "pitcher_oz": 32.0,
-  "sales_posted": "2026-11-04"
- },
- "threads": {
-  "1793810570.210809": {
-   "channel": "C0AQ68G7DRB",
-   "last": "1793810570.210809",
-   "opened": 1793810591.0121555
-  }
+  "orders_since": "2026-11-04T18:32:04+00:00",
+  "pitcher_oz": 0
  }
 }
