@@ -24,7 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793839200.8815334,
+  "sales_at": 1793840127.9535584,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -58,8 +58,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 48.0,
+    "pints": 3.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -73,8 +73,8 @@
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 4.0
+    "oz": 128.0,
+    "pints": 6.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -82,8 +82,8 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-05T00:40:00+00:00",
-  "pitcher_oz": 256.0
+  "orders_since": "2026-11-05T00:55:27+00:00",
+  "pitcher_oz": 416.0
  },
  "threads": {}
 }
