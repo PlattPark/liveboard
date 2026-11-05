@@ -6,7 +6,11 @@
  },
  "started": "2026-11-04T18:31:58",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1793876312.0352912,
+=======
+  "mirror_at": 1793876575.4943056,
+>>>>>>> Stashed changes
   "map": {
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
@@ -24,7 +28,11 @@
    "Nadare": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1793875777.9779785,
+=======
+  "sales_at": 1793876575.6031122,
+>>>>>>> Stashed changes
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +90,11 @@
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-11-05T10:49:37+00:00",
+=======
+  "orders_since": "2026-11-05T11:02:55+00:00",
+>>>>>>> Stashed changes
   "pitcher_oz": 896.0
  },
  "threads": {}
