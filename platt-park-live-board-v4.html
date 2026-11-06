@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-11-06T18:25Z from src @ b4dc264 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-06T19:19Z from src @ 1131200 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -990,6 +990,41 @@ body.bn .ranger{transform:translate(257px,72px)}
   font-size:15px;line-height:1;padding:4px 7px 3px;border-radius:3px;letter-spacing:.5px;pointer-events:none}
 .floor.dense .abvchip{font-size:11px;padding:3px 5px 2px;top:6px;right:6px}
 .unit.kicked .abvchip{opacity:.45}
+
+/* Nov 6 2026: bigger type, read from across the room. These are ceilings - the self-fitting layer (4-fittext.js)
+   shrinks a line on the TV only if it truly doesn't fit, so long names and two-line descriptions stay inside their cards. */
+#floor:not(.dense) .plate .name{font-size:47px;height:84px}
+#floor:not(.dense) .plate .name.longname{font-size:39px}
+#floor:not(.dense) .plate .name.xlongname{font-size:33px}
+#floor:not(.dense) .plate .note{font-size:29px;max-width:100%}
+#floor:not(.dense) .plate .note.long{font-size:26px;max-width:100%}
+#floor:not(.dense) .plate .taste{font-size:26px;max-width:100%}
+#floor:not(.dense) .plate .taste.long{font-size:23px;max-width:100%}
+#floor:not(.dense) .plate .price .tag, #floor:not(.dense) .plate .price .tag.has10{font-size:33px}
+#floor:not(.dense) .plate .price .tag .p10b, #floor:not(.dense) .plate .price .tag.has10 .p10b{font-size:29px}
+#floor:not(.dense) .plate .price .tag .p10, #floor:not(.dense) .plate .price .tag.has10 .p10{font-size:18px}
+/* six across (11-14 taps) */
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name{font-size:39px;height:74px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.longname{font-size:32px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.xlongname{font-size:27px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note{font-size:26px;max-width:100%}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note.long{font-size:23px;max-width:100%}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste{font-size:23px;max-width:100%}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste.long{font-size:21px;max-width:100%}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag, #floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag.has10{font-size:28px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag .p10b, #floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag.has10 .p10b{font-size:24px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag .p10, #floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .tag.has10 .p10{font-size:16px}
+/* never let a long description grow a card into the ticker: two lines max (the fitter shrinks it first; this only trims what's left) */
+#floor .plate .taste{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+#floor .plate .note{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+#floor:not(.dense) .plate .name{height:78px}
+/* five across (7-10 taps): one step down from the ceiling above - the longest guest names wrap to two lines here */
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .name{font-size:44px;height:74px}
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .name.longname{font-size:36px}
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .name.xlongname{font-size:31px}
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .note{font-size:27px}
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .taste{font-size:24px}
+#floor:not(.dense):not(:has(> .unit:nth-child(11))) .plate .taste.long{font-size:22px}
 </style>
 <script id="fitjs">
 (function(){
