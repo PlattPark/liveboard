@@ -24,7 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794006823.8222473,
+  "sales_at": 1794007729.431141,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -43,8 +43,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 128.0,
+    "pints": 8.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -68,8 +68,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 160.0,
+    "pints": 10.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -87,7 +87,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-06T23:13:43+00:00",
+  "orders_since": "2026-11-06T23:28:49+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-06"
  },
