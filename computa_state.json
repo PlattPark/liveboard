@@ -24,7 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794008642.262109,
+  "sales_at": 1794009552.1463642,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -43,8 +43,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 144.0,
-    "pints": 9.0
+    "oz": 160.0,
+    "pints": 10.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -58,8 +58,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 64.0,
-    "pints": 4.0
+    "oz": 80.0,
+    "pints": 5.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -73,8 +73,8 @@
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 164.0,
-    "pints": 9.0
+    "oz": 228.0,
+    "pints": 13.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -87,7 +87,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-06T23:44:02+00:00",
+  "orders_since": "2026-11-06T23:59:12+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-06"
  },
