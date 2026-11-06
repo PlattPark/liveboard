@@ -1,35 +1,8 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-10-27T19:01:18+00:00",
- "updatedBy": "also pouring: seasonal cider -> Seasonal Cider; also pouring: Hard Kombucha -> Hard Kombucha",
+ "updated": "2026-11-06T16:57:35+00:00",
+ "updatedBy": "86 Plattmosphere",
  "beers": [
-  {
-   "id": "plattmosphere",
-   "name": "Plattmosphere",
-   "style": "Hazy IPA",
-   "abv": 6.9,
-   "price10": 5.25,
-   "price": 8.5,
-   "rating": 3.82,
-   "vessel": "tank20",
-   "vesselLabel": "20 BBL",
-   "tall": true,
-   "color": "#d9a83c",
-   "colorTop": "#efc76a",
-   "remainingOz": 26188,
-   "tappedDaysAgo": 0,
-   "note": "the flagship hazy",
-   "wall": "Hazy IPA · the flagship",
-   "medals": [
-    {
-     "comp": "State Fair",
-     "level": "silver",
-     "year": 2026,
-     "show": "wall"
-    }
-   ],
-   "levelAt": "2026-10-19T18:10:29.035Z"
-  },
   {
    "id": "platty-lite",
    "name": "Platty Lite",
@@ -259,6 +232,34 @@
   }
  ],
  "recent": [
+  {
+   "id": "plattmosphere",
+   "name": "Plattmosphere",
+   "style": "Hazy IPA",
+   "abv": 6.9,
+   "price10": 5.25,
+   "price": 8.5,
+   "rating": 3.82,
+   "vessel": "tank20",
+   "vesselLabel": "20 BBL",
+   "tall": true,
+   "color": "#d9a83c",
+   "colorTop": "#efc76a",
+   "remainingOz": 26188,
+   "tappedDaysAgo": 0,
+   "note": "the flagship hazy",
+   "wall": "Hazy IPA · the flagship",
+   "medals": [
+    {
+     "comp": "State Fair",
+     "level": "silver",
+     "year": 2026,
+     "show": "wall"
+    }
+   ],
+   "levelAt": "2026-10-19T18:10:29.035Z",
+   "offSince": "2026-11-06"
+  },
   {
    "id": "my-dude",
    "name": "my dude",
