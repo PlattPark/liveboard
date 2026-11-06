@@ -112,7 +112,7 @@ function render(s){
           <div class="dish"></div>
           <div class="tbody">
             <span class="size"></span><span class="blip">−1</span>
-            <span class="nitrotag">Nitro</span><span class="lowtag">Running low</span>
+            <span class="nitrotag">Nitro</span><span class="abvchip"></span><span class="lowtag">Running low</span>
             <span class="newtag">Just tapped</span>
             <div class="kicktag"><span>Tank empty</span></div>
             <div class="liquid"><svg class="wave" viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M0 6 Q12.5 0 25 6 T50 6 T75 6 T100 6 T125 6 T150 6 T175 6 T200 6 V12 H0 Z"/></svg><div class="foam"></div><span class="bub" style="left:22%;top:74px;--rise:-66px;width:4px;height:4px;animation-duration:4.6s"></span><span class="bub" style="left:52%;top:96px;--rise:-88px;width:3px;height:3px;animation-duration:6s;animation-delay:1.2s"></span><span class="bub" style="left:76%;top:58px;--rise:-50px;width:5px;height:5px;animation-duration:5.2s;animation-delay:2.3s"></span></div>
@@ -142,6 +142,7 @@ function render(s){
     u.querySelector('.spotcap').textContent=beer.sash||'';
     var smallV=(beer.vessel==='keg-half'||beer.vessel==='serve6');u.querySelector('.lowtag').textContent = beer.pct<=0.04 ? (smallV?'Last pours':'Almost gone') : (smallV?'Low':'Running low');
     u.querySelector('.size').textContent=beer.vesselLabel;
+    { var ac=u.querySelector('.abvchip'); if(ac){ var a=parseFloat(beer.abv); ac.textContent=isNaN(a)?'':(Math.round(a*10)/10)+'%'; ac.style.display=isNaN(a)?'none':''; } }   // Nov 2026: ABV lives on the tank, not the price tag
     const liq=u.querySelector('.liquid');
     const shown=Math.min(1,Math.max(0,beer.pct))*0.94;   // never draw past full: a level bigger than the tank (Oct 20 2026, Chela 15.4 bbl in a 10) shows a full tank, not beer floating above it
     liq.style.transform=`translateY(${(1-shown)*100}%)`;
