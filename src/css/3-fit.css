@@ -44,8 +44,8 @@ body.bn .ranger{transform:translate(257px,37px)}
 header{padding-top:10px}
 .stamp{width:104px;height:104px;top:4px;right:70px}
 .plate .age{display:none !important}
-.ranger{transform:translate(171px,84px)}          /* re-seated on the rail after the header shrank */
-body.bn .ranger{transform:translate(257px,90px)}
+.ranger{transform:translate(171px,68px)}          /* re-seated on the rail after the header shrank */
+body.bn .ranger{transform:translate(257px,72px)}
 
 /* Oct 21 2026: bigger, easier-to-read type under the tanks - the smaller header freed the room.
    (A full 15+ tap wall keeps its own dense sizes above.) */
@@ -69,3 +69,33 @@ body.bn .ranger{transform:translate(257px,90px)}
 #floor:not(.dense) .plate .price .tag.has10 .sep{font-size:15px}
 #floor:not(.dense) .plate .name.longname{white-space:normal;text-wrap:balance}
 #floor:not(.dense) .plate .name.xlongname{font-size:26px;white-space:normal;text-wrap:balance}
+
+/* Oct 27 2026: 11-14 taps go six across - the 5-across sizes overlapped prices and cut names on the ProDesk
+   (Windows draws text a little wider than the test browser). Six-across gets its own sizes, with room to spare. */
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name{font-size:29px;height:62px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.longname{font-size:23px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.xlongname{font-size:21px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note{font-size:20px;max-width:205px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note.long{font-size:18px;max-width:210px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste{font-size:18px;max-width:210px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste.long{font-size:16.5px;max-width:214px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price{font-size:19px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .p10b{font-size:16.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .p10{font-size:12.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .abv{font-size:14.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .sep{font-size:12px}
+
+/* A full wall (15+ taps, eight across): price tags sized to their column - they overlapped at the regular size */
+.floor.dense .plate .price{font-size:15px}
+.floor.dense .plate .price .p10b{font-size:13px}
+.floor.dense .plate .price .p10{font-size:10px;letter-spacing:.5px}
+.floor.dense .plate .price .abv{font-size:12px}
+.floor.dense .plate .price .sep{font-size:10px}
+.floor.dense .plate .price .abv, .floor.dense .plate .price .dot:has(+ .abv){display:none}   /* full wall: ABV stays on the QR menu */
+.floor.dense .plate .price .tag{padding-left:6px;padding-right:6px;letter-spacing:0}
+.floor.dense .plate .price{font-size:13.5px} .floor.dense .plate .price .p10b{font-size:12px}
+/* Nov 4 2026: Also Pouring slides right into the open space by the screen edge, so the last tank column never crowds it
+   (seen on the ProDesk with 11 taps: Tropical Snow Dance ran into the panel) */
+.side{translate:70px 0}
+/* Nov 6 2026: the fitter (4-fittext.js) scales a price tag to its card - a transform needs a block-level box */
+.plate .price .tag{display:inline-block;white-space:nowrap}
