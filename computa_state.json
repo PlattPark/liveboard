@@ -24,7 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794004997.9747958,
+  "sales_at": 1794005905.178159,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -43,8 +43,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 64.0,
-    "pints": 4.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -87,7 +87,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-06T22:43:17+00:00",
+  "orders_since": "2026-11-06T22:58:25+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-06"
  },
