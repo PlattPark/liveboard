@@ -203,6 +203,7 @@ async function open(browser, file, iso, freeze, opt) {
           if (tr.left < ur.left - 2 || tr.right > ur.right + 2) issues.push('price spills: ' + nm.textContent);
           [pl.querySelector('.note'), pl.querySelector('.taste')].forEach(e => { if (!e || !e.textContent.trim()) return; const er = span(e); if (er.left < ur.left - 2 || er.right > ur.right + 2) issues.push('line spills: ' + e.textContent.slice(0, 25)); });
           if (tr.bottom > rail.top - 6) issues.push('price under the ticker: ' + nm.textContent);
+          { const last = [pl.querySelector('.taste'), pl.querySelector('.note'), nm].find(e => e && e.textContent.trim()); if (last && span(last).bottom > tr.top - 3) issues.push('text runs into its price: ' + nm.textContent); }
           if (side && ur.right > side.left - 4 && ur.top < side.bottom) issues.push('card under Also Pouring: ' + nm.textContent); });
         Object.values(rows).forEach(ts => { ts.sort((a, b) => a.left - b.left); for (let i = 1; i < ts.length; i++) if (ts[i].left - ts[i - 1].right < 8) issues.push('price tags ' + Math.round(ts[i].left - ts[i - 1].right) + 'px apart'); });
         return { issues: [...new Set(issues)], n: units.length }; });
