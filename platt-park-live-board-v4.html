@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-10-21T18:06Z from src @ 36b9345 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-06T18:07Z from src @ d1ccdff - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -926,8 +926,8 @@ body.bn .ranger{transform:translate(257px,37px)}
 header{padding-top:10px}
 .stamp{width:104px;height:104px;top:4px;right:70px}
 .plate .age{display:none !important}
-.ranger{transform:translate(171px,84px)}          /* re-seated on the rail after the header shrank */
-body.bn .ranger{transform:translate(257px,90px)}
+.ranger{transform:translate(171px,68px)}          /* re-seated on the rail after the header shrank */
+body.bn .ranger{transform:translate(257px,72px)}
 
 /* Oct 21 2026: bigger, easier-to-read type under the tanks - the smaller header freed the room.
    (A full 15+ tap wall keeps its own dense sizes above.) */
@@ -943,6 +943,44 @@ body.bn .ranger{transform:translate(257px,90px)}
 #floor:not(.dense) .plate .price .p10{font-size:18px}
 #floor:not(.dense) .plate .price .abv{font-size:20px}
 #floor:not(.dense) .plate .price .sep{font-size:18px}
+/* Oct 27 2026: six-across tag sizes back; 16-24 char names may wrap to two lines */
+#floor:not(.dense) .plate .price .tag.has10{font-size:20px;letter-spacing:.2px}
+#floor:not(.dense) .plate .price .tag.has10 .p10b{font-size:18px}
+#floor:not(.dense) .plate .price .tag.has10 .p10{font-size:12px;letter-spacing:.8px}
+#floor:not(.dense) .plate .price .tag.has10 .abv{font-size:17px}
+#floor:not(.dense) .plate .price .tag.has10 .sep{font-size:15px}
+#floor:not(.dense) .plate .name.longname{white-space:normal;text-wrap:balance}
+#floor:not(.dense) .plate .name.xlongname{font-size:26px;white-space:normal;text-wrap:balance}
+
+/* Oct 27 2026: 11-14 taps go six across - the 5-across sizes overlapped prices and cut names on the ProDesk
+   (Windows draws text a little wider than the test browser). Six-across gets its own sizes, with room to spare. */
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name{font-size:29px;height:62px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.longname{font-size:23px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .name.xlongname{font-size:21px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note{font-size:20px;max-width:205px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .note.long{font-size:18px;max-width:210px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste{font-size:18px;max-width:210px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .taste.long{font-size:16.5px;max-width:214px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price{font-size:19px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .p10b{font-size:16.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .p10{font-size:12.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .abv{font-size:14.5px}
+#floor:not(.dense):has(> .unit:nth-child(11)) .plate .price .sep{font-size:12px}
+
+/* A full wall (15+ taps, eight across): price tags sized to their column - they overlapped at the regular size */
+.floor.dense .plate .price{font-size:15px}
+.floor.dense .plate .price .p10b{font-size:13px}
+.floor.dense .plate .price .p10{font-size:10px;letter-spacing:.5px}
+.floor.dense .plate .price .abv{font-size:12px}
+.floor.dense .plate .price .sep{font-size:10px}
+.floor.dense .plate .price .abv, .floor.dense .plate .price .dot:has(+ .abv){display:none}   /* full wall: ABV stays on the QR menu */
+.floor.dense .plate .price .tag{padding-left:6px;padding-right:6px;letter-spacing:0}
+.floor.dense .plate .price{font-size:13.5px} .floor.dense .plate .price .p10b{font-size:12px}
+/* Nov 4 2026: Also Pouring slides right into the open space by the screen edge, so the last tank column never crowds it
+   (seen on the ProDesk with 11 taps: Tropical Snow Dance ran into the panel) */
+.side{translate:70px 0}
+/* Nov 6 2026: the fitter (4-fittext.js) scales a price tag to its card - a transform needs a block-level box */
+.plate .price .tag{display:inline-block;white-space:nowrap}
 </style>
 <script id="fitjs">
 (function(){
@@ -1272,6 +1310,107 @@ function festOverride(s){
   }
   try{ build(o.textContent||''); }catch(e){ o.classList.remove('hid'); host.classList.remove('on'); return; }
   setInterval(function(){ try{ sync(); }catch(e){ o.classList.remove('hid'); host.classList.remove('on'); } }, 400);
+})();
+</script>
+<script id="fittext">/* 4-fittext.js - Platt Park live board (Nov 2026)
+   Why this exists: the wall's type sizes used to be hand-picked numbers per layout (5 / 6 / 8 across). Every time a
+   beer was added or removed across a layout boundary - or the TV's Windows Chrome drew text a little wider than the
+   test browser - something overflowed. This measures every card ON THE DEVICE and shrinks what doesn't fit, so the
+   CSS sizes are a ceiling, never a promise.
+
+   Rules, per card:
+     name   one line; shrink to a floor. If it still doesn't fit (very long guest names), allow two balanced lines.
+     style  (the .note line) one line if possible, shrink to a floor, then wrap.
+     taste  at most two lines; shrink to a floor.
+     price  the tag never wider than its card: shrink it, and if it still doesn't fit drop the ABV, then the "10oz" label.
+   Runs whenever the beer list redraws, on resize, and once fonts have loaded. window.__fitText() runs it on demand. */
+(function () {
+  var floor = document.getElementById('floor');
+  if (!floor) return;
+  var busy = false, queued = false;
+
+  function px(el) { return parseFloat(getComputedStyle(el).fontSize) || 16; }
+  function lineH(el) { var lh = parseFloat(getComputedStyle(el).lineHeight); return isNaN(lh) ? px(el) * 1.15 : lh; }
+  // Measure the TEXT, not the box: a name/line box always fills its column, so its own width says nothing.
+  // Ranges report screen pixels (after the board's scaling), so the card is measured the same way.
+  function textW(el) { var r = document.createRange(); r.selectNodeContents(el); var w = 0; var rs = r.getClientRects();
+    for (var i = 0; i < rs.length; i++) w = Math.max(w, rs[i].width); return w; }
+  var curRoomPx = 0;
+  function fitsWidth(el) { return textW(el) <= curRoomPx + 0.5; }
+  function lines(el) { return Math.round(el.scrollHeight / lineH(el)); }
+
+  function reset(el) { if (el) { el.style.fontSize = ''; el.style.whiteSpace = ''; el.style.letterSpacing = ''; } }
+
+  function shrinkOneLine(el, room, floorPx) {
+    el.style.whiteSpace = 'nowrap';
+    var s = px(el), guard = 80;
+    while (!fitsWidth(el) && s > floorPx && guard--) { s -= 0.5; el.style.fontSize = s + 'px'; }
+    return fitsWidth(el);
+  }
+  function shrinkLines(el, room, maxLines, floorPx) {
+    el.style.whiteSpace = 'normal';
+    var s = px(el), guard = 80;
+    while ((lines(el) > maxLines || !fitsWidth(el)) && s > floorPx && guard--) { s -= 0.5; el.style.fontSize = s + 'px'; }
+  }
+
+  function fitTag(price, room) {
+    var tag = price.querySelector('.tag') || price;
+    tag.style.transform = ''; tag.style.transformOrigin = '';
+    tag.querySelectorAll('.abv, .dot, .p10').forEach(function (e) { e.style.display = ''; });
+    function natural() { return tag.offsetWidth; }          // layout width in board pixels, unaffected by transforms
+    if (natural() <= room) return;
+    var abv = tag.querySelector('.abv');                     // 1) drop the ABV (it's on the QR menu)
+    if (abv && natural() * 0.8 > room) {
+      abv.style.display = 'none';
+      var d = abv.previousElementSibling; if (d && d.classList.contains('dot')) d.style.display = 'none';
+    }
+    if (natural() * 0.78 > room) tag.querySelectorAll('.p10').forEach(function (e) { e.style.display = 'none'; });   // 2) then the "10oz" word
+    var s = Math.min(1, room / natural());                   // 3) scale whatever is left to fit exactly
+    if (s < 1) { tag.style.transform = 'scale(' + Math.max(0.6, s).toFixed(3) + ')'; tag.style.transformOrigin = 'center bottom'; }
+  }
+
+  function fitCard(u, dense) {
+    var plate = u.querySelector('.plate'); if (!plate) return;
+    var room = plate.clientWidth - 4;                       // board pixels, for the price tag
+    if (room <= 0) return;
+    var pr = plate.getBoundingClientRect();
+    curRoomPx = pr.width - 4 * (pr.width / plate.clientWidth);   // the same room in screen pixels, for text
+    var name = plate.querySelector('.name'), note = plate.querySelector('.note'), taste = plate.querySelector('.taste'), price = plate.querySelector('.price');
+    [name, note, taste].forEach(reset);
+    if (name && name.textContent.trim()) {
+      if (!shrinkOneLine(name, room, dense ? 13 : 21)) { reset(name); shrinkLines(name, room, 2, dense ? 12 : 17); name.style.height = 'auto'; }
+      else name.style.height = '';
+    }
+    if (note && note.textContent.trim()) {
+      if (!shrinkOneLine(note, room, dense ? 11 : 15)) { reset(note); shrinkLines(note, room, 2, dense ? 10 : 14); }
+    }
+    if (taste && taste.textContent.trim()) shrinkLines(taste, room, 2, dense ? 10 : 13);
+    if (price) fitTag(price, room);
+  }
+
+  function fitAll() {
+    if (busy) { queued = true; return; }
+    busy = true;
+    try {
+      var dense = floor.classList.contains('dense');
+      floor.querySelectorAll('.unit').forEach(function (u) { fitCard(u, dense); });
+    } catch (e) { /* never let fitting break the board */ }
+    busy = false;
+    if (queued) { queued = false; requestAnimationFrame(fitAll); }
+  }
+
+  var pending = 0;
+  function schedule() { if (pending) return; pending = requestAnimationFrame(function () { pending = 0; fitAll(); }); }
+
+  new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {                 // ignore our own style tweaks
+      if (muts[i].type !== 'attributes') { schedule(); return; }
+    }
+  }).observe(floor, { childList: true, subtree: true, characterData: true });
+  window.addEventListener('resize', schedule);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  setTimeout(schedule, 300); setInterval(schedule, 60000);  // belt and braces: refit once a minute
+  window.__fitText = fitAll;
 })();
 </script>
 </body>
