@@ -99,3 +99,11 @@ body.bn .ranger{transform:translate(257px,72px)}
 .side{translate:70px 0}
 /* Nov 6 2026: the fitter (4-fittext.js) scales a price tag to its card - a transform needs a block-level box */
 .plate .price .tag{display:inline-block;white-space:nowrap}
+
+/* Nov 6 2026: ABV moved off the price tag onto the tank - a stat badge top-right, mirroring the Nitro badge.
+   The price tag is now just pint · 10oz, so it fits its card at any tap count without shrinking or dropping anything. */
+.plate .price .abv, .plate .price .dot:has(+ .abv){display:none !important}
+.abvchip{position:absolute;top:8px;right:8px;z-index:4;background:#131f0f;color:#eebf19;font-family:'Archivo Black','Barlow',sans-serif;
+  font-size:15px;line-height:1;padding:4px 7px 3px;border-radius:3px;letter-spacing:.5px;pointer-events:none}
+.floor.dense .abvchip{font-size:11px;padding:3px 5px 2px;top:6px;right:6px}
+.unit.kicked .abvchip{opacity:.45}
