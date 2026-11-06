@@ -24,7 +24,7 @@
    "Nadare": false,
    "Oktoberfest": false
   },
-  "sales_at": 1793983973.2540967,
+  "sales_at": 1793984902.3230793,
   "ledger": {
    "Plattmosphere": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -80,10 +80,16 @@
     "base": "2026-10-25T07:25:24+00:00",
     "oz": 0,
     "pints": 0
+   },
+   "Half Acre Waybird": {
+    "base": "2026-11-06T17:03:03+00:00",
+    "oz": 0,
+    "pints": 0
    }
   },
-  "orders_since": "2026-11-06T16:52:53+00:00",
-  "pitcher_oz": 0
+  "orders_since": "2026-11-06T17:08:22+00:00",
+  "pitcher_oz": 0,
+  "sales_posted": "2026-11-06"
  },
  "threads": {
   "1793984244.480289": {
