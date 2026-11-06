@@ -204,6 +204,10 @@ ALSO_DEFAULT = [
     {"name": "Frozen Drinks",    "sub": "Mexican Firing Squad",         "price": "$12"},
 ]
 ALSO_RM_RE  = re.compile(r"^(?:(?:remove|take|drop|pull|delete)\s+(?P<item>.{2,40}?)\s+(?:off|from|off\s+of|out\s+of)\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)|also\s+pouring\s*[:\-]\s*(?:remove|drop|delete)\s+(?P<item2>.{2,40}?))[.!]?\s*$", re.I)
+CAT_FLAVOR_RE = re.compile(r"^(?:the\s+)?(?:new\s+)?(?P<cat>[a-z][a-z' ]{1,28}?)\s+flavou?r\s+(?:is|=|:)\s+(?:now\s+)?(?:a\s+)?(?P<flavor>.{2,40}?)[.!]?\s*(?::\S+:\s*)*$", re.I)
+REPL_FROM_RE  = re.compile(r"^(?:can\s+you\s+|please\s+)?(?:replace|swap|change)\s+(?:the\s+)?(?P<cat>.{2,30}?)\s+from\s+(?P<old>.{2,40}?)\s+to\s+(?:be\s+)?(?P<new>.{2,50}?)[.!?]?\s*$", re.I)
+REPLACES_RE   = re.compile(r"^(?P<new>.{2,50}?)\s+(?:replaces?|instead\s+of|in\s+place\s+of)\s+(?:the\s+)?(?P<old>.{2,50}?)[.!]?\s*$", re.I)
+ALSO_RM_ROW_RE = re.compile(r"^(?:remove|take)\s+(?:the\s+)?(?P<item>.{2,30}?)\s+(?:off|from|out\s+of)\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)(?:\s+(?:panel|row))?[.!]?\s*$", re.I)
 ALSO_FLAVOR_ADD_RE = re.compile(r"^(?:add|put)\s+(?P<flavor>.{2,40}?)\s+(?:to|on|under|in)\s+(?:the\s+)?(?P<cat>(?!menu\b|board\b|wall\b|tap\s*list\b|list\b|taps\b|also\s+pouring\b|side\s+panel\b).{2,30}?)[.!]?\s*$", re.I)
 ALSO_REPLACE_RE = re.compile(r"^(?:replace|swap)\s+(?:the\s+)?(?P<old>.{2,40}?)\s+(?:with|for)\s+(?P<new>[^:,$\u2014]{2,40}?)(?:\s*[:,\-\u2014]\s*(?P<sub>[^$]{0,70}?))?(?:\s*,?\s*\$\s*(?P<price>\d+(?:\.\d+)?(?:\s*[-\u2013]\s*\d+(?:\.\d+)?)?))?[.!]?\s*$", re.I)
 ALSO_ADD_RE = re.compile(r"^(?:add\s+)?(?P<item>.{2,40}?)\s+to\s+(?:the\s+)?(?:also\s+pouring|side\s+panel|also\s+list)(?:\s*[:,\-\u2014]\s*(?P<sub>[^$]{0,70}?))?(?:\s*\$\s*(?P<price>\d+(?:\.\d+)?(?:\s*[-\u2013]\s*\d+(?:\.\d+)?)?))?[.!]?\s*$", re.I)
@@ -252,12 +256,28 @@ def match_also(name, lst):
     return None
 
 def match_flavor(name, lst):
-    """'transfusion' -> (the Frozen Drinks row, 'Transfusion') when it is one of the things listed under a category."""
+    """'transfusion' -> (the Frozen Drinks row, 'Transfusion') when it is one of the things listed under a category.
+    Also 'seasonal pumpkin' -> (Seasonal Cider, '2 Towns Pumpkin'): a category word plus a word from its flavour."""
     q = norm(name)
     if len(q) < 4: return None, None
     for it in lst:
         for f in _flavors(it):
             if norm(f) == q or (len(q) >= 5 and q in norm(f)):
+                return it, f
+    # "86 seasonal pumpkin": a DISTINCT category word (seasonal / frozen / italian - not cider or hard) plus a word only that
+    # row's flavour has. Words two rows share ("towns" in both ciders) never decide it.
+    GENERIC = {"cider", "hard", "drink", "drinks", "draft", "soda", "wine", "cocktail", "cocktails"}
+    words = [w for w in re.findall(r"[a-z]+", (name or "").lower()) if len(w) >= 4]
+    for it in lst:
+        cat = set(re.findall(r"[a-z]+", it.get("name", "").lower())) - GENERIC
+        if not cat & set(words): continue
+        others = set()
+        for o in lst:
+            if o is not it:
+                for f in _flavors(o): others |= set(re.findall(r"[a-z]+", f.lower()))
+        for f in _flavors(it):
+            fw = set(re.findall(r"[a-z]+", f.lower())) - others
+            if any(w in fw for w in words if w not in cat):
                 return it, f
     return None, None
 
@@ -328,7 +348,7 @@ IGNORE = re.compile(r"\b(sink|toilet|restroom|tab|tabs|register|wifi|thermostat|
                     r"ice machine|dishwasher|shot glass(?:es)?|light bulb)\b", re.I)
 
 
-NEWBEER_TRIGGER = re.compile(r"^\s*(?:computa+h?\s*[,!:]?\s*)?(?:new\s+beer|new\s+tap|just\s+tapped|now\s+pouring|on\s+tap\s+now)\b", re.I)
+NEWBEER_TRIGGER = re.compile(r"^\s*(?:computa+h?\s*[,!:]?\s*)?(?:add(?:ing)?\s+(?:a\s+)?)?(?:new\s+beer|new\s+tap|just\s+tapped|now\s+pouring|on\s+tap\s+now)\b", re.I)
 
 # Messages sent through the Claude Slack app arrive with " *Sent using* <@U…|Claude>" on the end of the text
 # (inline, not on its own line). It broke every end-anchored command on Sept 30 2026; strip it before parsing.
@@ -354,7 +374,11 @@ def parse_all(text):
     body = SENT_USING_RE.sub("", text or "").strip()
     if "`" in body or len(body) > 2000:
         return []
-    if newbeer and NEWBEER_TRIGGER.match(body):
+    _w = WOKE_RE.match(body)                 # Oct 25 2026: "@Computa New beer: ..." never reached the new-beer reader
+    _nbody = body[_w.end():].strip() if _w else body
+    _nbody = re.sub(r"^\s*add(?:ing)?\s+(?:a\s+)?(?=new\s+beer)", "", _nbody, flags=re.I)
+    if newbeer and NEWBEER_TRIGGER.match(_nbody):
+        body = _nbody
         nb = newbeer.parse_new_beer(body)
         if nb and nb.get("name"):
             return [("newbeer", nb, body)]   # handle() turns this into a restore if the name is already known
@@ -432,6 +456,18 @@ def parse_line(line, woke):
         m = ALSO_ADD_RE.search(line)
         if m:
             return "also_add", m.group("item").strip(" .,-"), {"sub": (m.group("sub") or "").strip(" .,-"), "price": m.group("price")}
+        m = ALSO_RM_ROW_RE.search(line)
+        if m:
+            return "also_rm_row", m.group("item").strip(" .,-"), None
+        m = CAT_FLAVOR_RE.search(line)
+        if m and (ALSO_ALIASES.get(m.group("cat").strip().lower()) or re.search(r"cider|wine|cocktail|kombucha|booch|seltzer|soda|frozen|slush", m.group("cat"), re.I)):
+            return "flavor", m.group("cat").strip(" .,-"), m.group("flavor").strip(" .,-")
+        m = REPL_FROM_RE.search(line)
+        if m:
+            return "flavor", m.group("cat").strip(" .,-"), m.group("new").strip(" .,-")
+        m = REPLACES_RE.search(line)
+        if m and not re.match(r"^\s*(?:can|please|replace|swap)\b", line, re.I):
+            return "also_flavor_swap", m.group("old").strip(" .,-"), m.group("new").strip(" .,-")
         m = ALSO_REPLACE_RE.search(line)
         if m:
             return "also_replace", m.group("old").strip(" .,-"), {"new": m.group("new").strip(" .,-"), "sub": (m.group("sub") or "").strip(" .,-"), "price": m.group("price")}
@@ -844,9 +880,10 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                      "couple of minutes.\nSay _\"%s is back on\"_ when it returns." % (b["name"], b["name"]))
             reply += square_aside(b["name"], back=False)
         elif not reply and match_also(item, data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT):
-            side = match_also(item, also_list(data)); also_list(data).remove(side)
-            change = "also pouring: -%s" % side["name"]
-            reply = ":white_check_mark: *%s* is off the Also Pouring panel - the wall updates in a couple of minutes." % side["name"]
+            side = match_also(item, also_list(data)); set_flavors(side, [])
+            change = "also pouring: %s out" % side["name"]
+            reply = (":white_check_mark: *%s* is out - the panel now says _ask your bartender_. Say _\"%s is now <flavor>\"_ when the "
+                     "next one's on, or _\"remove %s from also pouring\"_ to take the whole row down." % (side["name"], side["name"].lower(), side["name"].lower()))
         elif not reply and match_flavor(item, also_list(data))[0]:
             row, fl = match_flavor(item, also_list(data))
             left = [f for f in _flavors(row) if f != fl]
@@ -1085,6 +1122,24 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         else:
             reply = ":grey_question: *%s* isn't a category on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join(x["name"] for x in lst))
 
+    elif action == "also_rm_row":
+        lst = also_list(data); row = match_also(item, lst)
+        if row:
+            lst.remove(row); change = "also pouring: -%s" % row["name"]
+            reply = ":white_check_mark: *%s* row is off the Also Pouring panel." % row["name"]
+        else:
+            reply = ":grey_question: *%s* isn't on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join(x["name"] for x in lst))
+
+    elif action == "also_flavor_swap" or (action == "also_replace" and not match_also(item, also_list(data)) and match_flavor(item, also_list(data))[0]):
+        lst = also_list(data); new = extra if isinstance(extra, str) else extra.get("new", "")
+        row, fl = match_flavor(item, lst)
+        if row:
+            set_flavors(row, [style_case(new) if f == fl else f for f in _flavors(row)])
+            change = "also pouring: %s %s -> %s" % (row["name"], fl, new)
+            reply = ":arrows_counterclockwise: %s now reads _%s_." % (row["name"], row["sub"])
+        else:
+            reply = ":grey_question: Couldn't find *%s* on the Also Pouring panel. It has: %s" % (item, " \u00b7 ".join("%s (%s)" % (x["name"], x.get("sub", "")) for x in lst))
+
     elif action == "also_replace":
         lst = also_list(data); row = match_also(item, lst)
         if row:
@@ -1110,6 +1165,15 @@ def handle_one(msg, data, queue, channel, action, item, extra):
                 reply = ":white_check_mark: *%s* allergen line cleared." % b["name"]
         else:
             reply = ":grey_question: Couldn't find *%s* on the tap list." % item
+
+    elif action == "price" and (extra > 20 or re.search(r"1/6|1/2|1/4|sixtel|half\s*bbl|half\s*barrel|\bkegs?\b|crowler|growler|pitcher|4\s*-?\s*p(?:ac)?k|case|wholesale", item + " " + msg.get("text", ""), re.I)):
+        # Oct 25 2026: "New Plattmosphere price for 1/6 is $90" set the wall's PINT price to $90
+        _b = match_beer(item, beers); _n = _b["name"] if _b else "<beer>"
+        reply = (":raised_hand: That reads like a keg / to-go / wholesale price, not a pint, so I didn't change the wall. "
+                 "For a pint: _\"%s is now $X\"_ \u00b7 10oz: _\"%s 10oz is now $X\"_" % (_n, _n))
+
+    elif action == "price10" and (extra > 15 or re.search(r"1/6|1/2|sixtel|\bkegs?\b|crowler|growler|pitcher", item, re.I)):
+        reply = ":raised_hand: $%.2f is more than a 10oz pour costs - I didn't change it. Say _\"<beer> 10oz is now $X\"_." % extra
 
     elif action == "price":
         b = match_beer(item, beers)
@@ -1150,17 +1214,33 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         elif match_beer(beer["name"], beers):
             reply = ":information_source: *%s* is already on the tap list." % beer["name"]
         else:
+            _t = SENT_USING_RE.sub("", msg.get("text", ""))
+            _p16 = re.search(r"\$\s*(\d{1,2}(?:\.\d{1,2})?)\s*(?:for\s+)?(?:a\s+)?(?:16\s*(?:oz|ounce)|pint)\b|(?:16\s*oz|pint)\s*(?:is|=|:|at)?\s*\$\s*(\d{1,2}(?:\.\d{1,2})?)", _t, re.I)
+            _p10 = re.search(r"\$\s*(\d{1,2}(?:\.\d{1,2})?)\s*(?:for\s+)?(?:a\s+)?10\s*(?:oz|ounce)\b|10\s*oz\s*(?:is|=|:|at)?\s*\$\s*(\d{1,2}(?:\.\d{1,2})?)", _t, re.I)
+            if _p16:
+                v = float(_p16.group(1) or _p16.group(2))
+                if 3 <= v <= 20: beer["price"] = v; assumed = [a for a in assumed if "price" not in a.lower()]
+            if _p10:
+                v = float(_p10.group(1) or _p10.group(2))
+                if 2 <= v <= 15: beer["price10"] = v
+            if beer.get("note"):     # whatever was price / tank talk is not a taste line
+                n = re.sub(r"\$\s*\d+(?:\.\d{1,2})?\s*(?:for\s+)?(?:a\s+)?\d+\s*(?:oz|ounce)\b|\d+(?:\.\d+)?\s*bbls?\s*(?:in\s+(?:a\s+)?\d+(?:\.\d+)?\s*bbls?)?|\b(?:16|10)\s*oz\s*\$\s*\d+(?:\.\d{1,2})?", "", beer["note"], flags=re.I)
+                n = re.sub(r"\s*[,;]\s*(?=[,;]|$)", "", n).strip(" ,;-\u2014")
+                if n: beer["note"] = n
+                else: beer.pop("note", None)
+            _lvl = read_level(_t, beer) if re.search(r"\d\s*bbl", _t, re.I) else ""
+            assumed = [a for a in assumed if not (_lvl and "full" in a.lower())]
             if re.search(r"\bguest\s+tap\b", msg.get("text", ""), re.I): beer["sash"] = "guest tap"; beer["guest"] = True
             beer["tappedAt"] = int(time.time() * 1000)   # the wall shows NEW on it for its first week
             beers.append(beer)
             change = "added " + beer["name"]
             reply = (":beer: *%s* is live on the board and the menu.\n"
                      "_%s \u00b7 %s%% \u00b7 $%.2f_%s\n\n"
-                     "I assumed: %s.\nReply here if any of that's wrong and Colby will fix it. "
+                     "%sReply here if any of that's wrong and Colby will fix it. "
                      "Make sure it has a POS button before service."
                      % (beer["name"], beer["style"], beer["abv"], beer["price"],
                         ("\n" + beer["note"]) if beer.get("note") else "",
-                        "; ".join(assumed)))
+                        ("I assumed: %s.\n" % "; ".join(assumed)) if assumed else ""))
 
     elif action == "add" and (match_beer(item, recent) or match_beer(item, beers)):
         # "re add tropical snow dance" / "add Oktoberfest back to the menu": it's a restore, not a new beer
