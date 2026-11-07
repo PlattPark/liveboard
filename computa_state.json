@@ -6,7 +6,7 @@
  },
  "started": "2026-11-07T07:07:06",
  "shadow": {
-  "mirror_at": 1794042283.071538,
+  "mirror_at": 1794042535.6444168,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794041623.7546742,
+  "sales_at": 1794042535.8625116,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-07T08:53:43+00:00",
+  "orders_since": "2026-11-07T09:08:55+00:00",
   "pitcher_oz": 0
  }
 }
