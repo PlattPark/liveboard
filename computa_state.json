@@ -1,48 +1,31 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794001636.704709",
-  "C0AQ68G7DRB": "1794000792.736299",
-  "C0CALA09Z35": "1793984582.212189"
+  "C0B3E5GF6UR": "1794015405.825968",
+  "C0AQ68G7DRB": "1794015405.825968",
+  "C0CALA09Z35": "1794015405.825968"
  },
- "started": "2026-11-06T14:36:02",
+ "started": "2026-11-07T01:36:45",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794015298.6642723,
-=======
-  "mirror_at": 1794015368.7920744,
->>>>>>> Stashed changes
+  "mirror_at": 1794015406.0179405,
   "map": {
-   "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
    "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
    "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
+   "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1794013535.538841,
-=======
-  "map_at": 1794015368.792084,
->>>>>>> Stashed changes
+  "map_at": 1794015406.0179527,
   "last": {
-   "Plattmosphere": false,
    "Platty Lite": false,
    "Astronaut Amber": false,
    "Tropical Snow Dance": false,
    "Nadare": false,
+   "Plattmosphere": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1794015017.3893995,
-=======
-  "sales_at": 1794015373.960502,
->>>>>>> Stashed changes
+  "sales_at": 1794015411.9807773,
   "ledger": {
-   "Plattmosphere": {
-    "base": "2026-10-19T18:10:29.035Z",
-    "oz": 0,
-    "pints": 0
-   },
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
     "oz": 0,
@@ -55,8 +38,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 208.0,
-    "pints": 13.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -65,13 +48,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 0,
+    "pints": 0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 160.0,
-    "pints": 10.0
+    "oz": 0,
+    "pints": 0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -80,13 +63,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 464.0,
-    "pints": 29.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 308.0,
-    "pints": 18.0
+    "oz": 0,
+    "pints": 0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -99,20 +82,7 @@
     "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-07T01:30:17+00:00",
-=======
-  "orders_since": "2026-11-07T01:36:13+00:00",
->>>>>>> Stashed changes
-  "pitcher_oz": 0,
-  "sales_posted": "2026-11-06"
- },
- "threads": {
-  "1794000792.736299": {
-   "channel": "C0AQ68G7DRB",
-   "last": "1794000792.736299",
-   "opened": 1794000810.5011244
-  }
- },
- "confirm": []
+  "orders_since": "2026-11-07T01:36:51+00:00",
+  "pitcher_oz": 0
+ }
 }
