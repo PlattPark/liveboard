@@ -6,7 +6,11 @@
  },
  "started": "2026-11-07T07:07:06",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1794094417.3019426,
+=======
+  "mirror_at": 1794094674.9710157,
+>>>>>>> Stashed changes
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -15,7 +19,11 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
+<<<<<<< Updated upstream
   "map_at": 1794092143.7837806,
+=======
+  "map_at": 1794094674.971026,
+>>>>>>> Stashed changes
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -24,7 +32,11 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1794093913.5521271,
+=======
+  "sales_at": 1794094680.0782218,
+>>>>>>> Stashed changes
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -48,8 +60,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
+<<<<<<< Updated upstream
     "oz": 144.0,
     "pints": 9.0
+=======
+    "oz": 160.0,
+    "pints": 10.0
+>>>>>>> Stashed changes
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -63,8 +80,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
+<<<<<<< Updated upstream
     "oz": 416.0,
     "pints": 26.0
+=======
+    "oz": 432.0,
+    "pints": 27.0
+>>>>>>> Stashed changes
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +104,11 @@
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-11-07T23:25:13+00:00",
+=======
+  "orders_since": "2026-11-07T23:38:00+00:00",
+>>>>>>> Stashed changes
   "pitcher_oz": 0,
   "sales_posted": "2026-11-07"
  }
