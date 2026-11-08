@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794106746.8047748,
+  "sales_at": 1794107675.4350538,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -63,8 +63,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 580.0,
-    "pints": 35.0
+    "oz": 660.0,
+    "pints": 40.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-08T02:59:06+00:00",
+  "orders_since": "2026-11-08T03:14:35+00:00",
   "pitcher_oz": 0
  }
 }
