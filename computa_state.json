@@ -6,7 +6,11 @@
  },
  "started": "2026-11-07T23:38:35",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1794173832.4669645,
+=======
+  "mirror_at": 1794174002.4998875,
+>>>>>>> Stashed changes
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -15,7 +19,11 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
+<<<<<<< Updated upstream
   "map_at": 1794170779.7484558,
+=======
+  "map_at": 1794174002.499898,
+>>>>>>> Stashed changes
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -24,7 +32,11 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1794173737.1532748,
+=======
+  "sales_at": 1794174008.1954565,
+>>>>>>> Stashed changes
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -38,8 +50,13 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
+<<<<<<< Updated upstream
     "oz": 442.0,
     "pints": 25.0
+=======
+    "oz": 506.0,
+    "pints": 29.0
+>>>>>>> Stashed changes
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +99,11 @@
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-11-08T21:35:37+00:00",
+=======
+  "orders_since": "2026-11-08T21:40:08+00:00",
+>>>>>>> Stashed changes
   "pitcher_oz": 0,
   "sales_posted": "2026-11-08"
  },
