@@ -1,12 +1,12 @@
 {
  "last_ts": {
   "C0B3E5GF6UR": "1794094715.561777",
-  "C0AQ68G7DRB": "1794094715.561777",
+  "C0AQ68G7DRB": "1794113121.781539",
   "C0CALA09Z35": "1794094715.561777"
  },
  "started": "2026-11-07T23:38:35",
  "shadow": {
-  "mirror_at": 1794112884.6284468,
+  "mirror_at": 1794113142.6953526,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -84,5 +84,6 @@
   },
   "orders_since": "2026-11-08T04:31:50+00:00",
   "pitcher_oz": 0
- }
+ },
+ "threads": {}
 }
