@@ -86,8 +86,9 @@ h1{font-family:Anton,Impact,sans-serif;font-size:clamp(30px,5vw,44px);letter-spa
 
   var isNitro = function(b){ return b.nitro === true || /nitro/i.test(b.style || ''); };
   var isNew = function(b){
-    if (b.tappedOn) { var d = (Date.now() - new Date(b.tappedOn).getTime()) / 864e5; return d >= 0 && d <= 3; }
-    return typeof b.tappedDaysAgo === 'number' && b.tappedDaysAgo <= 3;
+    // same rule as the wall: NEW for the first week after Computa stamps tappedAt
+    var t = b.tappedAt || b.tappedOn; if (!t) return false;
+    var d = (Date.now() - new Date(t).getTime()) / 864e5; return d >= 0 && d <= 7;
   };
   var isKicked = function(b){ return b.kicked === true || b.status === 'kicked' || b.status === 'sold out' || b.sold_out === true || b.off === true; };
   var isLast = function(b){ return b.lastKeg === true || b.last_keg === true || /last keg/i.test(b.sash || ''); };
