@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794312800.314701",
-  "C0AQ68G7DRB": "1794330016.175619",
-  "C0CALA09Z35": "1794331719.956749"
+  "C0B3E5GF6UR": "1794332610.239534",
+  "C0AQ68G7DRB": "1794332610.239534",
+  "C0CALA09Z35": "1794332610.239534"
  },
- "started": "2026-11-10T12:13:20",
+ "started": "2026-11-10T17:43:30",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794332369.758747,
-=======
-  "mirror_at": 1794332571.4139354,
->>>>>>> Stashed changes
+  "mirror_at": 1794332610.5259624,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -19,11 +15,7 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1794331858.5200932,
-=======
-  "map_at": 1794332571.413943,
->>>>>>> Stashed changes
+  "map_at": 1794332610.5259714,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -32,11 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1794332149.815625,
-=======
-  "sales_at": 1794332578.175714,
->>>>>>> Stashed changes
+  "sales_at": 1794332618.0836244,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -87,42 +75,10 @@
     "base": "2026-10-25T07:25:24+00:00",
     "oz": 0,
     "pints": 0
-   },
-   "Half Acre Waybird": {
-    "base": "2026-11-06T17:03:03+00:00",
-    "oz": 0,
-    "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-10T17:35:49+00:00",
-=======
-  "orders_since": "2026-11-10T17:42:58+00:00",
->>>>>>> Stashed changes
+  "orders_since": "2026-11-10T17:43:38+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-10"
- },
- "threads": {
-  "1794330016.175619": {
-   "channel": "C0AQ68G7DRB",
-   "last": "1794330016.175619",
-<<<<<<< Updated upstream
-   "opened": 1794330031.5404088
-=======
-   "opened": 1794332570.9429862
->>>>>>> Stashed changes
-  },
-  "1794331719.956749": {
-   "channel": "C0CALA09Z35",
-   "last": "1794331719.956749",
-<<<<<<< Updated upstream
-   "opened": 1794331723.6422293
-  }
- },
- "confirm": []
-=======
-   "opened": 1794332571.1435182
-  }
  }
->>>>>>> Stashed changes
 }
