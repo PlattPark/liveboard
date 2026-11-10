@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794285595.3898408,
+  "sales_at": 1794286521.3423371,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -38,8 +38,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 112.0,
+    "pints": 7.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -48,13 +48,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-10T04:39:55+00:00",
+  "orders_since": "2026-11-10T04:55:21+00:00",
   "pitcher_oz": 0
  },
  "threads": {}
