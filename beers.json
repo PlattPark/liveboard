@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-12T19:20:56+00:00",
- "updatedBy": "Verboten Stealth Haze -> Hazy IPA; Verboten Stealth Haze note line",
+ "updated": "2026-11-12T20:12:34+00:00",
+ "updatedBy": "Platty Lite 10oz $4.75; Witbier 10oz $5.50; Nadare 10oz $5.50; Astronaut Amber 10oz $5.50; Chela Morena 10oz $5.50; Phaded 10oz $5.50; Grandma's Pumpkin Pie 10oz $6.00; Madagascar Dream 10oz $6.00; Tropical Snow Dance 10oz $6.25; Nutorious 10oz $6.25; Verboten Stealth Haze 10oz $6.25",
  "beers": [
   {
    "id": "platty-lite",
@@ -236,7 +236,7 @@
    "style": "Hazy IPA",
    "abv": 6.4,
    "price": 8.5,
-   "price10": 5.25,
+   "price10": 6.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
    "remainingOz": 1984,
