@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794451538.874808",
-  "C0AQ68G7DRB": "1794451538.874808",
-  "C0CALA09Z35": "1794451538.874808"
+  "C0B3E5GF6UR": "1794471365.752621",
+  "C0AQ68G7DRB": "1794471365.752621",
+  "C0CALA09Z35": "1794471365.752621"
  },
- "started": "2026-11-12T02:45:38",
+ "started": "2026-11-12T08:16:05",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794471100.3844385,
-=======
-  "mirror_at": 1794471327.7829227,
->>>>>>> Stashed changes
+  "mirror_at": 1794471366.0422006,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -19,11 +15,7 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1794470585.1497169,
-=======
-  "map_at": 1794471327.782932,
->>>>>>> Stashed changes
+  "map_at": 1794471366.0422103,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -32,11 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1794470880.5796714,
-=======
-  "sales_at": 1794471333.5843728,
->>>>>>> Stashed changes
+  "sales_at": 1794471373.076901,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -50,8 +38,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -60,8 +48,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 48.0,
-    "pints": 3.0
+    "oz": 0,
+    "pints": 0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -75,13 +63,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 128.0,
-    "pints": 8.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 128.0,
-    "pints": 8.0
+    "oz": 0,
+    "pints": 0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -89,11 +77,7 @@
     "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-12T08:08:00+00:00",
-=======
-  "orders_since": "2026-11-12T08:15:33+00:00",
->>>>>>> Stashed changes
+  "orders_since": "2026-11-12T08:16:13+00:00",
   "pitcher_oz": 0
  }
 }
