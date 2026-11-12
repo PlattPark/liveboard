@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-12T19:16:21+00:00",
- "updatedBy": "Verboten Stealth Haze 10oz $5.25; Verboten Stealth Haze level; Verboten Stealth Haze wall line; Verboten Stealth Haze note line",
+ "updated": "2026-11-12T19:20:56+00:00",
+ "updatedBy": "Verboten Stealth Haze -> Hazy IPA; Verboten Stealth Haze note line",
  "beers": [
   {
    "id": "platty-lite",
@@ -233,7 +233,7 @@
   {
    "id": "verboten-stealth-haze",
    "name": "Verboten Stealth Haze",
-   "style": "Hazy Ipa",
+   "style": "Hazy IPA",
    "abv": 6.4,
    "price": 8.5,
    "price10": 5.25,
@@ -244,7 +244,7 @@
    "color": "#d9a83c",
    "colorTop": "#efc76a",
    "rating": 0,
-   "note": "El Dorado, Mosaic &amp; Citra",
+   "note": "El Dorado, Mosaic and Citra",
    "sash": "guest tap",
    "guest": true,
    "tappedAt": 1794509988943,
