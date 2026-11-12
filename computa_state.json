@@ -1,12 +1,21 @@
 {
  "last_ts": {
+<<<<<<< Updated upstream
   "C0B3E5GF6UR": "1794491198.563583",
   "C0AQ68G7DRB": "1794491198.563583",
+=======
+  "C0B3E5GF6UR": "1794471365.752621",
+  "C0AQ68G7DRB": "1794471365.752621",
+>>>>>>> Stashed changes
   "C0CALA09Z35": "1794510000.549559"
  },
  "started": "2026-11-12T13:46:38",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1794510715.7362552,
+=======
+  "mirror_at": 1794510983.8310773,
+>>>>>>> Stashed changes
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -15,7 +24,11 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
+<<<<<<< Updated upstream
   "map_at": 1794510189.6681468,
+=======
+  "map_at": 1794510983.8310869,
+>>>>>>> Stashed changes
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -24,7 +37,11 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1794510521.4989007,
+=======
+  "sales_at": 1794510991.086377,
+>>>>>>> Stashed changes
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -77,26 +94,59 @@
     "pints": 0
    },
    "Verboten Stealth Haze": {
+<<<<<<< Updated upstream
     "base": "2026-11-12T19:00:24+00:00",
+=======
+    "base": "2026-11-12T19:16:21+00:00",
+>>>>>>> Stashed changes
     "oz": 0,
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-11-12T19:08:41+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-12"
+=======
+  "orders_since": "2026-11-12T19:16:31+00:00",
+  "pitcher_oz": 0
+>>>>>>> Stashed changes
  },
  "threads": {
   "1794509976.566899": {
    "channel": "C0CALA09Z35",
    "last": "1794509976.566899",
+<<<<<<< Updated upstream
    "opened": 1794509990.4383488
+=======
+   "opened": 1794510983.1972082
+>>>>>>> Stashed changes
   },
   "1794510000.549559": {
    "channel": "C0CALA09Z35",
    "last": "1794510000.549559",
+<<<<<<< Updated upstream
    "opened": 1794510025.8320856
   }
  },
  "confirm": []
+=======
+   "opened": 1794510983.3997395
+  }
+ },
+ "confirm": [
+  {
+   "channel": "C0CALA09Z35",
+   "ts": "1794509976.566899",
+   "stamp": "2026-11-12T19:16:21+00:00",
+   "at": 1794510983.197212
+  },
+  {
+   "channel": "C0CALA09Z35",
+   "ts": "1794510000.549559",
+   "stamp": "2026-11-12T19:16:21+00:00",
+   "at": 1794510983.3997443
+  }
+ ]
+>>>>>>> Stashed changes
 }
