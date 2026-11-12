@@ -291,6 +291,12 @@ function renderAlso(list){
   var side = document.getElementById('side'); if(!side) return;
   var fp = JSON.stringify(list); if(fp === _alsoFp) return; _alsoFp = fp;
   var esc = function(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  // Nov 2026: ciders always sit together - every cider row moves up to sit right after the first one,
+  // whatever order the crew added them in. Everything else keeps its order.
+  (function(){ var isC=function(it){ return /cider/i.test(it&&it.name||''); }; var firstC=-1;
+    for(var i=0;i<list.length;i++){ if(isC(list[i])){ firstC=i; break; } }
+    if(firstC>=0){ var ciders=list.filter(isC), rest=list.filter(function(it){ return !isC(it); });
+      list = rest.slice(0, firstC).concat(ciders, rest.slice(firstC)); } })();
   var html = '<div class="side-h">Also pouring</div>';
   list.forEach(function(it){
     var sub = esc(it.sub||'').replace(/\s*\u00b7\s*/g, ' &middot; ');
