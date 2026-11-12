@@ -6,7 +6,11 @@
  },
  "started": "2026-11-11T21:15:15",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1794451424.5356603,
+=======
+  "mirror_at": 1794451495.0493267,
+>>>>>>> Stashed changes
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -15,7 +19,11 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
+<<<<<<< Updated upstream
   "map_at": 1794450426.0011213,
+=======
+  "map_at": 1794451495.0493364,
+>>>>>>> Stashed changes
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -24,7 +32,11 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
+<<<<<<< Updated upstream
   "sales_at": 1794450710.2351196,
+=======
+  "sales_at": 1794451502.1463993,
+>>>>>>> Stashed changes
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -38,8 +50,13 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
+<<<<<<< Updated upstream
     "oz": 160.0,
     "pints": 8.0
+=======
+    "oz": 176.0,
+    "pints": 9.0
+>>>>>>> Stashed changes
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -63,8 +80,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
+<<<<<<< Updated upstream
     "oz": 330.0,
     "pints": 20.0
+=======
+    "oz": 410.0,
+    "pints": 25.0
+>>>>>>> Stashed changes
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -77,7 +99,12 @@
     "pints": 0
    }
   },
+<<<<<<< Updated upstream
   "orders_since": "2026-11-12T02:31:50+00:00",
   "pitcher_oz": 576.0
+=======
+  "orders_since": "2026-11-12T02:45:02+00:00",
+  "pitcher_oz": 608.0
+>>>>>>> Stashed changes
  }
 }
