@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794525823.445349,
+  "sales_at": 1794526747.5552313,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -38,8 +38,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 128.0,
+    "pints": 8.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-12T23:23:43+00:00",
+  "orders_since": "2026-11-12T23:39:07+00:00",
   "pitcher_oz": 0
  },
  "threads": {
