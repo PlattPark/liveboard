@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794570481.965460",
-  "C0AQ68G7DRB": "1794570481.965460",
-  "C0CALA09Z35": "1794570481.965460"
+  "C0B3E5GF6UR": "1794590310.006977",
+  "C0AQ68G7DRB": "1794590310.006977",
+  "C0CALA09Z35": "1794590310.006977"
  },
- "started": "2026-11-13T11:48:01",
+ "started": "2026-11-13T17:18:30",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794590044.4622922,
-=======
-  "mirror_at": 1794590272.6278005,
->>>>>>> Stashed changes
+  "mirror_at": 1794590310.204618,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -19,11 +15,7 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1794589528.2730737,
-=======
-  "map_at": 1794590272.6278083,
->>>>>>> Stashed changes
+  "map_at": 1794590310.204626,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -32,11 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1794589825.035714,
-=======
-  "sales_at": 1794590278.1597733,
->>>>>>> Stashed changes
+  "sales_at": 1794590316.5175004,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -94,11 +82,7 @@
     "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-13T17:10:25+00:00",
-=======
-  "orders_since": "2026-11-13T17:17:58+00:00",
->>>>>>> Stashed changes
+  "orders_since": "2026-11-13T17:18:36+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-13"
  }
