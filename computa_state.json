@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794612863.4783542,
+  "sales_at": 1794613773.7518494,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -68,8 +68,8 @@
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-13T23:34:23+00:00",
+  "orders_since": "2026-11-13T23:49:33+00:00",
   "pitcher_oz": 0
  }
 }
