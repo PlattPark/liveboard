@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-13T19:58:04+00:00",
- "updatedBy": "Chela Morena last keg",
+ "updated": "2026-11-14T01:08:28+00:00",
+ "updatedBy": "86 Chela Morena",
  "beers": [
   {
    "id": "platty-lite",
@@ -29,26 +29,6 @@
     }
    ],
    "levelAt": "2026-10-19T18:10:29.035Z"
-  },
-  {
-   "id": "chela",
-   "name": "Chela Morena",
-   "style": "Mexican Dark Lager",
-   "abv": 4.9,
-   "price10": 5.5,
-   "price": 7.5,
-   "rating": 3.74,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "color": "#6e4a2a",
-   "colorTop": "#8a5f38",
-   "remainingOz": 1091,
-   "tappedDaysAgo": 0,
-   "note": "the dark one that drinks light",
-   "wall": "Mexican Dark Lager",
-   "pick": true,
-   "levelAt": "2026-10-20T21:04:34+00:00",
-   "sash": "last keg"
   },
   {
    "id": "astronaut-amber",
@@ -254,6 +234,27 @@
   }
  ],
  "recent": [
+  {
+   "id": "chela",
+   "name": "Chela Morena",
+   "style": "Mexican Dark Lager",
+   "abv": 4.9,
+   "price10": 5.5,
+   "price": 7.5,
+   "rating": 3.74,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "color": "#6e4a2a",
+   "colorTop": "#8a5f38",
+   "remainingOz": 1091,
+   "tappedDaysAgo": 0,
+   "note": "the dark one that drinks light",
+   "wall": "Mexican Dark Lager",
+   "pick": true,
+   "levelAt": "2026-10-20T21:04:34+00:00",
+   "sash": "last keg",
+   "offSince": "2026-11-14"
+  },
   {
    "id": "half-acre-waybird",
    "name": "Half Acre Waybird",
