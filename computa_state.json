@@ -6,7 +6,11 @@
  },
  "started": "2026-11-13T22:48:38",
  "shadow": {
+<<<<<<< Updated upstream
   "mirror_at": 1794669421.8778915,
+=======
+  "mirror_at": 1794669524.3503356,
+>>>>>>> Stashed changes
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
