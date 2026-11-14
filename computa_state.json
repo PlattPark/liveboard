@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794693422.3116841,
+  "sales_at": 1794694329.2735553,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -43,8 +43,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 96.0,
-    "pints": 6.0
+    "oz": 144.0,
+    "pints": 9.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -58,8 +58,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 410.0,
-    "pints": 25.0
+    "oz": 442.0,
+    "pints": 27.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -77,7 +77,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-14T21:57:02+00:00",
+  "orders_since": "2026-11-14T22:12:09+00:00",
   "pitcher_oz": 0,
   "sales_posted": "2026-11-14"
  }
