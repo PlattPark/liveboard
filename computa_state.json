@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794610118.253803",
-  "C0AQ68G7DRB": "1794638749.778679",
-  "C0CALA09Z35": "1794610118.253803"
+  "C0B3E5GF6UR": "1794669556.560147",
+  "C0AQ68G7DRB": "1794669556.560147",
+  "C0CALA09Z35": "1794669556.560147"
  },
- "started": "2026-11-13T22:48:38",
+ "started": "2026-11-14T15:19:16",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794669421.8778915,
-=======
-  "mirror_at": 1794669524.3503356,
->>>>>>> Stashed changes
+  "mirror_at": 1794669556.9548607,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -19,7 +15,7 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-  "map_at": 1794666683.7387953,
+  "map_at": 1794669556.9548738,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -28,22 +24,17 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794668679.5617948,
+  "sales_at": 1794669563.3333957,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
     "oz": 0,
     "pints": 0
    },
-   "Chela Morena": {
-    "base": "2026-10-20T21:04:34+00:00",
-    "oz": 0,
-    "pints": 0
-   },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 298.0,
-    "pints": 18.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -52,13 +43,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 352.0,
-    "pints": 22.0
+    "oz": 0,
+    "pints": 0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 256.0,
-    "pints": 16.0
+    "oz": 0,
+    "pints": 0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -67,13 +58,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 730.0,
-    "pints": 45.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 522.0,
-    "pints": 32.0
+    "oz": 0,
+    "pints": 0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -86,9 +77,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-14T15:04:39+00:00",
+  "orders_since": "2026-11-14T15:19:23+00:00",
   "pitcher_oz": 0
- },
- "threads": {},
- "confirm": []
+ }
 }
