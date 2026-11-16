@@ -1,16 +1,12 @@
 {
  "last_ts": {
-  "C0B3E5GF6UR": "1794847994.028929",
-  "C0AQ68G7DRB": "1794854084.754309",
-  "C0CALA09Z35": "1794847994.028929"
+  "C0B3E5GF6UR": "1794867819.301790",
+  "C0AQ68G7DRB": "1794867819.301790",
+  "C0CALA09Z35": "1794867819.301790"
  },
- "started": "2026-11-16T16:53:14",
+ "started": "2026-11-16T22:23:39",
  "shadow": {
-<<<<<<< Updated upstream
-  "mirror_at": 1794867617.3808854,
-=======
-  "mirror_at": 1794867782.9330873,
->>>>>>> Stashed changes
+  "mirror_at": 1794867819.5334444,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -19,11 +15,7 @@
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
    "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
   },
-<<<<<<< Updated upstream
-  "map_at": 1794866622.8574638,
-=======
-  "map_at": 1794867782.9330962,
->>>>>>> Stashed changes
+  "map_at": 1794867819.5334554,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -32,11 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-<<<<<<< Updated upstream
-  "sales_at": 1794867217.0227191,
-=======
-  "sales_at": 1794867787.0488217,
->>>>>>> Stashed changes
+  "sales_at": 1794867824.0372667,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -45,8 +33,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 26.0,
-    "pints": 1.0
+    "oz": 0,
+    "pints": 0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -60,8 +48,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 0,
+    "pints": 0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -70,8 +58,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 0,
+    "pints": 0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -89,13 +77,7 @@
     "pints": 0
    }
   },
-<<<<<<< Updated upstream
-  "orders_since": "2026-11-16T22:13:37+00:00",
-=======
-  "orders_since": "2026-11-16T22:23:07+00:00",
->>>>>>> Stashed changes
-  "pitcher_oz": 0,
-  "sales_posted": "2026-11-16"
- },
- "threads": {}
+  "orders_since": "2026-11-16T22:23:44+00:00",
+  "pitcher_oz": 0
+ }
 }
