@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-16T00:14:28+00:00",
- "updatedBy": "86 Verboten Stealth Haze",
+ "updated": "2026-11-16T00:16:04+00:00",
+ "updatedBy": "Half Acre Waybird back on",
  "beers": [
   {
    "id": "platty-lite",
@@ -210,6 +210,27 @@
    "note": "our pale ale",
    "tappedAt": 1792865500378,
    "levelAt": "2026-10-25T07:25:24+00:00"
+  },
+  {
+   "id": "half-acre-waybird",
+   "name": "Half Acre Waybird",
+   "style": "Hazy Ipa",
+   "abv": 6.5,
+   "price": 8.5,
+   "price10": 5.25,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#e08a2b",
+   "colorTop": "#f0aa55",
+   "rating": 0,
+   "note": "papaya, mango, citrus",
+   "sash": "guest tap",
+   "guest": true,
+   "tappedAt": 1793984486629,
+   "levelAt": "2026-11-06T17:03:03+00:00",
+   "wall": "Hazy IPA · guest tap · Chicago"
   }
  ],
  "recent": [
@@ -255,28 +276,6 @@
    "levelAt": "2026-10-20T21:04:34+00:00",
    "sash": "last keg",
    "offSince": "2026-11-14"
-  },
-  {
-   "id": "half-acre-waybird",
-   "name": "Half Acre Waybird",
-   "style": "Hazy Ipa",
-   "abv": 6.5,
-   "price": 8.5,
-   "price10": 5.25,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "remainingOz": 1984,
-   "tappedDaysAgo": 0,
-   "color": "#e08a2b",
-   "colorTop": "#f0aa55",
-   "rating": 0,
-   "note": "papaya, mango, citrus",
-   "sash": "guest tap",
-   "guest": true,
-   "tappedAt": 1793984486629,
-   "levelAt": "2026-11-06T17:03:03+00:00",
-   "wall": "Hazy IPA · guest tap · Chicago",
-   "offSince": "2026-11-10"
   },
   {
    "id": "plattmosphere",
