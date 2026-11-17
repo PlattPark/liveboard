@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-16T00:16:04+00:00",
- "updatedBy": "Half Acre Waybird back on",
+ "updated": "2026-11-17T18:32:27+00:00",
+ "updatedBy": "Plattmosphere back on",
  "beers": [
   {
    "id": "platty-lite",
@@ -231,6 +231,33 @@
    "tappedAt": 1793984486629,
    "levelAt": "2026-11-06T17:03:03+00:00",
    "wall": "Hazy IPA · guest tap · Chicago"
+  },
+  {
+   "id": "plattmosphere",
+   "name": "Plattmosphere",
+   "style": "Hazy IPA",
+   "abv": 6.9,
+   "price10": 5.25,
+   "price": 8.5,
+   "rating": 3.82,
+   "vessel": "tank20",
+   "vesselLabel": "20 BBL",
+   "tall": true,
+   "color": "#d9a83c",
+   "colorTop": "#efc76a",
+   "remainingOz": 7936,
+   "tappedDaysAgo": 0,
+   "note": "the flagship hazy",
+   "wall": "Hazy IPA · the flagship",
+   "medals": [
+    {
+     "comp": "State Fair",
+     "level": "silver",
+     "year": 2026,
+     "show": "wall"
+    }
+   ],
+   "levelAt": "2026-11-17T18:32:27+00:00"
   }
  ],
  "recent": [
@@ -276,34 +303,6 @@
    "levelAt": "2026-10-20T21:04:34+00:00",
    "sash": "last keg",
    "offSince": "2026-11-14"
-  },
-  {
-   "id": "plattmosphere",
-   "name": "Plattmosphere",
-   "style": "Hazy IPA",
-   "abv": 6.9,
-   "price10": 5.25,
-   "price": 8.5,
-   "rating": 3.82,
-   "vessel": "tank20",
-   "vesselLabel": "20 BBL",
-   "tall": true,
-   "color": "#d9a83c",
-   "colorTop": "#efc76a",
-   "remainingOz": 26188,
-   "tappedDaysAgo": 0,
-   "note": "the flagship hazy",
-   "wall": "Hazy IPA · the flagship",
-   "medals": [
-    {
-     "comp": "State Fair",
-     "level": "silver",
-     "year": 2026,
-     "show": "wall"
-    }
-   ],
-   "levelAt": "2026-10-19T18:10:29.035Z",
-   "offSince": "2026-11-06"
   },
   {
    "id": "my-dude",
