@@ -30,8 +30,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 48.0,
-    "pints": 3.0
+    "oz": 64.0,
+    "pints": 4.0
    },
    "Nutorious": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -40,8 +40,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -55,13 +55,13 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Phaded": {
     "base": "2026-10-25T07:25:24+00:00",
@@ -79,8 +79,8 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-18T23:11:52+00:00",
-  "pitcher_oz": 160.0
+  "orders_since": "2026-11-18T23:42:23+00:00",
+  "pitcher_oz": 192.0
  },
  "threads": {
   "1795043724.529389": {
