@@ -6,7 +6,7 @@
  },
  "started": "2026-11-17T20:25:21",
  "shadow": {
-  "mirror_at": 1794974247.9797912,
+  "mirror_at": 1794974495.019914,
   "map": {
    "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
    "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
@@ -24,7 +24,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "sales_at": 1794973593.9933426,
+  "sales_at": 1794974495.2147145,
   "ledger": {
    "Platty Lite": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -48,8 +48,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 80.0,
-    "pints": 5.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -58,8 +58,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 386.0,
-    "pints": 21.0
+    "oz": 418.0,
+    "pints": 23.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -82,7 +82,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-18T03:46:33+00:00",
+  "orders_since": "2026-11-18T04:01:35+00:00",
   "pitcher_oz": 0
  }
 }
