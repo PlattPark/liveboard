@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-11-18T18:34Z from src @ b61ce51 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-18T20:09Z from src @ f9ad85b - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -696,16 +696,20 @@ const SIM={beers:[
    What's pouring lives in beers.json, not in this file.
 
    On boot we load it synchronously so the board renders the real list
-   immediately. Every 60s we re-check; if the file changed, the page
-   reloads. A reload on a wall display is invisible and it's bulletproof
-   — no half-rendered tanks.
+   immediately. Every 20s we re-check; if the file changed (and looks the
+   same on the next check too), the page reloads. A reload on a wall
+   display is invisible and it's bulletproof — no half-rendered tanks.
 
    If beers.json is missing or the network is down, the list compiled
    into this file below is used instead, so the board never goes blank.
 
    >> EDIT beers.json TO CHANGE WHAT'S POURING. Never edit this file. */
 const FALLBACK_BEERS = SIM.beers.slice();
-let _tapFp = null;   // fingerprint of the beer list we booted with
+let _tapFp = null;   // fingerprint of the beers.json we booted with
+// One fingerprint of the file's text, used at boot and by the 20-second check. Until Nov 2026 the two were computed
+// differently and the check threw before it ever compared them, so it never fired: the wall only picked up tap
+// changes because it happened to be reloading every few minutes for another reason (see 3-qol.js).
+function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++){ h = ((h << 5) + h + text.charCodeAt(i)) | 0; } return text.length + ':' + h; }
 
 (function bootTaps(){
   try{
@@ -719,7 +723,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
         d.beers.forEach(function(b){
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
-        _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
+        _tapFp     = tapFingerprint(x.responseText);
         SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null;
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
@@ -778,25 +782,36 @@ function renderAlso(list){
   side.innerHTML = html;
 }
 
+let _tapSeen = null;   // a changed file has to look the same on two checks in a row before the wall acts on it
 async function checkTaps(){
   try{
     const r = await fetch('beers.json?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) return;
-    const d = await r.json();
+    const txt = await r.text();
+    const d = JSON.parse(txt);
     if(!d || !Array.isArray(d.beers) || !d.beers.length) return;
-    const fp = (await r.clone().text()).length + ':' + JSON.stringify(d.beers).length;
+    const fp = tapFingerprint(txt);
     if(_tapFp && fp !== _tapFp){
+      if(fp !== _tapSeen){ _tapSeen = fp; return; }   // first sighting (or a half-published site): confirm in 20s
       console.log('[taps] change detected — reloading');
-      location.reload();
+      reloadSafely('taps changed'); return;
     }
+    _tapSeen = null;
     // booted on fallback, file now reachable: adopt it
-    if(!_tapFp){ console.log('[taps] beers.json now reachable — reloading'); location.reload(); }
+    if(!_tapFp){ console.log('[taps] beers.json now reachable — reloading'); reloadSafely('taps reachable'); }
   }catch(e){ /* offline: keep showing what we have */ }
 }
 setInterval(checkTaps, 20000);
 
+// Every reload goes through __safeReload (3-qol.js): it fetches the page first and only reloads if that worked,
+// so the wall is never reloaded into a network outage (which leaves the TV on the browser's "no internet" page).
+function reloadSafely(why){ if(window.__safeReload) window.__safeReload(why); else location.reload(); }
+
+// Daily refresh while closed. It keeps asking through the 3 o'clock hour until one reload succeeds, so a
+// network blip at 3:00 exactly doesn't cost the wall its fresh start for the day.
+const _bootAt = Date.now();
 setInterval(function(){ var n=new Date();
-  if(n.getHours()===3 && n.getMinutes()===0) location.reload(true);
+  if(n.getHours()===3 && Date.now()-_bootAt > 3600000) reloadSafely('3am refresh');
 }, 60000);
 
 
@@ -1055,19 +1070,47 @@ html, body, body *{cursor:none !important}
 </script>
 
 <script id="qol">
-window.__BUILD='2026-09-11.2845';
+window.__BUILD='2026-11-18.stamp';
 (function(){
-  var T0=Date.now();
-  function checkUpdate(){
-    // ask only for headers - GitHub Pages sends an ETag - and reload when it changes.
-    // ~200 bytes per check instead of the whole page.
-    try{ fetch(location.href,{method:'HEAD',cache:'no-store'}).then(r=>{
-      var tag=r.headers.get('etag')||r.headers.get('last-modified'); if(!tag) return;
-      if(!window.__pageTag){ window.__pageTag=tag; return; }
-      if(tag!==window.__pageTag){ location.reload(); }
-    }).catch(function(){}); }catch(e){}
-    if(Date.now()-T0>20*3600*1000) location.reload();   // never run a page longer than a day
+  /* WHEN THE WALL RELOADS (Nov 2026)
+     It used to watch the page's ETag. GitHub re-stamps every file's ETag on every publish, and Computa's
+     state commits publish the site hundreds of times a day - so the TV reloaded every few minutes, and any
+     reload that landed on a network blip left it on the browser's "no internet" page until someone walked over.
+     Now: (1) it watches the build stamp tools/board.py writes into the first line of the page, which only
+     changes when the board itself is rebuilt, and (2) no reload happens until the page it is about to load
+     has been fetched whole. If that fetch fails the wall stays exactly as it is and tries again later. */
+  var T0=Date.now(), busy=false;
+  function stampOf(t){ var m=/<!--\s*built\s+(.+?)\s+-\s+GENERATED/.exec(t||''); return m?m[1]:''; }
+  var mine=(function(){ for(var n=document.firstChild;n;n=n.nextSibling){ if(n.nodeType===8){ var s=stampOf('<!--'+n.data+'-->'); if(s) return s; } } return ''; })();
+  window.__stamp=mine;
+  function page(opts){ return fetch(location.pathname, opts).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }); }
+  // want: the build stamp the new page must carry ('' = any complete page will do)
+  function lastReload(v){ try{ if(v) sessionStorage.setItem('ppb_reloaded', String(v)); return +sessionStorage.getItem('ppb_reloaded')||0; }catch(e){ return 0; } }
+  function safeReload(why, want){
+    if(busy) return;
+    if(Date.now()-lastReload()<90000) return;      // never more than one reload in 90s, whatever asks: no reload loops
+    busy=true;
+    page({cache:'reload'}).then(function(html){
+      if(html.length<20000 || html.indexOf('</html>')<0) throw new Error('page came back incomplete');
+      if(want && stampOf(html.slice(0,400))!==want) throw new Error('not published everywhere yet');
+      console.log('[update] '+why+' - reloading'); setTimeout(function(){ busy=false; }, 60000);
+      lastReload(Date.now()); location.reload();
+    }).catch(function(e){ busy=false; console.warn('[update] '+why+' - not reloading yet ('+(e&&e.message)+')'); });
   }
+  window.__safeReload=safeReload;
+  function checkUpdate(){
+    if(Date.now()-T0>26*3600*1000){ safeReload('26h refresh'); return; }   // backstop: the 3am refresh (0-app.js) never got through
+    if(busy) return;
+    // the stamp is in the first line: ask for the first 400 bytes, and fall back to the whole page if the range is ignored oddly
+    page({cache:'no-store', headers:{Range:'bytes=0-399'}}).then(function(t){
+      return stampOf(t) ? t : page({cache:'no-store'});
+    }).then(function(t){
+      var s=stampOf(t.slice(0,400)); if(!s) return;
+      if(!mine){ mine=window.__stamp=s; return; }
+      if(s!==mine) safeReload('new build '+s, s);
+    }).catch(function(){});
+  }
+  window.__checkUpdate=checkUpdate;
   setInterval(checkUpdate,5*60*1000);
 })();
 // ---- real weather via Open-Meteo (keyless), hourly ----
