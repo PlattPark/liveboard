@@ -1,17 +1,45 @@
 
-window.__BUILD='2026-09-11.2845';
+window.__BUILD='2026-11-18.stamp';
 (function(){
-  var T0=Date.now();
-  function checkUpdate(){
-    // ask only for headers - GitHub Pages sends an ETag - and reload when it changes.
-    // ~200 bytes per check instead of the whole page.
-    try{ fetch(location.href,{method:'HEAD',cache:'no-store'}).then(r=>{
-      var tag=r.headers.get('etag')||r.headers.get('last-modified'); if(!tag) return;
-      if(!window.__pageTag){ window.__pageTag=tag; return; }
-      if(tag!==window.__pageTag){ location.reload(); }
-    }).catch(function(){}); }catch(e){}
-    if(Date.now()-T0>20*3600*1000) location.reload();   // never run a page longer than a day
+  /* WHEN THE WALL RELOADS (Nov 2026)
+     It used to watch the page's ETag. GitHub re-stamps every file's ETag on every publish, and Computa's
+     state commits publish the site hundreds of times a day - so the TV reloaded every few minutes, and any
+     reload that landed on a network blip left it on the browser's "no internet" page until someone walked over.
+     Now: (1) it watches the build stamp tools/board.py writes into the first line of the page, which only
+     changes when the board itself is rebuilt, and (2) no reload happens until the page it is about to load
+     has been fetched whole. If that fetch fails the wall stays exactly as it is and tries again later. */
+  var T0=Date.now(), busy=false;
+  function stampOf(t){ var m=/<!--\s*built\s+(.+?)\s+-\s+GENERATED/.exec(t||''); return m?m[1]:''; }
+  var mine=(function(){ for(var n=document.firstChild;n;n=n.nextSibling){ if(n.nodeType===8){ var s=stampOf('<!--'+n.data+'-->'); if(s) return s; } } return ''; })();
+  window.__stamp=mine;
+  function page(opts){ return fetch(location.pathname, opts).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }); }
+  // want: the build stamp the new page must carry ('' = any complete page will do)
+  function lastReload(v){ try{ if(v) sessionStorage.setItem('ppb_reloaded', String(v)); return +sessionStorage.getItem('ppb_reloaded')||0; }catch(e){ return 0; } }
+  function safeReload(why, want){
+    if(busy) return;
+    if(Date.now()-lastReload()<90000) return;      // never more than one reload in 90s, whatever asks: no reload loops
+    busy=true;
+    page({cache:'reload'}).then(function(html){
+      if(html.length<20000 || html.indexOf('</html>')<0) throw new Error('page came back incomplete');
+      if(want && stampOf(html.slice(0,400))!==want) throw new Error('not published everywhere yet');
+      console.log('[update] '+why+' - reloading'); setTimeout(function(){ busy=false; }, 60000);
+      lastReload(Date.now()); location.reload();
+    }).catch(function(e){ busy=false; console.warn('[update] '+why+' - not reloading yet ('+(e&&e.message)+')'); });
   }
+  window.__safeReload=safeReload;
+  function checkUpdate(){
+    if(Date.now()-T0>26*3600*1000){ safeReload('26h refresh'); return; }   // backstop: the 3am refresh (0-app.js) never got through
+    if(busy) return;
+    // the stamp is in the first line: ask for the first 400 bytes, and fall back to the whole page if the range is ignored oddly
+    page({cache:'no-store', headers:{Range:'bytes=0-399'}}).then(function(t){
+      return stampOf(t) ? t : page({cache:'no-store'});
+    }).then(function(t){
+      var s=stampOf(t.slice(0,400)); if(!s) return;
+      if(!mine){ mine=window.__stamp=s; return; }
+      if(s!==mine) safeReload('new build '+s, s);
+    }).catch(function(){});
+  }
+  window.__checkUpdate=checkUpdate;
   setInterval(checkUpdate,5*60*1000);
 })();
 // ---- real weather via Open-Meteo (keyless), hourly ----

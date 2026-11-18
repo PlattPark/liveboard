@@ -70,6 +70,11 @@ ON_CALL = "U0AQDQ7JH5G"            # Christian: gets a DM when Computa breaks, a
 REPO       = "PlattPark/liveboard"
 BEERS_PATH = "beers.json"
 STATE_PATH = "computa_state.json"
+# Throttle clocks ("when did I last check X") live OUTSIDE the repo. They tick every few minutes, and a commit that
+# only moves a clock still republishes the whole site: before Nov 2026 that was ~530 commits a day, every one a
+# Pages deploy, and every deploy made the wall reload. Losing this file (a new run) just means one early check.
+import tempfile
+TIMERS_PATH = os.environ.get("COMPUTA_TIMERS") or os.path.join(tempfile.gettempdir(), "computa_timers.json")
 QUEUE_PATH = "computa_queue.json"
 POLL_SEC   = 90
 
@@ -1273,6 +1278,16 @@ def load_json(path, default):
         print("  ! %s unreadable (%s) - resetting" % (path, e))
         return default
 
+def load_timers():
+    t = load_json(TIMERS_PATH, {})
+    return t if isinstance(t, dict) else {}
+
+def save_timers(t):
+    try:
+        json.dump(t, open(TIMERS_PATH, "w"))
+    except Exception as e:
+        print("  ! timers not saved (%s)" % e)
+
 
 def run_once():
     state = load_json(STATE_PATH, None)
@@ -1581,15 +1596,19 @@ def shadow_mirror(state, data):
     if MIRROR_MODE == "off" or not (square and square.enabled()):
         return
     sh = state.setdefault("shadow", {})
-    if time.time() - sh.get("mirror_at", 0) < 240:          # every ~4 minutes is plenty
+    for k in ("mirror_at", "map_at"):                       # the clocks moved to TIMERS_PATH; drop the old copies
+        sh.pop(k, None)
+    tm = load_timers()
+    if time.time() - tm.get("mirror_at", 0) < 240:          # every ~4 minutes is plenty
         return
-    sh["mirror_at"] = time.time()
+    tm["mirror_at"] = time.time()
     wall = [b["name"] for b in data.get("beers", [])]
     recent = [b["name"] for b in data.get("recent", [])][:12]
     m = sh.setdefault("map", {})
     missing = [n for n in wall + recent if n not in m]
-    if missing and time.time() - sh.get("map_at", 0) > 3600:
-        sh["map_at"] = time.time(); m.update(_pint_items(missing))
+    if missing and time.time() - tm.get("map_at", 0) > 3600:
+        tm["map_at"] = time.time(); m.update(_pint_items(missing))
+    save_timers(tm)
     ids = [m[n] for n in wall + recent if m.get(n)]
     if not ids:
         return
@@ -1625,21 +1644,28 @@ def shadow_sales(state, data):
     if SALES_MODE == "off" or not (square and square.enabled()):
         return
     sh = state.setdefault("shadow", {})
-    if time.time() - sh.get("sales_at", 0) < 900:           # every 15 minutes
+    sh.pop("sales_at", None)                                 # the clock moved to TIMERS_PATH
+    tm = load_timers()
+    if time.time() - tm.get("sales_at", 0) < 900:            # every 15 minutes
         return
-    sh["sales_at"] = time.time()
+    tm["sales_at"] = time.time(); save_timers(tm)
     beers = {b["name"]: b for b in data.get("beers", [])}
-    led = sh.setdefault("ledger", {})                         # name -> {"base": levelAt, "oz": sold since}
+    # Work on a copy. The ledger and its cursor (orders_since) are saved together or not at all: skipping a save is
+    # always safe, because the next pass re-reads the same orders from the saved cursor. That lets a pass that found
+    # nothing leave the state file untouched instead of committing a cursor that only moved forward in time.
+    led = json.loads(json.dumps(sh.get("ledger") or {}))      # name -> {"base": levelAt, "oz": sold since}
+    rebased = False
     for n, b in beers.items():
         base = b.get("levelAt") or ""
         if led.get(n, {}).get("base") != base:
-            led[n] = {"base": base, "oz": 0, "pints": 0}
-    since = sh.get("orders_since") or (datetime.now(timezone.utc).replace(microsecond=0).isoformat())
+            led[n] = {"base": base, "oz": 0, "pints": 0}; rebased = True
     now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    first = not sh.get("orders_since")
+    since = sh.get("orders_since") or now_iso
     q = {"location_ids": [square.LOCATION], "limit": 500, "return_entries": False,
          "query": {"filter": {"state_filter": {"states": ["COMPLETED"]},
                               "date_time_filter": {"closed_at": {"start_at": since, "end_at": now_iso}}}}}
-    cursor, unattributed = None, sh.get("pitcher_oz", 0)
+    cursor, unattributed, counted = None, sh.get("pitcher_oz", 0), False
     try:
         while True:
             if cursor: q["cursor"] = cursor
@@ -1649,12 +1675,12 @@ def shadow_sales(state, data):
                     nm = (li.get("name") or "").strip(); qty = float(li.get("quantity") or 0)
                     low = nm.lower()
                     if low.startswith("pitcher") or "pitcher" in low:
-                        unattributed += 32 * qty; continue
+                        unattributed += 32 * qty; counted = True; continue
                     for bn, b in beers.items():
                         if low.startswith(bn.lower() + " "):
                             for word, oz in OZ_BY_SIZE:
                                 if low.endswith(word):
-                                    led[bn]["oz"] += oz * qty
+                                    led[bn]["oz"] += oz * qty; counted = True
                                     if word == "pint": led[bn]["pints"] += qty
                                     break
                             break
@@ -1662,10 +1688,19 @@ def shadow_sales(state, data):
             if not cursor: break
     except Exception as e:
         print("  shadow sales: %s" % e); return
-    sh["orders_since"] = now_iso; sh["pitcher_oz"] = unattributed
-    # one report a morning, before doors
     mt = _mt_now(); day = mt.strftime("%Y-%m-%d")
-    if mt.hour == 10 and sh.get("sales_posted") != day:
+    report_due = mt.hour == 10 and sh.get("sales_posted") != day
+    try:
+        held = (datetime.now(timezone.utc) - datetime.fromisoformat(since)).total_seconds()
+    except Exception:
+        held = 1e9
+    # Save when a tank was re-measured, when the morning report is due, or when there are sales to record and the
+    # last save is half an hour old. Otherwise hold: nothing is lost, the next pass counts from the same cursor.
+    if not (first or rebased or report_due or (counted and held >= 1800)):
+        return
+    sh["ledger"] = led; sh["orders_since"] = now_iso; sh["pitcher_oz"] = unattributed
+    # one report a morning, before doors
+    if report_due:
         lines = []
         for n, b in beers.items():
             l = led.get(n) or {}

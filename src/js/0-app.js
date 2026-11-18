@@ -228,16 +228,20 @@ const SIM={beers:[
    What's pouring lives in beers.json, not in this file.
 
    On boot we load it synchronously so the board renders the real list
-   immediately. Every 60s we re-check; if the file changed, the page
-   reloads. A reload on a wall display is invisible and it's bulletproof
-   — no half-rendered tanks.
+   immediately. Every 20s we re-check; if the file changed (and looks the
+   same on the next check too), the page reloads. A reload on a wall
+   display is invisible and it's bulletproof — no half-rendered tanks.
 
    If beers.json is missing or the network is down, the list compiled
    into this file below is used instead, so the board never goes blank.
 
    >> EDIT beers.json TO CHANGE WHAT'S POURING. Never edit this file. */
 const FALLBACK_BEERS = SIM.beers.slice();
-let _tapFp = null;   // fingerprint of the beer list we booted with
+let _tapFp = null;   // fingerprint of the beers.json we booted with
+// One fingerprint of the file's text, used at boot and by the 20-second check. Until Nov 2026 the two were computed
+// differently and the check threw before it ever compared them, so it never fired: the wall only picked up tap
+// changes because it happened to be reloading every few minutes for another reason (see 3-qol.js).
+function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++){ h = ((h << 5) + h + text.charCodeAt(i)) | 0; } return text.length + ':' + h; }
 
 (function bootTaps(){
   try{
@@ -251,7 +255,7 @@ let _tapFp = null;   // fingerprint of the beer list we booted with
         d.beers.forEach(function(b){
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
-        _tapFp     = x.responseText.length + ':' + JSON.stringify(d.beers).length;
+        _tapFp     = tapFingerprint(x.responseText);
         SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null;
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
@@ -310,25 +314,36 @@ function renderAlso(list){
   side.innerHTML = html;
 }
 
+let _tapSeen = null;   // a changed file has to look the same on two checks in a row before the wall acts on it
 async function checkTaps(){
   try{
     const r = await fetch('beers.json?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) return;
-    const d = await r.json();
+    const txt = await r.text();
+    const d = JSON.parse(txt);
     if(!d || !Array.isArray(d.beers) || !d.beers.length) return;
-    const fp = (await r.clone().text()).length + ':' + JSON.stringify(d.beers).length;
+    const fp = tapFingerprint(txt);
     if(_tapFp && fp !== _tapFp){
+      if(fp !== _tapSeen){ _tapSeen = fp; return; }   // first sighting (or a half-published site): confirm in 20s
       console.log('[taps] change detected — reloading');
-      location.reload();
+      reloadSafely('taps changed'); return;
     }
+    _tapSeen = null;
     // booted on fallback, file now reachable: adopt it
-    if(!_tapFp){ console.log('[taps] beers.json now reachable — reloading'); location.reload(); }
+    if(!_tapFp){ console.log('[taps] beers.json now reachable — reloading'); reloadSafely('taps reachable'); }
   }catch(e){ /* offline: keep showing what we have */ }
 }
 setInterval(checkTaps, 20000);
 
+// Every reload goes through __safeReload (3-qol.js): it fetches the page first and only reloads if that worked,
+// so the wall is never reloaded into a network outage (which leaves the TV on the browser's "no internet" page).
+function reloadSafely(why){ if(window.__safeReload) window.__safeReload(why); else location.reload(); }
+
+// Daily refresh while closed. It keeps asking through the 3 o'clock hour until one reload succeeds, so a
+// network blip at 3:00 exactly doesn't cost the wall its fresh start for the day.
+const _bootAt = Date.now();
 setInterval(function(){ var n=new Date();
-  if(n.getHours()===3 && n.getMinutes()===0) location.reload(true);
+  if(n.getHours()===3 && Date.now()-_bootAt > 3600000) reloadSafely('3am refresh');
 }, 60000);
 
 

@@ -25,6 +25,10 @@ ROOT = Path(__file__).resolve().parent.parent
 MENU = ROOT / "menu.html"
 BEERS = ROOT / "beers.json"
 STATE = ROOT / "menu_state.json"
+# "When did I last ask the register" is a clock, not menu state. It lives outside the repo so a cycle with no real
+# change leaves menu_state.json byte-for-byte alone - no commit, no site publish. (A new run just checks once early.)
+import tempfile
+CLOCK = Path(os.environ.get("MENU_CLOCK") or os.path.join(tempfile.gettempdir(), "menu_build_clock.json"))
 BOARD_CHANNEL = "C0CALA09Z35"
 LOCATION = "1SEFN6DR2HWSV"
 GATES_SITE = "CH_aCf602ueFMnyWfOZqBq7NggyDdxQaeOcZEnh5PlQuYC"   # gatesdeli.com channel
@@ -285,9 +289,18 @@ def main():
     s, _ = replace_between(s, r'<section><h2>Also Pouring</h2>', r'</section>', also_rows(data, state.get("also_reg")), "Also Pouring")
 
     import time
-    square_due = time.time() - state.get("square_at", 0) >= int(os.environ.get("MENU_SQUARE_EVERY", "600"))
+    state.pop("square_at", None)                                 # the clock used to be kept here; see CLOCK
+    try:
+        clock = json.loads(CLOCK.read_text())
+    except Exception:
+        clock = {}
+    square_due = time.time() - clock.get("square_at", 0) >= int(os.environ.get("MENU_SQUARE_EVERY", "600"))
     if os.environ.get("SQUARE_ACCESS_TOKEN") and (square_due or CHECK):
-        state["square_at"] = time.time()
+        if not CHECK:
+            try:
+                CLOCK.write_text(json.dumps({"square_at": time.time()}))
+            except Exception as e:
+                print("clock not saved: %s" % e)
         try:
             items = catalog()
         except Exception as e:
@@ -349,7 +362,9 @@ def main():
         print(n)
         slack(":page_facing_up: QR menu - " + n)
     if not CHECK:
-        STATE.write_text(json.dumps(state, indent=1))
+        out = json.dumps(state, indent=1)
+        if not STATE.exists() or STATE.read_text() != out:
+            STATE.write_text(out)
 
 
 if __name__ == "__main__":
