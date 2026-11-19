@@ -553,26 +553,94 @@ def norm(s):
 
 
 BBL_OZ = 3968                       # one barrel in ounces
-LEVEL_RE = re.compile(r"(\d+(?:\.\d+)?)\s*bbl(?:\s+in\s+an?\s+(\d+)\s*bbl)?", re.I)
+# A level the way people type it: "9.3bbl", "6 bbl in a 10bbl", ".5bbl", and the keg sizes "1/2bbl", "half barrel".
+# Nov 17 2026: "1/2bbl in a 1/2bbl" read as 2 barrels (the digit after the slash), which drew a fresh half-barrel
+# keg of Plattmosphere as a 20 BBL tank running low. A number now has to start where a number starts.
+_BBL_NUM  = r"(?:\d+\s*/\s*\d+|\d+(?:\.\d+)?|\.\d+|half(?:\s+an?)?|a\s+half)"
+_BBL_UNIT = r"\s*-?\s*(?:bbls?|barrels?)\b"
+LEVEL_RE = re.compile(r"(?<![\w/.$])(" + _BBL_NUM + r")" + _BBL_UNIT +
+                      r"(?:\s+(?:in|of)\s+(?:an?\s+|the\s+)?(" + _BBL_NUM + r")" + _BBL_UNIT + r")?", re.I)
+WALL_VESSELS = ("1/2 BBL", "10 BBL", "20 BBL")      # the sizes the wall can draw
+
+def _bbl(s):
+    """'1/2' -> 0.5, 'half' -> 0.5, '.5' -> 0.5, '9.3' -> 9.3; None if it isn't a number of barrels."""
+    s = (s or "").strip().lower()
+    try:
+        if "half" in s:
+            return 0.5
+        if "/" in s:
+            a, b = [float(x) for x in s.split("/")]
+            return a / b if b else None
+        return float(s)
+    except Exception:
+        return None
 
 def read_level(text, beer):
-    """'9.3bbl in a 10bbl tank' -> remainingOz 36902, vessel tank10.
+    """'9.3bbl in a 10bbl tank' -> remainingOz 36902, vessel tank10; '1/2bbl in a 1/2bbl' -> a full half-barrel keg.
     Returns a reply fragment, or '' if the message says nothing about level."""
-    m = LEVEL_RE.search(text)
+    m = LEVEL_RE.search(text or "")
     if not m:
         return ""
-    have = float(m.group(1))
+    have = _bbl(m.group(1))
+    if have is None or have < 0 or have > 60:
+        return ""
+    size = _bbl(m.group(2)) if m.group(2) else None
+    label, guessed = None, ""
+    if size:
+        label = "1/2 BBL" if abs(size - 0.5) < 0.01 else ("%d BBL" % round(size) if abs(size - round(size)) < 0.01 else None)
+    elif have <= 0.5:
+        label = "1/2 BBL"
+    else:
+        # no size given and more beer than the vessel on the wall can hold ("plattmo is back on, 18bbl" while the
+        # wall still has it on a half-barrel keg): it has moved to a tank. Draw the smallest tank that fits and say so.
+        cap_now = dict(VESSELS.values()).get(beer.get("vessel"))
+        if cap_now and have * BBL_OZ > cap_now:
+            label = "10 BBL" if have <= 10 else ("20 BBL" if have <= 20 else None)
+            if label == "10 BBL":      # 20 is the only place more than 10 fits; under that it could be either
+                guessed = "\n:information_source: Drawn as a 10 BBL tank - say _\"%s is back on, %g bbl in a 20bbl\"_ if it's in a big one." % (beer.get("name", "it"), have)
+    if label in WALL_VESSELS:
+        beer["vessel"], cap = VESSELS[label]
+        beer["vesselLabel"] = label
+        have = min(have, cap / float(BBL_OZ))          # a vessel can't hold more than its size
     beer["remainingOz"] = int(have * BBL_OZ)
     beer["levelAt"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    if m.group(2):
-        size = int(m.group(2))
-        label = "%d BBL" % size
-        if label in VESSELS:
-            beer["vessel"], _ = VESSELS[label]
-            beer["vesselLabel"] = label
-    elif have <= 0.5:
-        beer["vessel"], _ = VESSELS["1/2 BBL"]; beer["vesselLabel"] = "1/2 BBL"
-    return " Tank set to %.1f bbl." % have
+    return " Tank set to %s bbl.%s" % (("%.2f" % have).rstrip("0").rstrip(".") if have < 1 else "%.1f" % have, guessed)
+
+
+# The 10oz price that goes with a pint price. The wall is the source: whatever the other beers at that pint price
+# charge for a 10oz today. TEN_OZ is the fallback for a pint price nothing on the wall has right now.
+TEN_OZ = {6.5: 4.75, 7.5: 5.5, 8.0: 6.0, 8.5: 6.25, 9.0: 6.5}        # the ladder as of Nov 12 2026
+
+def ten_oz_for(beer, beers):
+    """The 10oz price this beer should carry today, or None when there is nothing to go on."""
+    try:
+        pint = round(float(beer.get("price")), 2)
+    except Exception:
+        return None
+    peers = []
+    for b in beers:
+        try:
+            if b is not beer and b.get("price10") and not b.get("tenOzOnly") and abs(float(b.get("price", 0)) - pint) < 0.005:
+                peers.append(round(float(b["price10"]), 2))
+        except Exception:
+            pass
+    if peers:
+        return max(sorted(set(peers)), key=peers.count)
+    return TEN_OZ.get(pint)
+
+def refresh_ten_oz(beer, beers):
+    """A beer coming back keeps everything it had, except a 10oz price the ladder moved past while it was off.
+    (Nov 2026: Plattmosphere and Half Acre Waybird both came back a dollar under the register.)
+    Returns the line to add to the reply, or ''."""
+    want, have = ten_oz_for(beer, beers), beer.get("price10")
+    try:
+        if want and have and abs(float(have) - want) > 0.005:
+            beer["price10"] = want
+            return ("\n:moneybag: 10oz set to $%.2f to match the other $%.2f pints - it was $%.2f when it came off."
+                    % (want, float(beer["price"]), float(have)))
+    except Exception:
+        pass
+    return ""
 
 
 import difflib
@@ -690,6 +758,16 @@ def square_aside(name, back):
         print("  ! square aside: %s" % e)
     return ""
 
+
+def reaches():
+    """Where a tap change lands, in words. The website is only named while its sync is switched on
+    (Nov 2026: replies promised the website for weeks while the SpotHopper login was empty)."""
+    try:
+        if spothopper and spothopper.enabled():
+            return "the board, the menu and the website"
+    except Exception:
+        pass
+    return "the board and the menu"
 
 def website_sync(data, queue):
     """Mirror beers.json onto plattparkbrewing.com after every commit. Failures are logged once, never fatal."""
@@ -881,8 +959,8 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             b["offSince"] = datetime.now().strftime("%Y-%m-%d")
             recent.insert(0, b); data["recent"] = recent[:12]
             change = "86 " + b["name"]
-            reply = (":white_check_mark: 86'd *%s* - off the board, the menu and the website within a "
-                     "couple of minutes.\nSay _\"%s is back on\"_ when it returns." % (b["name"], b["name"]))
+            reply = (":white_check_mark: 86'd *%s* - off %s within a "
+                     "couple of minutes.\nSay _\"%s is back on\"_ when it returns." % (b["name"], reaches(), b["name"]))
             reply += square_aside(b["name"], back=False)
         elif not reply and match_also(item, data.get("also") if isinstance(data.get("also"), list) else ALSO_DEFAULT):
             side = match_also(item, also_list(data)); set_flavors(side, [])
@@ -912,10 +990,11 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             recent.remove(b); b.pop("offSince", None)
             b["tappedDaysAgo"] = 0
             lvl = read_level(extra if isinstance(extra, str) else msg.get("text", ""), b)
+            px = refresh_ten_oz(b, beers)
             beers.append(b)
-            change = b["name"] + " back on"
+            change = b["name"] + " back on" + ("; %s 10oz $%.2f" % (b["name"], b["price10"]) if px else "")
             reply = ":beer: *%s* is back on - it'll reappear shortly.%s" % (b["name"], lvl)
-            reply += square_aside(b["name"], back=True)
+            reply += square_aside(b["name"], back=True) + px
         elif already:
             lvl = read_level(extra if isinstance(extra, str) else msg.get("text", ""), already)
             if lvl:
@@ -1213,9 +1292,10 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         if known:   # "just tapped witbier" for a beer we already know: restore it, don't invent it
             recent.remove(known); known.pop("offSince", None); known["tappedDaysAgo"] = 0
             lvl = read_level(msg.get("text", ""), known)
+            px = refresh_ten_oz(known, beers)
             beers.append(known)
-            change = known["name"] + " back on"
-            reply = ":beer: *%s* is back on with its old price and tank.%s" % (known["name"], lvl)
+            change = known["name"] + " back on" + ("; %s 10oz $%.2f" % (known["name"], known["price10"]) if px else "")
+            reply = ":beer: *%s* is back on with its old price and tank.%s%s" % (known["name"], lvl, px)
         elif match_beer(beer["name"], beers):
             reply = ":information_source: *%s* is already on the tap list." % beer["name"]
         else:
@@ -1228,8 +1308,11 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             if _p10:
                 v = float(_p10.group(1) or _p10.group(2))
                 if 2 <= v <= 15: beer["price10"] = v
+            else:                    # nobody gave a 10oz price: it follows the ladder, not a percentage of the pint
+                _t10 = ten_oz_for(beer, beers)
+                if _t10: beer["price10"] = _t10
             if beer.get("note"):     # whatever was price / tank talk is not a taste line
-                n = re.sub(r"\$\s*\d+(?:\.\d{1,2})?\s*(?:for\s+)?(?:a\s+)?\d+\s*(?:oz|ounce)\b|\d+(?:\.\d+)?\s*bbls?\s*(?:in\s+(?:a\s+)?\d+(?:\.\d+)?\s*bbls?)?|\b(?:16|10)\s*oz\s*\$\s*\d+(?:\.\d{1,2})?", "", beer["note"], flags=re.I)
+                n = re.sub(r"\$\s*\d+(?:\.\d{1,2})?\s*(?:for\s+)?(?:a\s+)?\d+\s*(?:oz|ounce)\b|(?<![\w/.$])(?:\d+\s*/\s*\d+|\d+(?:\.\d+)?|\.\d+)\s*bbls?\s*(?:in\s+(?:an?\s+)?(?:\d+\s*/\s*\d+|\d+(?:\.\d+)?|\.\d+)\s*bbls?)?|\b(?:16|10)\s*oz\s*\$\s*\d+(?:\.\d{1,2})?", "", beer["note"], flags=re.I)
                 n = re.sub(r"\s*[,;]\s*(?=[,;]|$)", "", n).strip(" ,;-\u2014")
                 if n: beer["note"] = n
                 else: beer.pop("note", None)
@@ -1240,10 +1323,11 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             beers.append(beer)
             change = "added " + beer["name"]
             reply = (":beer: *%s* is live on the board and the menu.\n"
-                     "_%s \u00b7 %s%% \u00b7 $%.2f_%s\n\n"
+                     "_%s \u00b7 %s%% \u00b7 $%.2f%s_%s\n\n"
                      "%sReply here if any of that's wrong and Colby will fix it. "
                      "Make sure it has a POS button before service."
                      % (beer["name"], beer["style"], beer["abv"], beer["price"],
+                        (" \u00b7 10oz $%.2f" % beer["price10"]) if beer.get("price10") else "",
                         ("\n" + beer["note"]) if beer.get("note") else "",
                         ("I assumed: %s.\n" % "; ".join(assumed)) if assumed else ""))
 
@@ -1269,18 +1353,128 @@ def handle_one(msg, data, queue, channel, action, item, extra):
     return change, (channel, ts, reply) if reply else None
 
 
+def _git(*args, **kw):
+    import subprocess
+    return subprocess.run(("git",) + args, capture_output=True, text=True, timeout=kw.get("timeout", 90))
+
+MACHINE_FILES = ("computa_state.json", "computa_queue.json", "computa_health.json", "menu.html", "menu_state.json")
+
+def catch_up():
+    """Start every cycle on the newest main, with nothing half-merged in the folder.
+
+    A run on GitHub starts from the commit that was current when it was QUEUED, and a queued run can wait five and
+    a half hours for the one before it (Nov 2026: 32 of 52 runs started more than 15 minutes stale, median three
+    hours). Its first cycle then read an old state file, replayed hours of Slack, and the pull that followed left
+    merge markers in computa_state.json - which the next cycle threw away, so Computa forgot its place, its open
+    threads and the sales ledger several times a day.
+
+    Only on GitHub. Local runs and --dry never touch git."""
+    if not os.environ.get("GITHUB_ACTIONS") or DRY:
+        return
+    try:
+        if os.path.isdir(".git/rebase-merge") or os.path.isdir(".git/rebase-apply"):
+            print("catch-up: a rebase was left half done - backing out of it")
+            _git("rebase", "--abort")
+        if _git("fetch", "-q", "origin", "main").returncode != 0:
+            print("catch-up: fetch failed - carrying on with what's here"); return
+        behind = _git("rev-list", "--count", "HEAD..origin/main").stdout.strip() or "0"
+        unmerged = _git("diff", "--name-only", "--diff-filter=U").stdout.split()
+        if behind == "0" and not unmerged:
+            return
+        ahead = _git("rev-list", "--count", "origin/main..HEAD").stdout.strip() or "0"
+        dirty = [l[3:].strip() for l in _git("status", "--porcelain", "--untracked-files=no").stdout.splitlines() if l.strip()]
+        before = _git("rev-parse", "HEAD").stdout.strip()
+        if ahead == "0" and not dirty:
+            ok = _git("merge", "-q", "--ff-only", "origin/main").returncode == 0
+        else:
+            # This run has state of its own that never reached GitHub. Its machine files are newer than the ones
+            # on main for everything it has done, so keep ours and take everything else from main - no merge.
+            keep = {}
+            for f in MACHINE_FILES:
+                try:
+                    txt = open(f, encoding="utf-8").read()
+                    if "<<<<<<<" not in txt and ">>>>>>>" not in txt:
+                        keep[f] = txt
+                except Exception:
+                    pass
+            ok = _git("reset", "-q", "--hard", "origin/main").returncode == 0
+            if ok:
+                for f, txt in keep.items():
+                    if f in dirty or ahead != "0":
+                        open(f, "w", encoding="utf-8").write(txt)
+        after = _git("rev-parse", "HEAD").stdout.strip()
+        print("catch-up: was %s commit(s) behind main%s - now on %s" % (behind, "" if ok else " and could not move", after[:7]))
+        if ok and after != before and not os.environ.get("COMPUTA_CAUGHT_UP"):
+            # the code itself may be hours old too: start this cycle again from the fresh copy
+            os.environ["COMPUTA_CAUGHT_UP"] = "1"
+            sys.stdout.flush()
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+    except Exception as e:
+        print("catch-up: %s" % e)
+
+
+def _last_good(path):
+    """The newest copy of a repo file that still parses: main on GitHub first, then this checkout's own commit."""
+    if os.path.isabs(path) or path.startswith(".."):
+        return None
+    for ref in ("origin/main", "HEAD"):
+        try:
+            r = _git("show", "%s:%s" % (ref, path), timeout=30)
+            if r.returncode == 0:
+                return json.loads(r.stdout)
+        except Exception:
+            pass
+    return None
+
 def load_json(path, default):
     try:
         return json.load(open(path))
     except FileNotFoundError:
         return default
     except Exception as e:
+        # Nov 2026: this used to say "resetting" and hand back nothing, so one bad write (merge markers after a
+        # pull) made Computa start over from "now" - missing whatever was typed in between and wiping the ledger.
+        good = _last_good(path)
+        if good is not None:
+            print("  ! %s unreadable (%s) - using the last good copy from git" % (path, e))
+            if not DRY:
+                try:
+                    json.dump(good, open(path, "w"), indent=1, ensure_ascii=False)
+                except Exception:
+                    pass
+            return good
         print("  ! %s unreadable (%s) - resetting" % (path, e))
         return default
 
 def load_timers():
-    t = load_json(TIMERS_PATH, {})
+    try:
+        t = json.load(open(TIMERS_PATH))
+    except Exception:
+        t = {}
     return t if isinstance(t, dict) else {}
+
+def bot_user():
+    """Computa's own Slack user id, asked for once a run and kept with the timers."""
+    tm = load_timers()
+    if tm.get("bot_user"):
+        return tm["bot_user"]
+    try:
+        r = slack("auth.test")
+    except Exception:
+        return None
+    if r.get("ok") and r.get("user_id"):
+        tm["bot_user"] = r["user_id"]; save_timers(tm)
+        return r["user_id"]
+    return None
+
+def already_answered(m, me):
+    """True when Computa has already reacted to this message or replied under it: a replay, not a new command.
+    (Nov 2026: 5 of 90 tap edits were one command applied twice, each time from a stale state file.)"""
+    if not me:
+        return False
+    if me in (m.get("reply_users") or []):
+        return True
+    return any(me in (r.get("users") or []) for r in (m.get("reactions") or []))
 
 def save_timers(t):
     try:
@@ -1322,6 +1516,7 @@ def run_once():
         for m in r.get("messages", []) if r.get("ok") else []:
             if m["ts"] != th["last"] and m["ts"] != tts and not m.get("bot_id") and not m.get("subtype"):
                 msgs.append((th["channel"], m)); th["last"] = max(th["last"], m["ts"], key=float)
+    me, replayed = bot_user(), []
     for cid, cname in CHANNELS.items():
         r = slack("conversations.history", channel=cid, oldest=state["last_ts"][cid], limit=50)
         if not r.get("ok"):
@@ -1330,8 +1525,16 @@ def run_once():
         for m in r.get("messages", []):
             if (m["ts"] != state["last_ts"][cid] and not m.get("bot_id")
                     and m.get("type") == "message" and not m.get("subtype")):
+                if already_answered(m, me):          # read twice (an old state file) - it was dealt with the first time
+                    replayed.append((cid, m)); continue
                 msgs.append((cid, m))
     msgs.sort(key=lambda cm: float(cm[1]["ts"]))
+    if replayed:
+        print("%d message(s) already answered - not acting on them again" % len(replayed))
+        for cid, m in replayed:
+            state["last_ts"][cid] = max(state["last_ts"][cid], m["ts"], key=float)
+        if not msgs and not DRY:
+            json.dump(state, open(STATE_PATH, "w"), indent=1)
     if not msgs:
         print("no new messages"); return
 
@@ -1458,6 +1661,7 @@ def confirm_from_wall():
 # ({"cellar_url": "..."}). Computa reads it every 30 minutes and only applies a reading once;
 # a level someone typed in Slack after the sheet was saved always wins.
 CELLAR_EVERY = 1800
+BIG_SVS = ("4", "6")       # serving tanks 4 and 6 are the 20-barrel ones (Madagascar Dream and Platty Lite live there)
 CELLAR_NAMES = {   # Greg's shorthand -> the name on the wall (anything else goes through match_beer)
     "tropic": "Tropical Snow Dance", "astronaut": "Astronaut Amber", "wit": "Witbier",
     "chela": "Chela Morena", "platty lite": "Platty Lite", "platty": "Platty Lite",
@@ -1492,6 +1696,7 @@ def cellar_apply(reading, data, state, force=False):
         return [], []
     beers = data.setdefault("beers", [])
     changes, lines, skipped, unknown, offtank = [], [], [], [], []
+    big_svs = set(str(x).lower() for x in (reading.get("big_svs") or BIG_SVS))    # the serving tanks that are 20s
     for row in reading.get("levels", []):
         name = str(row.get("name") or "").strip()
         try:
@@ -1508,18 +1713,32 @@ def cellar_apply(reading, data, state, force=False):
         # Oct 20 2026: Chela went to kegs and cans, and the sheet's 15.4 bbl (everything left, wherever it sits)
         # landed in a 10 BBL tank drawing. Only a beer that is actually in a serving tank - column C on Greg's
         # sheet - gets its level from the sheet. Kegs, cans and fermenters are reported, never drawn.
-        if not str(row.get("sv") or "").strip() or b.get("vessel") in ("keg", "keg-half"):
+        sv = str(row.get("sv") or "").strip().lower()
+        on_keg = b.get("vessel") in ("keg", "keg-half")
+        # A beer the wall has on a keg stays a keg unless the sheet puts it in a numbered serving tank with more
+        # than a keg's worth in it. ("jbt" in column C is the brite tank - Chela sat there while it poured from kegs.)
+        if not sv or (on_keg and (not sv[:1].isdigit() or bbls <= 0.6)):
             offtank.append("%s %.1f" % (b["name"], bbls))
             continue
         if not force and stamp and b.get("levelAt") and b["levelAt"] > stamp:
             skipped.append(b["name"])          # someone set it in Slack after Greg saved the sheet
             continue
-        if b.get("remainingOz") == int(bbls * BBL_OZ):
+        # Nov 18 2026: a keg beer that the sheet now shows in a serving tank has moved to the tank (Plattmosphere
+        # poured from a half-barrel keg while the next batch fermented). It used to be skipped for good, so the wall
+        # would have kept drawing a keg with 18 barrels behind it. Same for a 10 that can't hold what's in it.
+        moved = ""
+        if on_keg or (b.get("vessel") == "tank10" and bbls > 10):
+            label = "20 BBL" if (bbls > 10 or sv in big_svs) else "10 BBL"
+            b["vessel"], _ = VESSELS[label]; b["vesselLabel"] = label
+            if b.get("sash") == "last keg":
+                b.pop("sash", None)
+            moved = " (now drawn as a %s tank)" % label
+        if b.get("remainingOz") == int(bbls * BBL_OZ) and not moved:
             lines.append("%s %.1f" % (b["name"], bbls)); continue
         b["remainingOz"] = int(bbls * BBL_OZ)
         b["levelAt"] = stamp or datetime.now(timezone.utc).isoformat(timespec="seconds")
         changes.append("%s level %.1f (sheet)" % (b["name"], bbls))
-        lines.append("%s %.1f" % (b["name"], bbls))
+        lines.append("%s %.1f%s" % (b["name"], bbls, moved))
     seen["applied"] = key
     seen["at"] = datetime.now().isoformat(timespec="seconds")
     summary = [":bar_chart: Levels from Greg's sheet (%s, %s): %s" % (reading.get("sheet"), reading.get("tab"), " \u00b7 ".join(lines) or "nothing on the wall")]
@@ -1532,9 +1751,13 @@ def cellar_sync(force=False, reply=None):
     """Every 30 minutes (or on 'sync cellar'): read the sheet, update levels, say what changed."""
     if DRY and not force:
         return
-    if not force and time.time() - _cellar["checked"] < CELLAR_EVERY:
+    # The half-hour clock lives in the timers file: on GitHub every cycle is a new process, so a clock kept in
+    # memory would fetch the sheet every 90 seconds.
+    tm = load_timers()
+    if not force and time.time() - max(_cellar["checked"], tm.get("cellar_at", 0)) < CELLAR_EVERY:
         return
-    _cellar["checked"] = time.time()
+    _cellar["checked"] = tm["cellar_at"] = time.time()
+    save_timers(tm)
     url = cellar_config().get("cellar_url")
     if not url:
         if reply: slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text=":grey_question: No cellar sheet is connected yet (computa_config.json has no cellar_url).")
@@ -1545,7 +1768,12 @@ def cellar_sync(force=False, reply=None):
         print("cellar: fetch failed: %s" % e)
         if reply: slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text=":warning: Couldn't read the sheet (%s)." % str(e)[:80])
         return
+    if not isinstance(reading, dict) or reading.get("error") or not isinstance(reading.get("levels"), list):
+        print("cellar: nothing to read (%s)" % str((reading or {}).get("error") if isinstance(reading, dict) else reading)[:120])
+        if reply: slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text=":grey_question: The sheet had nothing to read (%s)." % str((reading or {}).get("error") if isinstance(reading, dict) else "unexpected reply")[:120])
+        return
     state = load_json(STATE_PATH, {}) or {}
+    before = json.dumps(state, sort_keys=True)
     data, sha = fetch_beers()
     if not validate(data):
         return
@@ -1560,7 +1788,7 @@ def cellar_sync(force=False, reply=None):
             slack("chat.postMessage", channel=reply[0], thread_ts=reply[1], text="\n".join(summary))
         else:
             slack("chat.postMessage", channel=BOARD_CHANNEL, text="\n".join(summary))   # #board
-    if not DRY:
+    if not DRY and json.dumps(state, sort_keys=True) != before:     # only when a new reading was taken in
         json.dump(state, open(STATE_PATH, "w"), indent=1)
 
 
@@ -1579,6 +1807,110 @@ def _mt_now():
         return datetime.now(ZoneInfo("America/Denver"))
     except Exception:
         return datetime.now()
+
+# What a register line is in ounces, and whose tank it came out of. The register's names are not the wall's:
+# "🥇 Pistachio Cream Ale" is Nutorious, "Phaded" is a pint with no "Pint" in its name, "Witbier 10oz." ends in a
+# full stop, "GUEST Verboten Stealth Haze 16oz." is whatever is on the guest handle. Before Nov 18 2026 only a name
+# shaped exactly "<wall name> Pint" counted, which was 6 of the 11 taps. A beer can also carry its own register
+# names in beers.json:  "pos": ["Pistachio Cream Ale"].
+POS_ALIASES = {"pistachio": "Nutorious", "pumpkin": "Grandma's Pumpkin Pie", "madagascar": "Madagascar Dream",
+               "astronaut": "Astronaut Amber", "astro amber": "Astronaut Amber", "chela": "Chela Morena",
+               "platty": "Platty Lite", "plattmo": "Plattmosphere", "tropical": "Tropical Snow Dance"}
+POS_PINT_NAMES = {"Nutorious": ("Pistachio Cream Ale",)}      # pint buttons with no size in the name
+_POS_SKIP = re.compile(r"\b(?:4\s*-?\s*p(?:ac)?ks?|6\s*-?\s*p(?:ac)?ks?|case|kegs?|deposit|shirt|glass|sticker|upcharge|paddle)\b", re.I)
+_POS_SIZE = ((re.compile(r"\bpitcher", re.I), 32, "pitcher"), (re.compile(r"\bcrowler", re.I), 32, "crowler"),
+             (re.compile(r"\bgrowler", re.I), 64, "growler"), (re.compile(r"\btaster", re.I), 4, "taster"),
+             (re.compile(r"\b10\s*oz", re.I), 10, "10oz"), (re.compile(r"\bpint\b|\b16\s*oz", re.I), 16, "pint"))
+
+def pos_line(name, beers):
+    """Whose beer a register line is and how many ounces: ('Nutorious', 16, 'pint') for '🥇 Pistachio Cream Ale',
+    (None, 32, 'pitcher') for a pitcher with no beer in its name, None for anything that isn't draft out of a
+    tank or keg on the wall (cans, kegs to go, merch, food, a beer that isn't pouring)."""
+    low = (name or "").lower().strip()
+    if not low or _POS_SKIP.search(low):
+        return None
+    oz = kind = None
+    for rx, o, k in _POS_SIZE:
+        if rx.search(low):
+            oz, kind = o, k; break
+    n = norm(low)
+    wall = {b.get("name", ""): b for b in beers if b.get("name")}
+    best, blen, exact = None, 0, False
+    for bn, b in wall.items():
+        own = [bn] + [k for k in (b.get("pos") or []) if isinstance(k, str)] + list(POS_PINT_NAMES.get(bn, ()))
+        for k in own:
+            nk = norm(k)
+            if nk and nk in n and len(nk) > blen:
+                best, blen = bn, len(nk)
+            if nk and nk == n:
+                exact = True
+    for alias, bn in POS_ALIASES.items():
+        if bn in wall and len(alias) > blen and re.search(r"\b" + re.escape(alias) + r"\b", low):
+            best, blen = bn, len(alias)
+    if best is None and low.startswith("guest"):
+        guests = [bn for bn, b in wall.items() if b.get("guest")]
+        if len(guests) == 1:
+            best = guests[0]
+    if oz is None:
+        # No size in the name: it is a pint only when the whole name is the beer ("Phaded", "Witbier",
+        # "Pistachio Cream Ale"). "Pumpkin Bread" is not a pint of Grandma's Pumpkin Pie.
+        if not (best and exact):
+            return None
+        oz, kind = 16, "pint"
+    if best is None:
+        return (None, oz, kind) if kind == "pitcher" else None
+    return best, oz, kind
+
+BACKFILL_DAYS = 9          # how far back the register is re-read to rebuild what a tank has poured since its level
+
+def _iso(s):
+    """An ISO time from beers.json, the state file or Square, as an aware datetime (None if it isn't one)."""
+    try:
+        t = datetime.fromisoformat(str(s).strip().replace("Z", "+00:00"))
+        return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
+    except Exception:
+        return None
+
+def _tally(start_iso, end_iso, led, data, not_before=None, only=False):
+    """Add the draft beer rung between two times to the ledger. `not_before` = {beer: time its level was measured}:
+    a pour rung before the measurement is already in the measurement, so it is not counted again. `only` limits
+    the pass to the beers in `not_before` (the catch-up after a new measurement).
+    Returns (pitcher oz with no beer named, anything counted)."""
+    not_before = not_before or {}
+    q = {"location_ids": [square.LOCATION], "limit": 500, "return_entries": False,
+         "query": {"filter": {"state_filter": {"states": ["COMPLETED"]},
+                              "date_time_filter": {"closed_at": {"start_at": start_iso, "end_at": end_iso}}},
+                   "sort": {"sort_field": "CLOSED_AT", "sort_order": "ASC"}}}
+    cursor, unattributed, counted = None, 0, False
+    wall = data.get("beers", [])
+    while True:
+        if cursor: q["cursor"] = cursor
+        r = square.call("orders/search", "POST", q)
+        for o in r.get("orders", []) or []:
+            closed = _iso(o.get("closed_at")) if not_before else None
+            for li in o.get("line_items", []) or []:
+                hit = pos_line((li.get("name") or "").strip(), wall)
+                if not hit:
+                    continue
+                bn, oz, kind = hit
+                try:
+                    qty = float(li.get("quantity") or 0)
+                except Exception:
+                    qty = 0
+                if bn is None:
+                    if not only:
+                        unattributed += oz * qty; counted = True
+                    continue
+                if bn not in led or (only and bn not in not_before):
+                    continue
+                if closed and not_before.get(bn) and closed < not_before[bn]:
+                    continue
+                led[bn]["oz"] += oz * qty; counted = True
+                if kind == "pint": led[bn]["pints"] += qty
+        cursor = r.get("cursor")
+        if not cursor:
+            break
+    return unattributed, counted
 
 def _pint_items(names):
     """{wall name: Square item id} for '<name> Pint', exact name only - never a guess."""
@@ -1654,46 +1986,34 @@ def shadow_sales(state, data):
     # always safe, because the next pass re-reads the same orders from the saved cursor. That lets a pass that found
     # nothing leave the state file untouched instead of committing a cursor that only moved forward in time.
     led = json.loads(json.dumps(sh.get("ledger") or {}))      # name -> {"base": levelAt, "oz": sold since}
-    rebased = False
-    for n, b in beers.items():
-        base = b.get("levelAt") or ""
-        if led.get(n, {}).get("base") != base:
-            led[n] = {"base": base, "oz": 0, "pints": 0}; rebased = True
-    now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    now_iso = now.isoformat()
     first = not sh.get("orders_since")
     since = sh.get("orders_since") or now_iso
-    q = {"location_ids": [square.LOCATION], "limit": 500, "return_entries": False,
-         "query": {"filter": {"state_filter": {"states": ["COMPLETED"]},
-                              "date_time_filter": {"closed_at": {"start_at": since, "end_at": now_iso}}}}}
-    cursor, unattributed, counted = None, sh.get("pitcher_oz", 0), False
+    since_dt = _iso(since) or now
+    rebased, behind, measured = False, {}, {}
+    for n, b in beers.items():
+        base = b.get("levelAt") or ""
+        if _iso(base):
+            measured[n] = _iso(base)
+        if led.get(n, {}).get("base") != base:
+            led[n] = {"base": base, "oz": 0, "pints": 0}; rebased = True
+            # The measurement is older than where our counting starts (Greg's Monday sheet read on Wednesday, or
+            # a ledger that was lost): count what the register sold in between as well, instead of starting at 0.
+            t = _iso(base)
+            if t and t < since_dt and (now - t).days < BACKFILL_DAYS:
+                behind[n] = t
     try:
-        while True:
-            if cursor: q["cursor"] = cursor
-            r = square.call("orders/search", "POST", q)
-            for o in r.get("orders", []):
-                for li in o.get("line_items", []) or []:
-                    nm = (li.get("name") or "").strip(); qty = float(li.get("quantity") or 0)
-                    low = nm.lower()
-                    if low.startswith("pitcher") or "pitcher" in low:
-                        unattributed += 32 * qty; counted = True; continue
-                    for bn, b in beers.items():
-                        if low.startswith(bn.lower() + " "):
-                            for word, oz in OZ_BY_SIZE:
-                                if low.endswith(word):
-                                    led[bn]["oz"] += oz * qty; counted = True
-                                    if word == "pint": led[bn]["pints"] += qty
-                                    break
-                            break
-            cursor = r.get("cursor")
-            if not cursor: break
+        if behind:
+            _tally(min(behind.values()).isoformat(), since_dt.isoformat(), led, data, not_before=behind, only=True)
+            print("  shadow sales: caught up %s from the register" % ", ".join(sorted(behind)))
+        unattributed, counted = _tally(since_dt.isoformat(), now_iso, led, data, not_before=measured)
     except Exception as e:
         print("  shadow sales: %s" % e); return
+    unattributed += sh.get("pitcher_oz", 0)
     mt = _mt_now(); day = mt.strftime("%Y-%m-%d")
     report_due = mt.hour == 10 and sh.get("sales_posted") != day
-    try:
-        held = (datetime.now(timezone.utc) - datetime.fromisoformat(since)).total_seconds()
-    except Exception:
-        held = 1e9
+    held = (now - since_dt).total_seconds()
     # Save when a tank was re-measured, when the morning report is due, or when there are sales to record and the
     # last save is half an hour old. Otherwise hold: nothing is lost, the next pass counts from the same cursor.
     if not (first or rebased or report_due or (counted and held >= 1800)):
@@ -1813,8 +2133,15 @@ if __name__ == "__main__":
                 except Exception: pass
             time.sleep(POLL_SEC)
     else:
+        catch_up()
         run_once()
         confirm_from_wall()
         shadow_tick()
         five_second_nudge()
         scheduled_posts()
+        # Nov 18 2026: this line was only in --watch. GitHub runs one pass per cycle, so Greg's sheet had not been
+        # read since someone typed "sync cellar" on Oct 20, and the tanks sat on that week's numbers for a month.
+        try:
+            cellar_sync()
+        except Exception as e:
+            print("cellar: %s" % e)

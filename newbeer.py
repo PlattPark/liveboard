@@ -191,8 +191,20 @@ def parse_new_beer(text):
             name, note = " ".join(w[:4]), " ".join(w[4:])
             style = ""
 
-    return {"name": name.strip(" ,;-"), "style": style.strip().title(),
+    return {"name": name.strip(" ,;-"), "style": style_case(style.strip()),
             "abv": abv, "note": note.strip(" ,;-")}
+
+
+_UPRIGHT = {"ipa", "dipa", "tipa", "apa", "na", "esb", "neipa", "ddh", "n/a", "ipl", "xpa", "nzipa"}
+
+def style_case(text):
+    """Title-case a style and keep the beer acronyms upright: 'hazy ipa' -> 'Hazy IPA', never 'Hazy Ipa'
+    (which is what .title() put on the wall under Half Acre Waybird in Nov 2026)."""
+    out = []
+    for w in (text or "").split():
+        core = w.strip("()·,")
+        out.append(w.upper() if core.lower() in _UPRIGHT else (w if w[:1].isupper() and w[1:].islower() else w.title()))
+    return " ".join(out)
 
 
 def build_beer(parsed, raw_text="", square_price=None):
