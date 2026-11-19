@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-11-19T02:15Z from src @ 9444ed7 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-19T02:32Z from src @ d4c252b - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -728,7 +728,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = tapFingerprint(x.responseText);
-        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null;
+        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null; window.__card = d.card || null;
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
         try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
@@ -746,7 +746,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
         const d = JSON.parse(cached);
         if(d && Array.isArray(d.beers) && d.beers.length){
           d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
-          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || '';
+          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__card = d.card || null;
           console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
           return;
         }
@@ -1203,7 +1203,9 @@ function festOverride(s){
       h.textContent='';
       /* the masthead, Colby's words exactly: the title, then one line. The brewers' pick lives on its tank only, never up here.
          ("house beers" means the promo pours at Platt Park - never use it for the whole list) */
-      h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk','On tap today \u00b7 Brewed in house'));
+      /* Nov 18 2026: "brewed in house" comes off the line while a guest tap is pouring - it isn't true of that one. */
+      var guestOn=(s.beers||[]).some(function(b){ return b && b.guest; });
+      h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk', guestOn ? 'On tap today' : 'On tap today \u00b7 Brewed in house'));
       h.classList.add('on'); })();
     // Sept 22: the 10oz price rides the gold tag again - the bar uses the wall to answer "how much is a 10?". From beers.json price10; no price10, no 10oz.
     (s.beers||[]).forEach(function(b){ if(!b.price10||b.tenOzOnly) return; var u=document.getElementById('u-'+b.id); var tag=u&&u.querySelector('.price .tag'); if(!tag||tag.querySelector('.p10b')) return;
@@ -1353,7 +1355,7 @@ function festOverride(s){
       var line=t?'4-packs to go \u00b7 '+t.replace(/\$(\d+)/g,'<em>$$$1</em>'):''; if(line!==window.__packWire){ window.__packWire=line; buildWire(); } }catch(e){} };
     x.onerror=function(){}; x.send(); }catch(e){} }
   setTimeout(loadPacks,3000); setInterval(loadPacks,600000);
-  function wireItems(){ return [...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
+  function wireItems(){ return [...(window.__cardWire?['<span class="wi">'+window.__cardWire+'</span>']:[]), ...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
   function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;
@@ -1590,6 +1592,79 @@ html.holiday.hollights .side::after{bottom:-86px;background:url("data:image/svg+
   window.addEventListener('resize', frame);
   try{ new MutationObserver(frame).observe(document.body,{attributes:true,attributeFilter:['class','style']}); }catch(e){}
   apply(); setInterval(apply, 600000);
+})();
+</script>
+<style id="cardcss">/* ---- THE CARD: one plain card in the tank space the wall isn't using (beers.json "card", drawn by js/6-card.js) ----
+   Same material as the Also Pouring card so it reads as part of the wall, not an ad stuck on it.
+   The title is the dark green, not the coral: coral on this cream is 2.8:1, too faint to carry the one line
+   that has to be read from across the room. Coral is the rule under it. */
+.promo{
+  align-self:center;justify-self:center;box-sizing:border-box;width:88%;max-width:250px;
+  background:#e7eacd;color:#293d22;border-radius:6px;padding:15px 16px 13px;text-align:left;
+  box-shadow:6px 6px 0 rgba(0,0,0,.35), 0 0 0 2px rgba(255,90,58,.6);
+}
+.promo-h{font-family:'Archivo Black';font-size:24px;line-height:1.05;letter-spacing:1.5px;text-transform:uppercase;
+  padding-bottom:8px;margin-bottom:10px;border-bottom:3px solid #f0553d}
+.promo-l{font-family:'Barlow';font-weight:600;font-size:24px;line-height:1.14;margin:0 0 9px}
+.promo-l b{font-family:'Archivo Black';font-weight:400;letter-spacing:.2px}
+.promo-f{font-family:'Barlow';font-weight:700;font-size:15px;line-height:1.3;letter-spacing:1.1px;text-transform:uppercase;
+  color:#3d5a31;margin-top:11px;padding-top:9px;border-top:2px solid rgba(41,61,34,.18)}
+/* thirteen beers: seven columns, narrower cells */
+.promo.tight{padding:12px 12px 10px}
+.promo.tight .promo-h{font-size:20px;letter-spacing:1px}
+.promo.tight .promo-l{font-size:20px;margin-bottom:7px}
+.promo.tight .promo-f{font-size:13px;letter-spacing:.8px}
+</style>
+<script id="card">/* THE CARD (Nov 18 2026): one plain card in the tank space the wall isn't using.
+   An odd number of beers leaves one cell of the grid empty - 11 beers, 12 spaces. That space can carry the one
+   thing the house wants a guest to know this month (gift cards in December, the mug club, NYE tickets).
+
+   It is data, not code. beers.json:
+     "card": { "title": "Gift cards",
+               "lines": ["Buy $50, get a $10 bonus card", "Buy $100, get a $25 bonus card"],
+               "foot":  "Through Dec 24 · bonus cards good Jan 2 – Mar 31",
+               "wire":  "gift cards · buy $50, get a $10 bonus card · buy $100, get $25 · through Dec 24",
+               "from": "2026-11-27", "until": "2026-12-24" }
+   No card in the file, outside its dates, an even number of beers (no free space), fifteen or more beers (cells too
+   small), or the doors closed = nothing is drawn. The ticker line follows the same dates and needs no free space.
+   Dates are Denver days, inclusive. Amounts ($50) are set in the price face automatically. */
+(function(){
+  function today(){
+    try{ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
+    catch(e){ return new Date().toISOString().slice(0,10); }
+  }
+  function live(){
+    var c=window.__card;
+    if(!c || typeof c!=='object' || !c.title) return null;
+    var d=today();
+    if(c.from && d<String(c.from)) return null;
+    if(c.until && d>String(c.until)) return null;
+    return c;
+  }
+  window.__cardLive=live;
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }
+  function money(s,tag){ return esc(s).replace(/\$\d+(?:\.\d\d)?/g,'<'+tag+'>$&</'+tag+'>'); }
+
+  function place(s){
+    var floor=document.getElementById('floor'); if(!floor) return;
+    var el=document.getElementById('promoCard');
+    var c=live(), n=((s&&s.beers)||[]).length;
+    var room = n>=7 && n<15 && n%2===1;                     // two rows, one cell left over, cells still card-sized
+    if(!c || !room || document.body.classList.contains('curtained')){ if(el) el.remove(); return; }
+    var html='<div class="promo-h">'+esc(c.title)+'</div>'
+      +(Array.isArray(c.lines)?c.lines:[]).slice(0,3).map(function(l){ return '<div class="promo-l">'+money(l,'b')+'</div>'; }).join('')
+      +(c.foot?'<div class="promo-f">'+esc(c.foot)+'</div>':'');
+    if(!el){ el=document.createElement('div'); el.id='promoCard'; }
+    el.className='promo'+(n>=13?' tight':'');
+    if(el.__html!==html){ el.innerHTML=html; el.__html=html; }
+    if(floor.lastElementChild!==el) floor.appendChild(el);   // always the last cell, whatever order the tanks arrived in
+  }
+  function wire(){
+    var c=live(), line=(c&&c.wire)?money(c.wire,'em'):'';
+    if(line!==(window.__cardWire||'')){ window.__cardWire=line; if(window.__buildWire) window.__buildWire(); }
+  }
+  var _r=render;
+  render=function(s){ var out=_r(s); try{ place(s); wire(); }catch(e){ console.warn('[card]',e); } return out; };
 })();
 </script>
 </body>
