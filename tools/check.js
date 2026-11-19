@@ -212,6 +212,71 @@ async function open(browser, file, iso, freeze, opt) {
     }
   }
 
+  /* ---- Nov 18 2026: the header line and THE CARD (beers.json "card", drawn in the tank space an odd count leaves) ----
+     "Brewed in house" is only on the header when every tap is. The card appears only inside its dates, only when
+     there is a free space, never over a tank, the rail or Also Pouring, and its text never spills. */
+  {
+    const card = { title: 'Gift cards', lines: ['Buy $50, get a $10 bonus card', 'Buy $100, get a $25 bonus card'],
+                   foot: 'Through Dec 24 · bonus cards good Jan 2 – Mar 31',
+                   wire: 'gift cards · buy $50, get a $10 bonus card · buy $100, get $25 · through Dec 24', from: '2026-11-27', until: '2026-12-24' };
+    const plus = (b, extra) => Object.assign(clone(b), extra || {});
+    const house = clone(eleven); house.beers.forEach(b => { delete b.guest; if (b.sash === 'guest tap') delete b.sash; });
+    const guest = clone(house); guest.beers[3].guest = true; guest.beers[3].sash = 'guest tap';
+    const twelveH = clone(house); { const b = clone(house.beers[0]); b.id += '-t'; twelveH.beers.push(b); }
+    const thirteen = clone(twelveH); { const b = clone(house.beers[1]); b.id += '-th'; thirteen.beers.push(b); }
+    const nine = clone(house); nine.beers = nine.beers.slice(0, 9);
+    const longCard = { title: 'New Year’s Eve', lines: ['Tickets $35 at the bar', 'Midnight toast included', 'Doors 8pm'], foot: 'Thursday Dec 31 · 21 and over · limited to 120', from: '2026-11-27', until: '2026-12-31' };
+    const CASES = [
+      { name: 'card: 11 taps, all house',        at: '2026-12-03T16:00:00-07:00', beers: plus(house, { card }),    card: true,  wire: true,  head: /brewed in house/i },
+      { name: 'card: 11 taps, a guest tap on',   at: '2026-12-03T16:00:00-07:00', beers: plus(guest, { card }),    card: true,  wire: true,  head: /^on tap today$/i },
+      { name: 'card: 9 taps',                    at: '2026-12-03T16:00:00-07:00', beers: plus(nine, { card }),     card: true,  wire: true },
+      { name: 'card: 13 taps (tight)',           at: '2026-12-03T16:00:00-07:00', beers: plus(thirteen, { card }), card: true,  wire: true },
+      { name: 'card: 12 taps, no free space',    at: '2026-12-03T16:00:00-07:00', beers: plus(twelveH, { card }),  card: false, wire: true },
+      { name: 'card: 16 taps, cells too small',  at: '2026-12-03T16:00:00-07:00', beers: plus(many, { card }),     card: false, wire: true },
+      { name: 'card: the day before it starts',  at: '2026-11-25T16:00:00-07:00', beers: plus(house, { card }),    card: false, wire: false },
+      { name: 'card: its first day, snow + lights', at: '2026-11-27T18:00:00-07:00', beers: plus(house, { card }), card: true,  wire: true },
+      { name: 'card: its last day',              at: '2026-12-24T14:00:00-07:00', beers: plus(house, { card }),    card: true,  wire: true },
+      { name: 'card: the day after it ends',     at: '2026-12-26T16:00:00-07:00', beers: plus(house, { card }),    card: false, wire: false },
+      { name: 'card: none in the file',          at: '2026-12-03T16:00:00-07:00', beers: house,                    card: false, wire: false, head: /brewed in house/i },
+      { name: 'card: three lines and a long foot', at: '2026-12-03T16:00:00-07:00', beers: plus(house, { card: longCard }), card: true, wire: false },
+      { name: 'card: band day (trivia)',         at: '2026-12-01T19:30:00-07:00', beers: plus(house, { card }),    card: true,  wire: true },
+    ];
+    for (const cs of CASES) {
+      const { page, errors } = await open(browser, target, cs.at, true, cs);
+      await new Promise(r => setTimeout(r, 900));
+      const L = await page.evaluate(() => {
+        const R = e => { if (!e) return null; const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom }; };
+        const hit = (a, b) => a && b && !(a.r <= b.l || a.l >= b.r || a.b <= b.t || a.t >= b.b);
+        const el = document.getElementById('promoCard'), c = R(el), rail = R(document.querySelector('.rail'));
+        const units = [...document.querySelectorAll('#floor .unit')].map(R);
+        const hk = document.querySelector('#hero .hk');
+        const lowest = Math.max(...[...document.querySelectorAll('#floor .unit .price')].map(p => R(p).b));
+        const spill = el ? [...el.children].some(k => k.scrollWidth > k.clientWidth + 1) || el.scrollHeight > el.clientHeight + 1 : false;
+        const small = el ? Math.min(...[...el.children].map(k => parseFloat(getComputedStyle(k).fontSize))) : null;
+        return { card: !!el, curtained: document.body.classList.contains('curtained'), head: hk ? hk.textContent.trim() : '',
+                 overUnit: el ? units.some(u => hit(c, u)) : false, overSide: el ? hit(c, R(document.querySelector('.side'))) : false,
+                 overRanger: el ? hit(c, R(document.querySelector('.ranger img'))) : false, overBand: el ? hit(c, document.getElementById('banner').classList.contains('show') ? R(document.getElementById('banner')) : null) : false,
+                 clear: el ? rail.t - c.b : null, inFloor: el ? (c.l >= R(document.getElementById('floor')).l - 1 && c.r <= R(document.getElementById('floor')).r + 1) : null,
+                 spill, small, lowest, rail: rail.t, wire: /gift cards/i.test((document.getElementById('railMsg') || {}).textContent || '') };
+      });
+      const n = cs.name;
+      say(errors.length === 0, `${n}: no page errors` + (errors.length ? ' -> ' + errors.slice(0, 2).join(' | ') : ''));
+      say(!L.curtained, `${n}: the doors are open in this check`);
+      say(L.card === cs.card, `${n}: card ${L.card ? 'drawn' : 'not drawn'} (expected ${cs.card ? 'drawn' : 'not drawn'})`);
+      if (L.card) {
+        say(!L.overUnit && !L.overSide && !L.overRanger && !L.overBand && L.inFloor, `${n}: the card sits in its own space (tank ${L.overUnit}, Also Pouring ${L.overSide}, ranger ${L.overRanger}, band ${L.overBand})`);
+        say(L.clear >= 24, `${n}: the card clears the rail by 24px+ (${Math.round(L.clear)}px)`);
+        say(!L.spill, `${n}: nothing on the card spills`);
+        say(L.small >= 13, `${n}: the smallest line on the card is ${L.small}px`);
+      }
+      // 20px here, not the 24 of the scenes above: nine taps across five columns sits at 22 with or without a card
+      say(L.lowest <= L.rail - 20, `${n}: every beer card still clears the rail (lowest ${Math.round(L.lowest)}, rail ${Math.round(L.rail)})`);
+      say(L.wire === cs.wire, `${n}: ticker ${L.wire ? 'carries' : 'does not carry'} the card's line (expected ${cs.wire ? 'carries' : 'not'})`);
+      if (cs.head) say(cs.head.test(L.head), `${n}: header line reads "${L.head}"`);
+      await page.close();
+    }
+  }
+
   if (compareTo) {
     const { PNG } = require('pngjs'); const pixelmatch = require('pixelmatch');
     const shots = [];

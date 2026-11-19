@@ -128,7 +128,9 @@ function festOverride(s){
       h.textContent='';
       /* the masthead, Colby's words exactly: the title, then one line. The brewers' pick lives on its tank only, never up here.
          ("house beers" means the promo pours at Platt Park - never use it for the whole list) */
-      h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk','On tap today \u00b7 Brewed in house'));
+      /* Nov 18 2026: "brewed in house" comes off the line while a guest tap is pouring - it isn't true of that one. */
+      var guestOn=(s.beers||[]).some(function(b){ return b && b.guest; });
+      h.appendChild(mk('hn','What\u2019s pouring')); h.appendChild(mk('hk', guestOn ? 'On tap today' : 'On tap today \u00b7 Brewed in house'));
       h.classList.add('on'); })();
     // Sept 22: the 10oz price rides the gold tag again - the bar uses the wall to answer "how much is a 10?". From beers.json price10; no price10, no 10oz.
     (s.beers||[]).forEach(function(b){ if(!b.price10||b.tenOzOnly) return; var u=document.getElementById('u-'+b.id); var tag=u&&u.querySelector('.price .tag'); if(!tag||tag.querySelector('.p10b')) return;
@@ -278,7 +280,7 @@ function festOverride(s){
       var line=t?'4-packs to go \u00b7 '+t.replace(/\$(\d+)/g,'<em>$$$1</em>'):''; if(line!==window.__packWire){ window.__packWire=line; buildWire(); } }catch(e){} };
     x.onerror=function(){}; x.send(); }catch(e){} }
   setTimeout(loadPacks,3000); setInterval(loadPacks,600000);
-  function wireItems(){ return [...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
+  function wireItems(){ return [...(window.__cardWire?['<span class="wi">'+window.__cardWire+'</span>']:[]), ...(window.__packWire?['<span class="wi">'+window.__packWire+'</span>']:[]), ...liveItems, ...(window.__skyWire?['<span class="wi">'+window.__skyWire+'</span>']:[]), ...(window.__mapWire?['<span class="wi">'+window.__mapWire+'</span>']:[]), ...LORE.map(t=>'<span class="wi">'+t+'</span>')]; }
   function buildWire(){
     const el=$('railMsg'); if(!el) return;
     const items=wireItems(); if(!items.length) return;

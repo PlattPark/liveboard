@@ -86,6 +86,27 @@ check("Plattmosphere back on a keg: vessel, level, 10oz", (pm["vessel"], pm["rem
 check("the change line names the price", "10oz $6.25" in change)
 check("the price note is on its own line so it is posted, not swallowed by a tick", "\n:moneybag:" in rep[2])
 
+# a keg beer that kicked and comes back with no level given is a new, full keg, and is no longer on its "last keg"
+old_keg = dict(next(b for b in wall() if b["name"] == "Nadare"), offSince="2026-11-12")      # 1091 oz, sash "last keg", levelAt Oct 19
+data = {"beers": [b for b in wall() if b["name"] != "Nadare"], "recent": [old_keg]}
+c.handle_one({"ts": "1.5", "text": "nadare is back on"}, data, [], "C1", "back", "nadare", "nadare is back on")
+nd = next(b for b in data["beers"] if b["name"] == "Nadare")
+check("a keg beer back on with no level: a full keg, measured now, last-keg sash gone",
+      (nd["remainingOz"], nd.get("sash"), nd["levelAt"] > "2026-11-18"), (1984, None, True))
+old_tank = dict(next(b for b in wall() if b["name"] == "Witbier"), offSince="2026-11-12")
+data = {"beers": [b for b in wall() if b["name"] != "Witbier"], "recent": [old_tank]}
+c.handle_one({"ts": "1.6", "text": "witbier is back on"}, data, [], "C1", "back", "witbier", "witbier is back on")
+wt = next(b for b in data["beers"] if b["name"] == "Witbier")
+check("a tank beer back on with no level keeps its number until someone measures it", (wt["remainingOz"], wt["levelAt"]), (20000, "2026-10-19T18:10:29.035Z"))
+data = {"beers": wall(), "recent": []}
+c.handle_one({"ts": "1.7", "text": "phaded is on last keg"}, data, [], "C1", "lastkeg", "phaded", None)
+ph = next(b for b in data["beers"] if b["name"] == "Phaded")
+check("'last keg' counts as a measurement, so an older sheet reading can't redraw it as a tank",
+      (ph["vessel"], ph["sash"], ph["levelAt"] > "2026-11-18"), ("keg-half", "last keg", True))
+stale = {"sheet": "November 26", "tab": "wk5", "updated": "2026-11-16T19:58:54.111Z", "levels": [{"name": "Phaded", "sv": "5", "bbls": 8}]}
+changes, summary = c.cellar_apply(stale, data, {})
+check("...which is what happened to Nadare on Nov 18", (ph["vessel"], changes), ("keg-half", []))
+
 data = {"beers": wall(), "recent": []}
 change, rep = c.handle_one({"ts": "2.0", "text": "86 nadare"}, data, [], "C1", "remove", "nadare", None)
 check("an 86 says where it lands without promising the website", ("website" in rep[2], "the board and the menu" in rep[2]), (False, True))
@@ -309,7 +330,7 @@ try:
         if method == "reactions.add": return {"ok": True}
         return {"ok": True}
     open(os.environ["COMPUTA_TIMERS"], "w").write("{}")
-    c.slack = fake_slack
+    c.slack = fake_slack; c.square = None
     wd = {"beers": wall(), "recent": []}
     c.fetch_beers = lambda: (wd, "sha")
     c.commit_beers = lambda d, sha, m: commits.append(m) or True

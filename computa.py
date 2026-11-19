@@ -628,6 +628,17 @@ def ten_oz_for(beer, beers):
         return max(sorted(set(peers)), key=peers.count)
     return TEN_OZ.get(pint)
 
+def fresh_keg(beer, said_level):
+    """A beer that kicked and comes back with no level given: if it pours from a keg, it is a new, full keg, and
+    it is no longer on its 'last keg'. (A tank keeps its old number until someone gives a level or the sheet does.)"""
+    if said_level:
+        return
+    if beer.get("sash") == "last keg":
+        beer.pop("sash", None)
+    if beer.get("vessel") == "keg-half":
+        beer["remainingOz"] = VESSELS["1/2 BBL"][1]
+        beer["levelAt"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
 def refresh_ten_oz(beer, beers):
     """A beer coming back keeps everything it had, except a 10oz price the ladder moved past while it was off.
     (Nov 2026: Plattmosphere and Half Acre Waybird both came back a dollar under the register.)
@@ -990,6 +1001,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             recent.remove(b); b.pop("offSince", None)
             b["tappedDaysAgo"] = 0
             lvl = read_level(extra if isinstance(extra, str) else msg.get("text", ""), b)
+            fresh_keg(b, lvl)
             px = refresh_ten_oz(b, beers)
             beers.append(b)
             change = b["name"] + " back on" + ("; %s 10oz $%.2f" % (b["name"], b["price10"]) if px else "")
@@ -1034,6 +1046,9 @@ def handle_one(msg, data, queue, channel, action, item, extra):
             b["vesselLabel"] = "1/2 BBL"
             b["remainingOz"] = min(b.get("remainingOz", cap), int(cap * 0.55))
             b["sash"] = "last keg"
+            # someone at the bar just told us what this beer is pouring from: that is a measurement, and an older
+            # sheet reading must not redraw it as a tank (Nov 18 2026: it did, to Nadare)
+            b["levelAt"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
             change = b["name"] + " last keg"
             reply = ":hourglass: *%s* marked last keg - the sash is up on the board." % b["name"]
         else:
@@ -1292,6 +1307,7 @@ def handle_one(msg, data, queue, channel, action, item, extra):
         if known:   # "just tapped witbier" for a beer we already know: restore it, don't invent it
             recent.remove(known); known.pop("offSince", None); known["tappedDaysAgo"] = 0
             lvl = read_level(msg.get("text", ""), known)
+            fresh_keg(known, lvl)
             px = refresh_ten_oz(known, beers)
             beers.append(known)
             change = known["name"] + " back on" + ("; %s 10oz $%.2f" % (known["name"], known["price10"]) if px else "")
@@ -1745,6 +1761,8 @@ def cellar_apply(reading, data, state, force=False):
     if skipped: summary.append("Kept the newer Slack number for " + ", ".join(skipped) + ".")
     if offtank: summary.append("Not in a serving tank (kegs / cans / fermenter), left as the wall has it: " + ", ".join(offtank) + ".")
     if unknown: summary.append("Not on the wall: " + ", ".join(unknown) + ".")
+    for n in (reading.get("notes") or [])[:3]:          # the sheet script saying which week it passed over, and why
+        summary.append(":information_source: " + str(n)[:200])
     return changes, summary
 
 def cellar_sync(force=False, reply=None):

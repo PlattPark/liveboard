@@ -256,7 +256,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = tapFingerprint(x.responseText);
-        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null;
+        SIM.beers  = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__also = Array.isArray(d.also) ? d.also : null; window.__card = d.card || null;
         // remember the last good list so an outage shows something recent,
         // not whatever was compiled into this file months ago
         try{ localStorage.setItem('ppb_taps', x.responseText); }catch(_){}
@@ -274,7 +274,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
         const d = JSON.parse(cached);
         if(d && Array.isArray(d.beers) && d.beers.length){
           d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
-          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || '';
+          SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__card = d.card || null;
           console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
           return;
         }
