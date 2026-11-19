@@ -22,7 +22,7 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
-  "pitcher_oz": 480.0,
+  "pitcher_oz": 544.0,
   "ledger_v": 2,
   "ledger": {
    "Platty Lite": {
@@ -42,23 +42,23 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 280.0,
+    "oz": 290.0,
     "pints": 15.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 308.0,
-    "pints": 18.0
+    "oz": 324.0,
+    "pints": 19.0
    },
    "Witbier": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 292.0,
-    "pints": 17.0
+    "oz": 308.0,
+    "pints": 18.0
    },
    "Tropical Snow Dance": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 944.0,
-    "pints": 54.0
+    "oz": 1002.0,
+    "pints": 57.0
    },
    "Nadare": {
     "base": "2026-11-18T23:15:32+00:00",
@@ -72,16 +72,16 @@
    },
    "Half Acre Waybird": {
     "base": "2026-11-19T02:42:59+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Plattmosphere": {
     "base": "2026-11-19T02:42:59+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 42.0,
+    "pints": 2.0
    }
   },
-  "orders_since": "2026-11-19T03:00:50+00:00"
+  "orders_since": "2026-11-19T03:31:20+00:00"
  },
  "threads": {
   "1795043724.529389": {
