@@ -1,3 +1,5 @@
 {
- "cellar_url": "https://script.google.com/macros/s/AKfycbzCn6KtXrwYywJoHwcA1aLUaBSx00KRPvPq3zNpriTqFupjSu8FG7idU8y6CoyLBBDT/exec"
+ "_note": "Nov 18 2026: cellar_url is paused. The sheet script serves the highest-numbered week tab that has numbers, and Greg's November file has last month's count left in its wk5 tab, so it served Nov 2 levels as if they were new. Put the address back in cellar_url once the script picks the last filled week before the first empty one.",
+ "cellar_url": "",
+ "cellar_url_paused": "https://script.google.com/macros/s/AKfycbzCn6KtXrwYywJoHwcA1aLUaBSx00KRPvPq3zNpriTqFupjSu8FG7idU8y6CoyLBBDT/exec"
 }
