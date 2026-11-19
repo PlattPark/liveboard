@@ -6,6 +6,66 @@
  },
  "started": "2026-11-19T05:27:42",
  "shadow": {
-  "map": {}
+  "map": {},
+  "ledger_v": 2,
+  "ledger": {
+   "Platty Lite": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 778.0,
+    "pints": 40.0
+   },
+   "Astronaut Amber": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 580.0,
+    "pints": 35.0
+   },
+   "Nutorious": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 692.0,
+    "pints": 34.0
+   },
+   "Madagascar Dream": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 306.0,
+    "pints": 16.0
+   },
+   "Grandma's Pumpkin Pie": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 340.0,
+    "pints": 20.0
+   },
+   "Witbier": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 324.0,
+    "pints": 19.0
+   },
+   "Tropical Snow Dance": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 1082.0,
+    "pints": 62.0
+   },
+   "Nadare": {
+    "base": "2026-11-18T23:15:32+00:00",
+    "oz": 320.0,
+    "pints": 20.0
+   },
+   "Phaded": {
+    "base": "2026-11-16T19:58:54.111Z",
+    "oz": 766.0,
+    "pints": 40.0
+   },
+   "Half Acre Waybird": {
+    "base": "2026-11-19T02:42:59+00:00",
+    "oz": 64.0,
+    "pints": 4.0
+   },
+   "Plattmosphere": {
+    "base": "2026-11-19T02:42:59+00:00",
+    "oz": 58.0,
+    "pints": 3.0
+   }
+  },
+  "orders_since": "2026-11-19T05:42:27+00:00",
+  "pitcher_oz": 0
  }
 }
