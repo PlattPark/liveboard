@@ -220,7 +220,8 @@ async function open(browser, file, iso, freeze, opt) {
                    foot: 'Through Dec 24 · bonus cards good Jan 2 – Mar 31',
                    wire: 'gift cards · buy $50, get a $10 bonus card · buy $100, get $25 · through Dec 24', from: '2026-11-27', until: '2026-12-24' };
     const plus = (b, extra) => Object.assign(clone(b), extra || {});
-    const house = clone(eleven); house.beers.forEach(b => { delete b.guest; if (b.sash === 'guest tap') delete b.sash; });
+    // the live file may carry a card of its own (it does from Nov 19 2026): every case below sets its own or has none
+    const house = clone(eleven); delete house.card; house.beers.forEach(b => { delete b.guest; if (b.sash === 'guest tap') delete b.sash; });
     const guest = clone(house); guest.beers[3].guest = true; guest.beers[3].sash = 'guest tap';
     const twelveH = clone(house); { const b = clone(house.beers[0]); b.id += '-t'; twelveH.beers.push(b); }
     const thirteen = clone(twelveH); { const b = clone(house.beers[1]); b.id += '-th'; thirteen.beers.push(b); }

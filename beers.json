@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-18T19:55:00-07:00",
- "updatedBy": "Waybird and Plattmosphere kegs set from what the register has rung since each was tapped",
+ "updated": "2026-11-19T08:20:00-07:00",
+ "updatedBy": "gift card card on the wall, the ticker and the phone menu through Dec 24",
  "beers": [
   {
    "id": "platty-lite",
@@ -484,5 +484,16 @@
    "sub": "Boochcraft Kiwi Citrus",
    "price": "$9"
   }
- ]
+ ],
+ "card": {
+  "title": "Gift cards",
+  "lines": [
+   "Buy $50, get a $10 bonus card",
+   "Buy $100, get a $25 bonus card"
+  ],
+  "foot": "Through Dec 24 · bonus cards good Jan 2 – Mar 31",
+  "wire": "gift cards · buy $50, get a $10 bonus card · buy $100, get $25 · through Dec 24",
+  "from": "2026-11-19",
+  "until": "2026-12-24"
+ }
 }
