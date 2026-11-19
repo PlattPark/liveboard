@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-11-18T20:09Z from src @ f9ad85b - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-19T00:39Z from src @ 03c07c0 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,7 +10,11 @@
 <style>
   /* the brand faces live in the repo (OFL) - the wall depends on nothing outside itself */
   @font-face{font-family:'Anton';src:url(fonts/anton.woff2) format('woff2');font-display:swap}
-  @font-face{font-family:'Archivo Black';src:url(fonts/archivoblack.woff2) format('woff2');font-display:swap}
+  /* Archivo Black carries two sets of line metrics and Windows reads the taller one (1.347 em a line, not 1.088),
+     so the TV - Edge on Windows - laid this face out 24% taller than the Linux render check and the Macs it was
+     designed on. Pinning the metrics here makes every platform use the same numbers: what the check passes is
+     what the wall shows. (Anton and Barlow already agree everywhere.) */
+  @font-face{font-family:'Archivo Black';src:url(fonts/archivoblack.woff2) format('woff2');font-display:swap;ascent-override:87.8%;descent-override:21%;line-gap-override:0%}
   @font-face{font-family:'Barlow';font-weight:400;src:url(fonts/barlow-400.woff2) format('woff2');font-display:swap}
   @font-face{font-family:'Barlow';font-weight:400;font-style:italic;src:url(fonts/barlow-400i.woff2) format('woff2');font-display:swap}
   @font-face{font-family:'Barlow';font-weight:500;src:url(fonts/barlow-500.woff2) format('woff2');font-display:swap}
