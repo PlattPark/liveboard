@@ -237,6 +237,53 @@ clock["t"] = T0 + timedelta(hours=8); open(os.environ["COMPUTA_TIMERS"], "w").wr
 order(T0 + timedelta(hours=7, minutes=30), ("\U0001F948 Plattmosphere Pint", 1))
 c.shadow_sales(old, data)
 check("it is rebuilt once: the next pass counts forward from there", old["shadow"]["ledger"]["Plattmosphere"]["oz"], 74)
+
+# Kegs follow the register (Nov 19 2026). Tanks do not.
+check("without the wall's file version in hand, nothing above ever wrote a keg", next(b for b in w if b["name"] == "Half Acre Waybird")["remainingOz"], 1984)
+commits, posts = [], []
+_commit, _slack = c.commit_beers, c.slack
+c.commit_beers = lambda d, sha, msg: (commits.append((json.loads(json.dumps(d)), sha, msg)) or True)
+c.slack = lambda method, **kw: (posts.append(kw.get("text", "")) or {"ok": True})
+kw_ = wall()
+for b in kw_: b["levelAt"] = T0.isoformat()
+keg = next(b for b in kw_ if b["name"] == "Plattmosphere"); keg.update(vessel="keg-half", vesselLabel="1/2 BBL", remainingOz=1984)
+last = next(b for b in kw_ if b["name"] == "Nadare"); last["remainingOz"] = 100
+tank = next(b for b in kw_ if b["name"] == "Phaded")
+kdata, ks = {"beers": kw_, "recent": []}, {"shadow": {}}
+del orders[:]
+clock["t"] = T0 + timedelta(hours=1); open(os.environ["COMPUTA_TIMERS"], "w").write("{}")
+order(T0 + timedelta(minutes=20), ("\U0001F948 Plattmosphere Pint", 5), ("Nadare Pint", 4), ("Phaded", 6))
+c.shadow_sales(ks, kdata, "sha1")
+now1 = (T0 + timedelta(hours=1)).isoformat()
+check("a keg drops by what the register rang, and is dated to that pass", (keg["remainingOz"], keg["levelAt"]), (1984 - 80, now1))
+check("its count restarts from there", ks["shadow"]["ledger"]["Plattmosphere"], {"base": now1, "oz": 0, "pints": 0})
+check("a last keg stops at four pints - it is never drawn empty while it is on the wall", last["remainingOz"], 64)
+check("a tank is left to Greg's count, and its sales are still tallied", (tank["remainingOz"], ks["shadow"]["ledger"]["Phaded"]["oz"]), (20000, 96))
+check("one write carries every keg, against the file version that was read",
+      (len(commits), commits[0][1], sorted(b["name"] for b in commits[0][0]["beers"] if b["levelAt"] == now1)), (1, "sha1", ["Nadare", "Plattmosphere"]))
+clock["t"] = T0 + timedelta(hours=1, minutes=16)
+order(T0 + timedelta(hours=1, minutes=5), ("\U0001F948 Plattmosphere Pint", 4))
+c.shadow_sales(ks, kdata, "sha2")
+check("kegs are written at most about twice an hour", (len(commits), keg["remainingOz"]), (1, 1904))
+clock["t"] = T0 + timedelta(hours=1, minutes=32)
+c.shadow_sales(ks, kdata, "sha2")
+check("the next write carries what was rung in between", (len(commits), keg["remainingOz"]), (2, 1904 - 64))
+clock["t"] = T0 + timedelta(hours=3); keg["remainingOz"] = 40
+order(T0 + timedelta(hours=2), ("\U0001F948 Plattmosphere Pint", 5))
+c.shadow_sales(ks, kdata, "sha3")
+check("more rung than the keg held: a fresh keg is on, and the count carries into it", keg["remainingOz"], 40 - 80 + 1984)
+check("#board is told which keg was assumed", (len(posts), "Plattmosphere" in (posts or [""])[0]), (1, True))
+c.commit_beers = lambda d, sha, msg: False
+clock["t"] = T0 + timedelta(hours=4)
+order(T0 + timedelta(hours=3, minutes=30), ("\U0001F948 Plattmosphere Pint", 3))
+c.shadow_sales(ks, kdata, "sha4")
+check("if the write fails the wall does not move, and the count is kept for the next pass",
+      (keg["remainingOz"], ks["shadow"]["ledger"]["Plattmosphere"]["oz"]), (1944, 48))
+c.KEG_MODE = "off"; c.commit_beers = lambda d, sha, msg: (commits.append((d, sha, msg)) or True)
+clock["t"] = T0 + timedelta(hours=5)
+c.shadow_sales(ks, kdata, "sha5")
+check("KEG_LEVELS=off leaves the kegs alone", (len(commits), keg["remainingOz"]), (3, 1944))
+c.KEG_MODE, c.commit_beers, c.slack = "on", _commit, _slack
 c.datetime, c.time = datetime, __import__("time")
 
 # ---- 7. Greg's sheet ---------------------------------------------------------------------------------------------------

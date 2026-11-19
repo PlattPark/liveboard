@@ -1810,13 +1810,19 @@ def cellar_sync(force=False, reply=None):
         json.dump(state, open(STATE_PATH, "w"), indent=1)
 
 
-# ---- SHADOW MODE (Oct 20 2026, built while Colby is away; nothing here changes the wall) ----
+# ---- SHADOW MODE (Oct 20 2026, built while Colby is away; nothing here changes the wall, except the kegs in 3) ----
 # 1. Register mirror: when a bartender marks "<Beer> Pint" sold out at the POS, say in #board what the wall WOULD do.
 # 2. Sales-driven levels: pints / 10oz / crowlers rung since the last measured level, turned into barrels, posted
 #    once a morning next to the level on the wall - compare with Greg's Monday number before trusting it.
 # MIRROR / SALES_LEVELS env: "shadow" (default) posts only; "off" stops; "on" is reserved for after the review.
 MIRROR_MODE = os.environ.get("MIRROR", "shadow").strip().lower()
 SALES_MODE  = os.environ.get("SALES_LEVELS", "shadow").strip().lower()
+# 3. Kegs (Nov 19 2026, no longer shadow): a keg on the wall follows the register. Tanks do not - they stay on Greg's
+#    count until the register's numbers have been checked against his Nov 23 sheet. KEG_LEVELS=off stops it.
+KEG_MODE    = os.environ.get("KEG_LEVELS", "on").strip().lower()
+KEG_STEP_OZ = 48           # leave the wall alone for less than three pints
+KEG_EVERY   = 25 * 60      # and write the kegs at most about twice an hour
+KEG_FLOOR   = 64           # a last keg is never drawn drier than four pints while it is still on the wall
 OZ_BY_SIZE  = (("pint", 16), ("10oz", 10), ("10 oz", 10), ("crowler", 32), ("taster", 4))
 
 def _mt_now():
@@ -1991,7 +1997,32 @@ def shadow_mirror(state, data):
             slack("chat.postMessage", channel=BOARD_CHANNEL, text=msg)
         print("  " + msg)
 
-def shadow_sales(state, data):
+def keg_plan(beers, led):
+    """What the kegs on the wall should read by the register: [(name, oz now, oz after, a fresh keg was assumed)].
+    A keg has no weekly count; what has been rung since its level was set is the only measure there is.
+    More rung than the keg held means a fresh keg went on without anyone saying so, and the count carries into it.
+    A 'last keg' has no next keg: it stops at a few pints and waits for the bar to 86 it."""
+    caps = {v: cap for v, cap in VESSELS.values()}
+    out = []
+    for b in beers:
+        vessel = str(b.get("vessel") or "")
+        l = led.get(b.get("name")) or {}
+        cur, oz = b.get("remainingOz"), l.get("oz") or 0
+        if not vessel.startswith("keg") or isinstance(cur, bool) or not isinstance(cur, (int, float)) or oz <= 0:
+            continue
+        if l.get("base") != (b.get("levelAt") or ""):
+            continue                                         # that count was not made from this level
+        new, fresh = cur - oz, False
+        if b.get("sash") == "last keg" or vessel not in caps:
+            new = max(new, min(cur, KEG_FLOOR))
+        elif new <= 0:
+            while new <= 0:
+                new += caps[vessel]
+            fresh = True
+        out.append((b["name"], cur, int(round(new)), fresh))
+    return out
+
+def shadow_sales(state, data, sha=None):
     if SALES_MODE == "off" or not (square and square.enabled()):
         return
     sh = state.setdefault("shadow", {})
@@ -2036,6 +2067,27 @@ def shadow_sales(state, data):
     except Exception as e:
         print("  shadow sales: %s" % e); return
     unattributed += sh.get("pitcher_oz", 0)
+    # Kegs follow the register. The wall and the count move together: a keg's level drops by what was rung, its level
+    # time becomes this pass's time, and its count restarts from there. If the write to the wall fails, neither moves
+    # and the next pass tries again with everything rung since.
+    if KEG_MODE == "on" and sha and time.time() - tm.get("kegs_at", 0) >= KEG_EVERY:
+        plan = [p for p in keg_plan(data.get("beers", []), led) if p[2] != p[1]]
+        if plan and any(led[p[0]]["oz"] >= KEG_STEP_OZ for p in plan):
+            fresh = json.loads(json.dumps(data))
+            for n, _, new, _ in plan:
+                fb = next(x for x in fresh["beers"] if x.get("name") == n)
+                fb["remainingOz"], fb["levelAt"] = new, now_iso
+            if commit_beers(fresh, sha, "kegs by the register: " + ", ".join("%s %d oz" % (p[0], p[2]) for p in plan)):
+                for n, _, new, assumed in plan:
+                    beers[n]["remainingOz"], beers[n]["levelAt"] = new, now_iso
+                    led[n] = {"base": now_iso, "oz": 0, "pints": 0}
+                    if assumed and not DRY:
+                        slack("chat.postMessage", channel=BOARD_CHANNEL, text=(
+                            ":beer: The register has rung more *%s* than the keg on the wall held, so I've drawn a fresh keg "
+                            "and carried the count into it. If that was the last one: `%s is on last keg`." % (n, n.lower())))
+                rebased = True
+                tm["kegs_at"] = time.time(); save_timers(tm)
+                print("  kegs by the register: " + ", ".join("%s %d -> %d oz" % (p[0], p[1], p[2]) for p in plan))
     mt = _mt_now(); day = mt.strftime("%Y-%m-%d")
     report_due = mt.hour == 10 and sh.get("sales_posted") != day
     held = (now - since_dt).total_seconds()
@@ -2065,9 +2117,9 @@ def shadow_tick():
         return
     try:
         state = load_json(STATE_PATH, {}) or {}
-        data, _ = fetch_beers()
+        data, sha = fetch_beers()
         shadow_mirror(state, data)
-        shadow_sales(state, data)
+        shadow_sales(state, data, sha)
         if not DRY:
             fresh = load_json(STATE_PATH, {}) or {}          # run_once may have written since we loaded
             fresh["shadow"] = state.get("shadow", {})
