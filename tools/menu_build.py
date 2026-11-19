@@ -47,6 +47,7 @@ LINKS = {
     "Slopper": "{Slopper|Carnitas} / Veggie {Slopper|Veggie}",
     "Pearl Street Chop": "{Pearl Street Chop|Regular}",
     "Honey Toast": "{Honey Toast|Regular}",
+    "Gates Chopped Greek Salad": "{Chopped Greek Salad}",        # the bar's button; the "Gates ..." one is the online store's
     "Bavarian Pretzel": "{Bavarian Pretzel}",
     "Packaged Candy & Snacks": "{Candy Bars}",
     "Ros\u00e9": "{Rose}",
