@@ -59,6 +59,7 @@ LINKS = {
     "Hard Italian Soda": "{Italian Soda}",
     "Hard Seltzer": "{Hard Seltzer}",
     "Frozen Drinks": "{Frozen Cocktail}",
+    "Transfusion": "{Draft Cocktail}",
 }
 # Shown on the menu's Also Pouring under the wall's categories (things the wall doesn't need to carry)
 ALSO_EXTRAS = [("Cider Taster", "$4", "a small pour of either cider")]       # price is a fallback; the register's wins
@@ -86,7 +87,7 @@ def money(x):
 
 def norm(s):
     s = html.unescape(re.sub(r"<[^>]+>", "", str(s or "")))
-    s = re.sub(r"^\s*new\s+", "", s, flags=re.I)
+    s = re.sub(r"^\s*(?:new|this month)\s+", "", s, flags=re.I)        # the little tags in front of a name
     return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
@@ -242,7 +243,7 @@ def price_check(menu_html, items, skip_names):
     for m in re.finditer(r'<span class="in">(.*?)</span><span class="dots"></span><span class="ip">(.*?)</span>', menu_html):
         raw, shown = m.group(1), html.unescape(m.group(2))
         label = html.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
-        label = re.sub(r"^NEW\s+", "", label)
+        label = re.sub(r"^(?:NEW|THIS MONTH)\s+", "", label)
         k = norm(raw)
         if k in skip_names:
             continue
@@ -254,6 +255,71 @@ def price_check(menu_html, items, skip_names):
         if html.unescape(shown).strip() != html.unescape(reg):
             diffs.append((m.start(2), m.end(2), label, shown, esc(reg)))
     return diffs, unmatched
+
+
+# ---------------------------------------------------------------- Nov 18 2026: lines that follow the register
+# The menu's prices have followed the register since October. These make its LINES follow it too, where a line
+# is only true while a button exists: an item that is built but not released yet, and the monthly special.
+REG_RE = re.compile(r'<div class="it(?: off)?" data-reg="1"><div class="ir"><span class="in">(.*?)</span>(?=<span class="dots">)')
+MONTHLY_ID = "VCBLNCXE367QF3WR2BOZDR55"      # the one register button the kitchen renames for each month's special
+TAGGED = ('<div class="it"><div class="ir"><span class="in"><span class="newtag">{t}</span> {n}</span>'
+          '<span class="dots"></span><span class="ip">{p}</span></div>{d}</div>')
+
+
+def register_backed(s, by, links):
+    """A line marked data-reg="1" shows only while the register has a button for it (class "off" hides it).
+    Honey Toast sat on the menu for a month, marked NEW, with nothing to ring it on. Returns (html, shown, hidden)."""
+    shown, hidden = [], []
+    def one(m):
+        label = re.sub(r"^(?:NEW|THIS MONTH)\s+", "", html.unescape(re.sub(r"<[^>]+>", "", m.group(1))).strip())
+        ok = register_price(links.get(norm(m.group(1))) or "{%s}" % label, by) is not None
+        (shown if ok else hidden).append(label)
+        return '<div class="it%s" data-reg="1"><div class="ir"><span class="in">%s</span>' % ("" if ok else " off", m.group(1))   # the lookahead keeps what follows
+    return REG_RE.sub(one, s), shown, hidden
+
+
+def monthly_block(items):
+    """This month's special, straight from its register button: whatever it is called and costs today.
+    No button, an archived one, or more than one price = no line."""
+    it = next((i for i in items if i.get("id") == MONTHLY_ID), None)
+    if not it or not live_here(it):
+        return ""
+    d = it.get("item_data") or {}
+    name, ps = (d.get("name") or "").strip(), prices_of(it)
+    if not name or len(ps) != 1:
+        return ""
+    desc = re.sub(r"\s+", " ", (d.get("description_plaintext") or d.get("description") or "")).strip()
+    return TAGGED.format(t="THIS MONTH", n=esc(name), p=money(ps[0]), d='<div class="id">%s</div>' % esc(desc) if desc else "")
+
+
+def card_block(data):
+    """The wall's card (beers.json "card"), as a box under the jump buttons, inside the same dates."""
+    c = data.get("card")
+    if not isinstance(c, dict) or not c.get("title"):
+        return ""
+    try:
+        from zoneinfo import ZoneInfo
+        from datetime import datetime
+        today = datetime.now(ZoneInfo("America/Denver")).strftime("%Y-%m-%d")
+    except Exception:
+        import time as _t
+        today = _t.strftime("%Y-%m-%d")
+    today = os.environ.get("MENU_TODAY") or today                    # for previews and tests
+    if (c.get("from") and today < str(c["from"])) or (c.get("until") and today > str(c["until"])):
+        return ""
+    lines = "".join("<span>%s</span>" % esc(l) for l in (c.get("lines") or [])[:3])
+    return '<div class="cardline"><b class="ct">%s</b>%s%s</div>' % (esc(c["title"]), lines, ("<em>%s</em>" % esc(c["foot"])) if c.get("foot") else "")
+
+
+def between_marks(s, mark, new):
+    """Swap what sits between <!--mark--> and <!--/mark-->; a menu without the marks is left alone."""
+    a, b = "<!--%s-->" % mark, "<!--/%s-->" % mark
+    if s.count(a) != 1 or s.count(b) != 1:          # exactly one pair, or nothing is touched
+        return s
+    i, j = s.find(a), s.find(b)
+    if j < i:
+        return s
+    return s[:i + len(a)] + new + s[j:]
 
 
 def slack(text):
@@ -287,6 +353,11 @@ def main():
     s = s.replace("<section><h2>Cider &amp; Kombucha</h2>", "<section><h2>Also Pouring</h2>")
     s = s.replace("<section><h2>Cider & Kombucha</h2>", "<section><h2>Also Pouring</h2>")
     s, _ = replace_between(s, r'<section><h2>Also Pouring</h2>', r'</section>', also_rows(data, state.get("also_reg")), "Also Pouring")
+    # the intro above the tanks says "house taps": true of every line except a guest tap, so it says so when one is on
+    guest = any(b.get("guest") for b in data.get("beers", []))
+    s = re.sub(r"House taps, brewed 40 feet away(?: \u2014 plus a guest tap)?\.",
+               "House taps, brewed 40 feet away \u2014 plus a guest tap." if guest else "House taps, brewed 40 feet away.", s, count=1)
+    s = between_marks(s, "card", card_block(data))
 
     import time
     state.pop("square_at", None)                                 # the clock used to be kept here; see CLOCK
@@ -312,14 +383,21 @@ def main():
             if sent:
                 s = re.sub(r"4-packs to go: .*?(?=</div>)", sent, s, count=1)
                 state["four_packs"] = sent                       # the wall's ticker reads this (menu_state.json)
-            skip = {norm(b["name"]) for b in data.get("beers", [])} | {norm("Pitcher (32 oz)")}
-            diffs, unmatched = price_check(s, items, skip)
-            wall_fix = []
             by = {}
             for it in items:
                 if live_here(it):
                     by.setdefault(norm((it.get("item_data") or {}).get("name", "")), []).append(it)
             links = {norm(k): v for k, v in LINKS.items()}
+            s = between_marks(s, "monthly", monthly_block(items))
+            was_off = set(norm(m.group(1)) for m in re.finditer(r'<div class="it off" data-reg="1"><div class="ir"><span class="in">(.*?)</span>(?=<span class="dots">)', s))
+            s, shown, hidden = register_backed(s, by, links)
+            for n in shown:
+                if norm(n) in was_off: notes.append("%s has a register button now - it is showing on the menu" % n)
+            for n in hidden:
+                if norm(n) not in was_off: notes.append("%s has no register button - hidden on the menu until it does" % n)
+            skip = {norm(b["name"]) for b in data.get("beers", [])} | {norm("Pitcher (32 oz)")} | {norm(n) for n in hidden}
+            diffs, unmatched = price_check(s, items, skip)
+            wall_fix = []
             also_reg = {}
             for name, _, _ in ALSO_EXTRAS:
                 r = register_price(links.get(norm(name)) or "{%s}" % name, by)
