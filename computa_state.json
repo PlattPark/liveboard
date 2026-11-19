@@ -33,13 +33,13 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 306.0,
+    "oz": 316.0,
     "pints": 16.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 356.0,
-    "pints": 21.0
+    "oz": 372.0,
+    "pints": 22.0
    },
    "Witbier": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -72,7 +72,7 @@
     "pints": 2.0
    }
   },
-  "orders_since": "2026-11-19T20:02:41+00:00",
+  "orders_since": "2026-11-19T21:19:14+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
