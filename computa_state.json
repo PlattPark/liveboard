@@ -22,11 +22,13 @@
    "Plattmosphere": false,
    "Oktoberfest": false
   },
+  "pitcher_oz": 480.0,
+  "ledger_v": 2,
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 634.0,
-    "pints": 35.0
+    "oz": 682.0,
+    "pints": 36.0
    },
    "Astronaut Amber": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -40,8 +42,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 264.0,
-    "pints": 14.0
+    "oz": 280.0,
+    "pints": 15.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -65,22 +67,21 @@
    },
    "Phaded": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 702.0,
-    "pints": 36.0
+    "oz": 734.0,
+    "pints": 38.0
    },
    "Half Acre Waybird": {
-    "base": "2026-11-16T00:16:05+00:00",
-    "oz": 896.0,
-    "pints": 51.0
+    "base": "2026-11-19T02:42:59+00:00",
+    "oz": 0,
+    "pints": 0
    },
    "Plattmosphere": {
-    "base": "2026-11-17T18:32:27+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "base": "2026-11-19T02:42:59+00:00",
+    "oz": 0,
+    "pints": 0
    }
   },
-  "orders_since": "2026-11-19T02:45:23+00:00",
-  "pitcher_oz": 480.0
+  "orders_since": "2026-11-19T03:00:50+00:00"
  },
  "threads": {
   "1795043724.529389": {
