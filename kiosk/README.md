@@ -25,7 +25,9 @@ You need the keyboard and mouse on the box and the `admin` password.
 
 1. **Switch to admin.** Ctrl+Alt+Delete → Sign out → sign in as `admin`.
 
-2. **Save the launcher and try it.** Right-click Start → Terminal (Admin), paste this, press Enter:
+2. **Save the launcher and try it.** Open this page on the box so you can copy from it: in Edge, go to
+   `plattpark.github.io/liveboard/kiosk`. Then right-click Start → Terminal, paste this, press Enter
+   (if it says access is denied, use Terminal (Admin) instead):
 
    ```powershell
    New-Item -ItemType Directory -Force -Path "C:\Users\Public\Board" | Out-Null
@@ -47,8 +49,8 @@ You need the keyboard and mouse on the box and the `admin` password.
    ```
 
    If there is nowhere to edit the address: choose Remove kiosk, then Set up a kiosk again with the same
-   answers as before (account `board`, app Microsoft Edge, "As a digital sign or interactive display") and
-   the address above.
+   answers as before (pick the existing `board` account if it offers one, app Microsoft Edge, "As a digital
+   sign or interactive display") and the address above.
 
 4. **Restart the box.** It should sign itself in, show dark green for a second or two, then the board.
 
