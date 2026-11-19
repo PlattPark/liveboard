@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-18T19:08:37-07:00",
- "updatedBy": "Half Acre Waybird 10oz $6.25, Hazy IPA; Plattmosphere on a half-barrel keg",
+ "updated": "2026-11-19T02:15:55+00:00",
+ "updatedBy": "Tropical Snow Dance level 3.2 (sheet); Witbier level 4.3 (sheet); Phaded level 8.0 (sheet); Platty Lite level 17.8 (sheet); Madagascar Dream level 2.5 (sheet); Grandma's Pumpkin Pie level 4.9 (sheet); Nadare level 2.3 (sheet); Nutorious level 3.4 (sheet)",
  "beers": [
   {
    "id": "platty-lite",
@@ -16,7 +16,7 @@
    "tall": true,
    "color": "#e3c25a",
    "colorTop": "#f2dc8a",
-   "remainingOz": 10316,
+   "remainingOz": 70630,
    "tappedDaysAgo": 0,
    "note": "the all-day lager",
    "wall": "Light Lager · all-day",
@@ -28,7 +28,7 @@
      "show": "wall"
     }
    ],
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "astronaut-amber",
@@ -68,7 +68,7 @@
    "vesselLabel": "10 BBL",
    "color": "#b7893f",
    "colorTop": "#d4a95c",
-   "remainingOz": 19046,
+   "remainingOz": 13491,
    "tappedDaysAgo": 0,
    "note": "pistachio, cream, a little sweet",
    "wall": "Pistachio Cream Ale",
@@ -92,7 +92,7 @@
      "show": "site"
     }
    ],
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "madagascar-dream",
@@ -106,11 +106,11 @@
    "vesselLabel": "20 BBL",
    "color": "#c9973c",
    "colorTop": "#e6bd6e",
-   "remainingOz": 25792,
+   "remainingOz": 9920,
    "tappedDaysAgo": 0,
    "note": "Madagascar vanilla on nitro velvet",
    "wall": "Vanilla Cream · Nitro",
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "grandma-s-pumpkin-pie",
@@ -121,14 +121,14 @@
    "price10": 6.0,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 23411,
+   "remainingOz": 19443,
    "tappedDaysAgo": 0,
    "color": "#d0a04a",
    "colorTop": "#e4bd78",
    "rating": 0,
    "note": "pumpkin pie spice, contains lactose",
    "wall": "Pumpkin Nitro Ale · contains lactose",
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "witbier",
@@ -142,11 +142,11 @@
    "vesselLabel": "10 BBL",
    "color": "#e6d9a0",
    "colorTop": "#f3ecc4",
-   "remainingOz": 19443,
+   "remainingOz": 17062,
    "tappedDaysAgo": 0,
    "note": "light Belgian wheat",
    "wall": "Witbier · light wheat",
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "tropical-snow-dance",
@@ -161,7 +161,7 @@
    "tall": true,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
-   "remainingOz": 26585,
+   "remainingOz": 12697,
    "tappedDaysAgo": 0,
    "note": "all Mosaic · grapefruit, crisp",
    "wall": "Mosaic IPA · crisp",
@@ -173,7 +173,7 @@
      "show": "site"
     }
    ],
-   "levelAt": "2026-10-19T18:10:29.035Z"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "nadare",
@@ -183,16 +183,15 @@
    "price10": 5.5,
    "price": 7.5,
    "rating": 3.37,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
    "color": "#e8d58a",
    "colorTop": "#f5e9b3",
-   "remainingOz": 1091,
+   "remainingOz": 9126,
    "tappedDaysAgo": 0,
    "note": "jasmine rice, light and crispy",
    "wall": "Rice Lager · crisp",
-   "levelAt": "2026-10-19T18:10:29.035Z",
-   "sash": "last keg"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "phaded",
@@ -203,14 +202,14 @@
    "price10": 5.5,
    "vessel": "tank10",
    "vesselLabel": "10 BBL",
-   "remainingOz": 35712,
+   "remainingOz": 31744,
    "tappedDaysAgo": 0,
    "color": "#d69a2b",
    "colorTop": "#eebd55",
    "rating": 0,
    "note": "our pale ale",
    "tappedAt": 1792865500378,
-   "levelAt": "2026-10-25T07:25:24+00:00"
+   "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
    "id": "half-acre-waybird",
