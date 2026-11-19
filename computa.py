@@ -1880,6 +1880,7 @@ def pos_line(name, beers):
     return best, oz, kind
 
 BACKFILL_DAYS = 9          # how far back the register is re-read to rebuild what a tank has poured since its level
+LEDGER_V = 2               # bump when pos_line learns new register names: every count is then rebuilt once
 
 def _iso(s):
     """An ISO time from beers.json, the state file or Square, as an aware datetime (None if it isn't one)."""
@@ -1999,6 +2000,12 @@ def shadow_sales(state, data):
     if time.time() - tm.get("sales_at", 0) < 900:            # every 15 minutes
         return
     tm["sales_at"] = time.time(); save_timers(tm)
+    # A count kept by an older pos_line is not worth carrying. Before Nov 18 2026 "🥈 Plattmosphere Pint" matched
+    # nothing, and because a count is only restarted when its beer is re-measured, Plattmosphere sat at 1 pint
+    # while the register had rung 29. Dropping the ledger and its cursor sends this pass down the lost-ledger path:
+    # every beer is counted again from the register, back to its own measurement.
+    if sh.get("ledger_v") != LEDGER_V:
+        sh.pop("ledger", None); sh.pop("orders_since", None); sh["ledger_v"] = LEDGER_V
     beers = {b["name"]: b for b in data.get("beers", [])}
     # Work on a copy. The ledger and its cursor (orders_since) are saved together or not at all: skipping a save is
     # always safe, because the next pass re-reads the same orders from the saved cursor. That lets a pass that found

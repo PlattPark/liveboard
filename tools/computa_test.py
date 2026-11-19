@@ -220,6 +220,23 @@ c.shadow_sales(state, data)
 check("a tank measured in the past starts from what sold since that measurement, not from zero",
       (state["shadow"]["ledger"]["Phaded"]["oz"], state["shadow"]["ledger"]["Phaded"]["base"] == (T0 + timedelta(hours=4)).isoformat()), (32, True))
 check("the other tanks keep their count through that", state["shadow"]["ledger"]["Half Acre Waybird"]["oz"], 64)
+# A ledger kept by the old register matching: Plattmosphere's base still matches its level, so nothing would restart
+# its count - and the old matching never counted "🥈 Plattmosphere Pint". The version stamp rebuilds it, once.
+clock["t"] = T0 + timedelta(hours=7); open(os.environ["COMPUTA_TIMERS"], "w").write("{}")
+next(b for b in w if b["name"] == "Plattmosphere")["levelAt"] = (T0 + timedelta(hours=1)).isoformat()
+order(T0 + timedelta(minutes=50), ("\U0001F948 Plattmosphere Pint", 9))                                   # before its level: not counted
+order(T0 + timedelta(hours=2), ("\U0001F948 Plattmosphere Pint", 3), ("\U0001F948 Plattmosphere (10oz)", 1))
+old = {"shadow": {"orders_since": (T0 + timedelta(hours=6, minutes=30)).isoformat(), "pitcher_oz": 64,
+                  "ledger": {b["name"]: {"base": b.get("levelAt") or "", "oz": 0, "pints": 0} for b in w}}}
+c.shadow_sales(old, data)
+check("a count kept by the old register matching is rebuilt, though its base never changed",
+      (old["shadow"]["ledger"]["Plattmosphere"]["oz"], old["shadow"]["ledger"]["Plattmosphere"]["pints"], old["shadow"].get("ledger_v")), (58, 3, c.LEDGER_V))
+check("the rebuild reaches the other beers too, and keeps the pitchers already counted",
+      (old["shadow"]["ledger"]["Half Acre Waybird"]["oz"], old["shadow"]["pitcher_oz"]), (64, 64))
+clock["t"] = T0 + timedelta(hours=8); open(os.environ["COMPUTA_TIMERS"], "w").write("{}")
+order(T0 + timedelta(hours=7, minutes=30), ("\U0001F948 Plattmosphere Pint", 1))
+c.shadow_sales(old, data)
+check("it is rebuilt once: the next pass counts forward from there", old["shadow"]["ledger"]["Plattmosphere"]["oz"], 74)
 c.datetime, c.time = datetime, __import__("time")
 
 # ---- 7. Greg's sheet ---------------------------------------------------------------------------------------------------
