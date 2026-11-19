@@ -6,7 +6,14 @@
  },
  "started": "2026-11-19T05:27:42",
  "shadow": {
-  "map": {},
+  "map": {
+   "Platty Lite": "MJRV644BKKNW6GUH32PI7HCV",
+   "Astronaut Amber": "UNBVK4UZQA272BMENSD26QRE",
+   "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
+   "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
+   "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
+   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
+  },
   "ledger_v": 2,
   "ledger": {
    "Platty Lite": {
@@ -66,6 +73,14 @@
    }
   },
   "orders_since": "2026-11-19T05:42:27+00:00",
-  "pitcher_oz": 0
+  "pitcher_oz": 0,
+  "last": {
+   "Platty Lite": false,
+   "Astronaut Amber": false,
+   "Tropical Snow Dance": false,
+   "Nadare": false,
+   "Plattmosphere": false,
+   "Oktoberfest": false
+  }
  }
 }
