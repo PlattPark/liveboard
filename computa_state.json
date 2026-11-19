@@ -45,8 +45,8 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    },
    "Witbier": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -55,8 +55,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-10-19T18:10:29.035Z",
-    "oz": 128.0,
-    "pints": 8.0
+    "oz": 154.0,
+    "pints": 9.0
    },
    "Nadare": {
     "base": "2026-10-19T18:10:29.035Z",
@@ -79,8 +79,8 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-19T00:58:17+00:00",
-  "pitcher_oz": 256.0
+  "orders_since": "2026-11-19T01:29:02+00:00",
+  "pitcher_oz": 416.0
  },
  "threads": {
   "1795043724.529389": {
