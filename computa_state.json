@@ -63,8 +63,8 @@
    },
    "Half Acre Waybird": {
     "base": "2026-11-20T01:01:08+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Plattmosphere": {
     "base": "2026-11-20T01:31:38+00:00",
@@ -72,7 +72,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-20T01:31:38+00:00",
+  "orders_since": "2026-11-20T02:02:26+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
