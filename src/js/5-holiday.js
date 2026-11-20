@@ -3,7 +3,7 @@
    ?holiday on the URL previews it any day (?holiday=snow for the after-New-Year's look); ?noholiday hides it.
    Art and rules live in css/4-holiday.css. */
 (function(){
-  var FROM=1127, LIGHTS_TO=101, TO=229;   // month*100+day, inclusive: Nov 27 -> Jan 1 with lights, then snow only through the end of February
+  var FROM=1120, LIGHTS_TO=101, TO=229;   // month*100+day, inclusive: Nov 20 -> Jan 1 with lights, then snow only through the end of February (2026: launched Nov 20, a week ahead of Black Friday)
   function today(){
     try{ var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',month:'numeric',day:'numeric'}).formatToParts(new Date()).reduce(function(o,x){o[x.type]=x.value;return o;},{}); return (+p.month)*100+(+p.day); }
     catch(e){ var n=new Date(); return (n.getMonth()+1)*100+n.getDate(); }
