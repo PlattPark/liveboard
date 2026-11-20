@@ -19,8 +19,8 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 1416.0,
-    "pints": 74.0
+    "oz": 1480.0,
+    "pints": 78.0
    },
    "Astronaut Amber": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -49,8 +49,8 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 1614.0,
-    "pints": 94.0
+    "oz": 1630.0,
+    "pints": 95.0
    },
    "Nadare": {
     "base": "2026-11-20T19:20:08+00:00",
@@ -59,8 +59,8 @@
    },
    "Phaded": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 1246.0,
-    "pints": 70.0
+    "oz": 1262.0,
+    "pints": 71.0
    },
    "Half Acre Waybird": {
     "base": "2026-11-20T20:45:42+00:00",
@@ -69,8 +69,8 @@
    },
    "Plattmosphere": {
     "base": "2026-11-20T21:46:21+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Platt Park Porter": {
     "base": "2026-11-20T18:38:23+00:00",
@@ -78,7 +78,7 @@
     "pints": 2.0
    }
   },
-  "orders_since": "2026-11-20T22:16:40+00:00",
+  "orders_since": "2026-11-20T22:46:46+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
