@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-20T21:46:21+00:00",
- "updatedBy": "kegs by the register: Plattmosphere 752 oz",
+ "updated": "2026-11-20T23:01:49+00:00",
+ "updatedBy": "kegs by the register: Half Acre Waybird 640 oz, Plattmosphere 704 oz",
  "beers": [
   {
    "id": "platty-lite",
@@ -202,7 +202,7 @@
    "price10": 6.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
-   "remainingOz": 672,
+   "remainingOz": 640,
    "tappedDaysAgo": 0,
    "color": "#e08a2b",
    "colorTop": "#f0aa55",
@@ -211,7 +211,7 @@
    "sash": "guest tap",
    "guest": true,
    "tappedAt": 1793984486629,
-   "levelAt": "2026-11-20T20:45:42+00:00",
+   "levelAt": "2026-11-20T23:01:49+00:00",
    "wall": "Hazy IPA · guest tap · Chicago"
   },
   {
@@ -227,7 +227,7 @@
    "tall": true,
    "color": "#d9a83c",
    "colorTop": "#efc76a",
-   "remainingOz": 752,
+   "remainingOz": 704,
    "tappedDaysAgo": 0,
    "note": "the flagship hazy",
    "wall": "Hazy IPA · the flagship",
@@ -239,7 +239,7 @@
      "show": "wall"
     }
    ],
-   "levelAt": "2026-11-20T21:46:21+00:00"
+   "levelAt": "2026-11-20T23:01:49+00:00"
   },
   {
    "id": "platt-park-porter",
