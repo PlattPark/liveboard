@@ -263,7 +263,7 @@
   {
    "id": "platt-park-porter",
    "name": "Platt Park Porter",
-   "style": "Coffee Porter",
+   "style": "Coffee Porter · Nitro",
    "abv": 4.8,
    "price": 8.0,
    "price10": 6.0,
@@ -275,7 +275,10 @@
    "colorTop": "#5c3a26",
    "rating": 0,
    "note": "a collab with Kaladi Coffee Roasters",
-   "wall": "Coffee Porter · Kaladi collab",
+   "adjuncts": [
+    "lactose"
+   ],
+   "wall": "Nitro Coffee Porter · Kaladi collab · contains lactose",
    "aka": [
     "Coffee Porter"
    ],
