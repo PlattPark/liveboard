@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-20T19:20:09+00:00",
- "updatedBy": "kegs by the register: Nadare 595 oz, Half Acre Waybird 704 oz, Plattmosphere 864 oz",
+ "updated": "2026-11-20T20:36:26+00:00",
+ "updatedBy": "86 Nadare",
  "beers": [
   {
    "id": "platty-lite",
@@ -176,25 +176,6 @@
    "levelAt": "2026-11-16T19:58:54.111Z"
   },
   {
-   "id": "nadare",
-   "name": "Nadare",
-   "style": "Japanese Rice Lager",
-   "abv": 5.2,
-   "price10": 5.5,
-   "price": 7.5,
-   "rating": 3.37,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "color": "#e8d58a",
-   "colorTop": "#f5e9b3",
-   "remainingOz": 595,
-   "tappedDaysAgo": 0,
-   "note": "jasmine rice, light and crispy",
-   "wall": "Rice Lager · crisp",
-   "levelAt": "2026-11-20T19:20:08+00:00",
-   "sash": "last keg"
-  },
-  {
    "id": "phaded",
    "name": "Phaded",
    "style": "Pale Ale",
@@ -287,6 +268,26 @@
   }
  ],
  "recent": [
+  {
+   "id": "nadare",
+   "name": "Nadare",
+   "style": "Japanese Rice Lager",
+   "abv": 5.2,
+   "price10": 5.5,
+   "price": 7.5,
+   "rating": 3.37,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "color": "#e8d58a",
+   "colorTop": "#f5e9b3",
+   "remainingOz": 595,
+   "tappedDaysAgo": 0,
+   "note": "jasmine rice, light and crispy",
+   "wall": "Rice Lager · crisp",
+   "levelAt": "2026-11-20T19:20:08+00:00",
+   "sash": "last keg",
+   "offSince": "2026-11-20"
+  },
   {
    "id": "verboten-stealth-haze",
    "name": "Verboten Stealth Haze",
