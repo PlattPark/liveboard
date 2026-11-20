@@ -442,6 +442,14 @@ sheet = {"beers": porter_wall(), "recent": []}
 ch, _ = c.cellar_apply({"sheet": "November 26", "tab": "wk 4", "updated": "2026-11-23T20:00:00.000Z",
                         "levels": [{"name": "Coffee Porter", "bbls": 8.9, "sv": "2"}]}, sheet, {})
 check("Greg's sheet can call it coffee porter too", (ch, sheet["beers"][-1]["remainingOz"]), (["Platt Park Porter level 8.9 (sheet)"], int(8.9 * 3968)))
+# The register has four porter buttons and only the pint carries the wall's name. "pos" names the rest.
+reg = porter_wall(); reg[-1]["pos"] = ["Porter"]
+check("every porter button on the register pours from its tank",
+      [c.pos_line(n, reg) for n in ("Platt Park Porter Pint", "Porter 10 Oz", "Porter Crowler\u2615\ufe0f", "Porter Taster \u2615\ufe0f")],
+      [("Platt Park Porter", 16, "pint"), ("Platt Park Porter", 10, "10oz"), ("Platt Park Porter", 32, "crowler"), ("Platt Park Porter", 4, "taster")])
+check("without it only the pint counted", [c.pos_line(n, porter_wall()) for n in ("Platt Park Porter Pint", "Porter 10 Oz")],
+      [("Platt Park Porter", 16, "pint"), None])
+check("and it claims nobody else's button", [c.pos_line(n, reg) for n in ("Collab Crowler", "Phaded", "Taster Paddle")], [None, ("Phaded", 16, "pint"), None])
 
 print("%d passed, %d failed" % (PASS[0], len(FAIL)))
 for f in FAIL:
