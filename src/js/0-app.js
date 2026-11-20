@@ -134,8 +134,10 @@ function render(s){
         bb.style.animationDelay=(-Math.random()*6).toFixed(2)+'s';
       });
     }
-    const tappedMs = typeof beer.tappedAt==='string' ? Date.parse(beer.tappedAt) : beer.tappedAt;
-    const fresh = tappedMs && (Date.now()-tappedMs) < 7*86400000;   // NEW for the first week (Computa stamps tappedAt when a beer is added)
+    // NEW for the first week after a beer is added. newSince is beers.json's own tappedAt (Computa stamps it on a new
+    // beer), kept at load. Until Nov 20 2026 the loader overwrote that stamp and the map below blanked it, so the tag never showed.
+    const tappedMs = typeof beer.newSince==='string' ? Date.parse(beer.newSince) : beer.newSince;
+    const fresh = tappedMs && (Date.now()-tappedMs) < 7*86400000;
     const wm = wallMedal(beer);
     u.className='unit'+(beer.tall?' tall':'')+(beer.featured?' featured spotlight':'')+(beer.low&&!fresh?' low':'')+(beer.kicked?' kicked':'')+(wm?' gold':'')+(fresh&&!beer.kicked?' justtapped':'')+(beer.pick?' pick':'')+(beer.sash?' hasSash':'')+(beer.sash==='last keg'?' lastkeg':'')+((beer.nitro||/\bnitro\b/i.test(beer.style||''))?' nitro':'');
     u.querySelector('.newtag').textContent=beer.pick?'Brewers\u2019 pick':'New';
@@ -253,6 +255,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
       if(d && Array.isArray(d.beers) && d.beers.length){
         // beers.json stores freshness as plain days; the board wants a timestamp
         d.beers.forEach(function(b){
+          b.newSince = (typeof b.tappedAt==='number' || typeof b.tappedAt==='string') ? b.tappedAt : null;   // the day it was added, for the NEW tag
           b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0);
         });
         _tapFp     = tapFingerprint(x.responseText);
@@ -273,7 +276,7 @@ function tapFingerprint(text){ var h = 5381; for(var i = 0; i < text.length; i++
       if(cached){
         const d = JSON.parse(cached);
         if(d && Array.isArray(d.beers) && d.beers.length){
-          d.beers.forEach(function(b){ b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
+          d.beers.forEach(function(b){ b.newSince = (typeof b.tappedAt==='number' || typeof b.tappedAt==='string') ? b.tappedAt : null; b.tappedAt = Date.now() - 86400000 * (b.tappedDaysAgo || 0); });
           SIM.beers = d.beers; window.__hours = d.hours || window.__hours || {}; window.__mapOverride = d.map || ''; window.__card = d.card || null;
           console.warn('[taps] using last cached list (' + (d.updated || 'no stamp') + ')');
           return;
