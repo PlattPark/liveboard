@@ -12,7 +12,8 @@
    "Tropical Snow Dance": "WB64G2OEP2WBYI6RTOVAUYOW",
    "Nadare": "SVJAPPZN6535QTMJR65YPOGB",
    "Plattmosphere": "LE3A7NDH6QQBYNA6EJHGA2UK",
-   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5"
+   "Oktoberfest": "5XXWEJB4FXYY3AIUF6SJDTG5",
+   "Platt Park Porter": "5JQJH3TU3JTARWATYZZ76RDA"
   },
   "ledger_v": 2,
   "ledger": {
@@ -85,7 +86,8 @@
    "Tropical Snow Dance": false,
    "Nadare": false,
    "Plattmosphere": false,
-   "Oktoberfest": false
+   "Oktoberfest": false,
+   "Platt Park Porter": false
   },
   "sales_posted": "2026-11-20"
  },
