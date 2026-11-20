@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-20T05:46:43+00:00",
- "updatedBy": "kegs by the register: Plattmosphere 880 oz",
+ "updated": "2026-11-20T18:38:23+00:00",
+ "updatedBy": "added Platt Park Porter",
  "beers": [
   {
    "id": "platty-lite",
@@ -259,6 +259,25 @@
     }
    ],
    "levelAt": "2026-11-20T05:46:42+00:00"
+  },
+  {
+   "id": "platt-park-porter",
+   "name": "Platt Park Porter",
+   "style": "Coffee Porter",
+   "abv": 4.8,
+   "price": 8.0,
+   "price10": 6.0,
+   "vessel": "tank10",
+   "vesselLabel": "10 BBL",
+   "remainingOz": 38886,
+   "tappedDaysAgo": 0,
+   "color": "#3d2317",
+   "colorTop": "#5c3a26",
+   "rating": 0,
+   "note": "a collab with Kaladi Coffee Roasters",
+   "wall": "Coffee Porter · Kaladi collab",
+   "tappedAt": 1795199903812,
+   "levelAt": "2026-11-20T18:38:23+00:00"
   }
  ],
  "recent": [
