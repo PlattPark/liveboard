@@ -33,8 +33,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 406.0,
-    "pints": 21.0
+    "oz": 454.0,
+    "pints": 24.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -52,9 +52,9 @@
     "pints": 92.0
    },
    "Nadare": {
-    "base": "2026-11-20T01:31:38+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "base": "2026-11-20T05:16:05+00:00",
+    "oz": 0,
+    "pints": 0
    },
    "Phaded": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -67,12 +67,12 @@
     "pints": 0
    },
    "Plattmosphere": {
-    "base": "2026-11-20T02:48:05+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "base": "2026-11-20T05:16:05+00:00",
+    "oz": 0,
+    "pints": 0
    }
   },
-  "orders_since": "2026-11-20T05:00:34+00:00",
+  "orders_since": "2026-11-20T05:16:05+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
