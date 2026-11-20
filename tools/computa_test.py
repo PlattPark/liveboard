@@ -407,6 +407,42 @@ try:
 finally:
     os.chdir(here); shutil.rmtree(work, ignore_errors=True)
 
+# ---- 11. a beer answers to what the crew calls it ("aka" in beers.json) -------------------------------------------------
+# Nov 20 2026: the wall says Platt Park Porter, the brewers say coffee porter. "86 coffee porter" found nothing.
+def porter_wall():
+    w = wall()
+    w.append({"id": "platt-park-porter", "name": "Platt Park Porter", "price": 8.0, "price10": 6.0, "color": "#3d2317",
+              "vessel": "tank10", "vesselLabel": "10 BBL", "remainingOz": 38886, "abv": 4.8, "style": "Coffee Porter",
+              "aka": ["Coffee Porter"], "levelAt": "2026-11-20T18:38:23+00:00"})
+    return w
+
+def found(text, pool=None):
+    return [b["name"] for b in c.match_beers(text, porter_wall() if pool is None else pool)]
+
+check("the wall name finds it", found("platt park porter"), ["Platt Park Porter"])
+check("the crew's name finds it", found("coffee porter"), ["Platt Park Porter"])
+check("the crew's name inside a longer phrase", found("the coffee porter keg"), ["Platt Park Porter"])
+check("porter alone still finds it", found("porter"), ["Platt Park Porter"])
+check("Greg's sheet shorthand still finds it", found("PP Porter"), ["Platt Park Porter"])
+check("half an aka is not a match", found("coffee"), [])
+check("an aka changes nothing for the other beers", (found("witbier"), found("plattmo"), found("nadara")), (["Witbier"], ["Plattmosphere"], ["Nadare"]))
+two = porter_wall(); two[0]["aka"] = ["Coffee Porter"]
+check("two beers sharing an aka both come back", sorted(found("coffee porter", two)), ["Platt Park Porter", "Platty Lite"])
+check("so nothing is guessed", c.match_beer("coffee porter", two), None)
+junk = porter_wall(); junk[-1]["aka"] = "Coffee Porter"            # a string where a list belongs: ignored, not read letter by letter
+check("a malformed aka is ignored", (found("coffee porter", junk), found("c", junk)), ([], []))
+d11 = {"beers": porter_wall(), "recent": []}
+out = c.handle({"ts": "11.0", "text": "86 coffee porter"}, d11, [], "C0AQ68G7DRB")
+check("86 by the crew's name takes it off the wall", (out[0], [b["name"] for b in d11["beers"] if "Porter" in b["name"]], [b["name"] for b in d11["recent"]][:1]),
+      ("86 Platt Park Porter", [], ["Platt Park Porter"]))
+out = c.handle({"ts": "11.1", "text": "coffee porter is back on, 9.5bbl in a 10bbl"}, d11, [], "C0AQ68G7DRB")
+check("and the crew's name brings it back with its level", (d11["beers"][-1]["name"], d11["beers"][-1]["remainingOz"], d11["beers"][-1].get("aka")),
+      ("Platt Park Porter", int(9.5 * 3968), ["Coffee Porter"]))
+sheet = {"beers": porter_wall(), "recent": []}
+ch, _ = c.cellar_apply({"sheet": "November 26", "tab": "wk 4", "updated": "2026-11-23T20:00:00.000Z",
+                        "levels": [{"name": "Coffee Porter", "bbls": 8.9, "sv": "2"}]}, sheet, {})
+check("Greg's sheet can call it coffee porter too", (ch, sheet["beers"][-1]["remainingOz"]), (["Platt Park Porter level 8.9 (sheet)"], int(8.9 * 3968)))
+
 print("%d passed, %d failed" % (PASS[0], len(FAIL)))
 for f in FAIL:
     print("  FAIL " + f)

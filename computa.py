@@ -656,8 +656,16 @@ def refresh_ten_oz(beer, beers):
 
 import difflib
 
+def _aka(b):
+    """What the crew calls a beer when it isn't the name on the wall - beers.json  "aka": ["Coffee Porter"].
+    Nov 20 2026: the wall says Platt Park Porter, the brewers say coffee porter, and "86 coffee porter" found nothing."""
+    aka = b.get("aka")
+    if not isinstance(aka, (list, tuple)):
+        return []
+    return [norm(a) for a in aka if isinstance(a, str) and norm(a)]
+
 def match_beers(item, pool):
-    """All plausible matches. Exact name wins; then substring; then a close typo
+    """All plausible matches. Exact name wins; then a beer's own 'aka'; then substring; then a close typo
     ('chelas', 'nadara', 'platy') against the whole name or any word of it."""
     t = norm(item)
     if not t:
@@ -665,9 +673,15 @@ def match_beers(item, pool):
     exact = [b for b in pool if norm(b.get("name","")) == t or norm(b.get("id","")) == t]
     if exact:
         return exact[:1]
+    known_as = [b for b in pool if t in _aka(b)]
+    if known_as:
+        return known_as            # two beers sharing an aka is two matches: nobody guesses which
     if len(t) <= 3:
         return []
     sub = [b for b in pool if t in norm(b.get("name","")) or norm(b.get("name","")) in t]
+    if sub:
+        return sub
+    sub = [b for b in pool if any(len(a) >= 4 and a in t for a in _aka(b))]      # "the coffee porter keg"
     if sub:
         return sub
     def close(a, b):
