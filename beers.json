@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-21T23:08:15+00:00",
- "updatedBy": "kegs by the register: Plattmosphere 1516 oz",
+ "updated": "2026-11-21T23:21:08+00:00",
+ "updatedBy": "Verboten Stealth Haze back on",
  "beers": [
   {
    "id": "platty-lite",
@@ -244,6 +244,27 @@
    ],
    "tappedAt": 1795199903812,
    "levelAt": "2026-11-20T18:38:23+00:00"
+  },
+  {
+   "id": "verboten-stealth-haze",
+   "name": "Verboten Stealth Haze",
+   "style": "Hazy IPA",
+   "abv": 6.4,
+   "price": 8.5,
+   "price10": 6.25,
+   "vessel": "keg-half",
+   "vesselLabel": "1/2 BBL",
+   "remainingOz": 1984,
+   "tappedDaysAgo": 0,
+   "color": "#d9a83c",
+   "colorTop": "#efc76a",
+   "rating": 0,
+   "note": "El Dorado, Mosaic and Citra",
+   "sash": "guest tap",
+   "guest": true,
+   "tappedAt": 1794509988943,
+   "levelAt": "2026-11-21T23:21:07+00:00",
+   "wall": "Hazy IPA · guest tap · Loveland"
   }
  ],
  "recent": [
@@ -288,28 +309,6 @@
    "levelAt": "2026-11-20T19:20:08+00:00",
    "sash": "last keg",
    "offSince": "2026-11-20"
-  },
-  {
-   "id": "verboten-stealth-haze",
-   "name": "Verboten Stealth Haze",
-   "style": "Hazy IPA",
-   "abv": 6.4,
-   "price": 8.5,
-   "price10": 6.25,
-   "vessel": "keg-half",
-   "vesselLabel": "1/2 BBL",
-   "remainingOz": 1984,
-   "tappedDaysAgo": 0,
-   "color": "#d9a83c",
-   "colorTop": "#efc76a",
-   "rating": 0,
-   "note": "El Dorado, Mosaic and Citra",
-   "sash": "guest tap",
-   "guest": true,
-   "tappedAt": 1794509988943,
-   "levelAt": "2026-11-12T19:16:21+00:00",
-   "wall": "Hazy IPA · guest tap · Loveland",
-   "offSince": "2026-11-16"
   },
   {
    "id": "chela",
