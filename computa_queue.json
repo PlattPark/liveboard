@@ -186,5 +186,11 @@
   "action": "restore_unknown",
   "item": "green chili melt",
   "text": "green chili melt is back *Sent using* <@U0AQE5QBJ4U>"
+ },
+ {
+  "ts": "1795300233.395159",
+  "action": "restore_unknown",
+  "item": "stealth hazy",
+  "text": "<@U0C2GMAT8CD> add stealth hazy back"
  }
 ]
