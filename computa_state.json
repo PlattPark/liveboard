@@ -19,8 +19,8 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 3192.0,
-    "pints": 181.0
+    "oz": 3224.0,
+    "pints": 183.0
    },
    "Astronaut Amber": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -29,12 +29,12 @@
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 1640.0,
-    "pints": 88.0
+    "oz": 1656.0,
+    "pints": 89.0
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 762.0,
+    "oz": 772.0,
     "pints": 42.0
    },
    "Grandma's Pumpkin Pie": {
@@ -69,16 +69,21 @@
    },
    "Plattmosphere": {
     "base": "2026-11-21T23:08:15+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Platt Park Porter": {
     "base": "2026-11-20T18:38:23+00:00",
-    "oz": 482.0,
-    "pints": 27.0
+    "oz": 514.0,
+    "pints": 29.0
+   },
+   "Verboten Stealth Haze": {
+    "base": "2026-11-21T23:21:07+00:00",
+    "oz": 0,
+    "pints": 0
    }
   },
-  "orders_since": "2026-11-21T23:08:15+00:00",
+  "orders_since": "2026-11-21T23:23:19+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
