@@ -34,8 +34,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 980.0,
-    "pints": 55.0
+    "oz": 996.0,
+    "pints": 56.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -74,7 +74,7 @@
    },
    "Platt Park Porter": {
     "base": "2026-11-20T18:38:23+00:00",
-    "oz": 642.0,
+    "oz": 652.0,
     "pints": 37.0
    },
    "Verboten Stealth Haze": {
@@ -83,7 +83,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-22T04:37:32+00:00",
+  "orders_since": "2026-11-22T05:17:36+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
