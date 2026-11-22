@@ -29,8 +29,8 @@
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 1938.0,
-    "pints": 102.0
+    "oz": 1954.0,
+    "pints": 103.0
    },
    "Madagascar Dream": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -59,8 +59,8 @@
    },
    "Phaded": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 2306.0,
-    "pints": 133.0
+    "oz": 2370.0,
+    "pints": 137.0
    },
    "Half Acre Waybird": {
     "base": "2026-11-21T22:07:10+00:00",
@@ -78,12 +78,12 @@
     "pints": 37.0
    },
    "Verboten Stealth Haze": {
-    "base": "2026-11-22T04:37:32+00:00",
+    "base": "2026-11-22T06:03:22+00:00",
     "oz": 0,
     "pints": 0
    }
   },
-  "orders_since": "2026-11-22T05:48:14+00:00",
+  "orders_since": "2026-11-22T06:03:22+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
