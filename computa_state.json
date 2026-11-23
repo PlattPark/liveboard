@@ -19,8 +19,8 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 64.0,
-    "pints": 4.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Astronaut Amber": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -44,13 +44,13 @@
    },
    "Witbier": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Tropical Snow Dance": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 64.0,
-    "pints": 4.0
+    "oz": 96.0,
+    "pints": 6.0
    },
    "Nadare": {
     "base": "2026-11-20T19:20:08+00:00",
@@ -83,7 +83,7 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-23T23:24:28+00:00",
+  "orders_since": "2026-11-23T23:55:23+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
