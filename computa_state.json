@@ -34,8 +34,8 @@
    },
    "Madagascar Dream": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -44,8 +44,8 @@
    },
    "Witbier": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    },
    "Tropical Snow Dance": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -69,7 +69,7 @@
    },
    "Plattmosphere": {
     "base": "2026-11-23T20:50:42+00:00",
-    "oz": 0,
+    "oz": 10.0,
     "pints": 0
    },
    "Platt Park Porter": {
@@ -83,7 +83,7 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-23T22:53:38+00:00",
+  "orders_since": "2026-11-23T23:24:28+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
