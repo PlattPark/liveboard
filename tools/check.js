@@ -102,6 +102,13 @@ async function open(browser, file, iso, freeze, opt) {
   const twelve = clone(eleven); { const b = clone(base.beers[0]); b.id += '-t'; b.name = 'Grandma\u2019s Pumpkin Pie'; twelve.beers.push(b); }
   const odd = clone(base); odd.beers[0].sash = 'last keg'; odd.beers[1].tappedAt = Date.parse('2026-10-19T12:00:00-06:00');
     odd.beers[2].name = 'Grandma\u2019s Extra Long Pumpkin Pie Ale'; delete odd.beers[3].note; odd.beers[4].pick = true;
+  // Nov 23 2026: the ranger's seat must not follow what Also Pouring says. The crew shortened two lines on Nov 20 and he
+  // stood 16px off the rail for three days. Shorter, taller, and a card grown down into his space (he gets smaller).
+  const rows = Array.isArray(base.also) && base.also.length ? base.also : [{ name: 'Dry Cider', sub: '2 Towns', price: '$9' }, { name: 'Wine', sub: 'red \u00b7 white \u00b7 ros\u00e9', price: '$9\u201311' }];
+  const alsoOf = fn => { const d = clone(base); d.also = fn(clone(rows)); return d; };
+  const alsoShort = alsoOf(a => a.slice(0, Math.max(2, a.length - 2)).map(x => Object.assign(x, { sub: 'ask' })));
+  const alsoWraps = alsoOf(a => a.map((x, i) => i < 3 ? Object.assign(x, { sub: 'a longer line that wraps to a second row' }) : x));
+  const alsoTall  = alsoOf(a => a.concat([{ name: 'Hard Seltzer', sub: 'ask your bartender', price: '$9' }]));
   const SCENES = [
     { name: 'tue 4pm band',            at: '2026-10-20T16:00:00-06:00' },
     { name: 'mon 6pm industry band',   at: '2026-10-19T18:00:00-06:00' },
@@ -120,6 +127,9 @@ async function open(browser, file, iso, freeze, opt) {
     { name: '11 taps (six across)',    at: '2026-10-20T16:00:00-06:00', beers: eleven },
     { name: '12 taps (six across)',    at: '2026-10-22T15:00:00-06:00', beers: twelve },
     { name: 'sash + NEW + long name',  at: '2026-10-20T16:00:00-06:00', beers: odd },
+    { name: 'also pouring: short card',         at: '2026-10-22T15:00:00-06:00', beers: alsoShort },
+    { name: 'also pouring: three lines wrap',   at: '2026-10-19T18:00:00-06:00', beers: alsoWraps },
+    { name: 'also pouring: one more row, lights', at: '2026-12-03T16:00:00-07:00', beers: alsoTall },
   ];
   for (const sc of SCENES) {
     const { page, errors } = await open(browser, target, sc.at, true, sc);

@@ -146,3 +146,8 @@ body.bn .ranger{transform:translate(257px,72px)}
 #floor .plate .name{color:#f0553d !important}   /* !important: the dark-mode script paints names cream inline */
 /* the TV never needs a mouse pointer */
 html, body, body *{cursor:none !important}
+/* Nov 23 2026: the ranger takes up no room in the page. He sat in the flow under the Also Pouring card and added his
+   own height to that column, so one more row on the card (or three lines wrapping on a band day) made the column taller
+   than the tanks and pushed every beer plate down into the rail. js/7-seat.js stands him on the rail by measurement;
+   here he only stops pushing. The snow on him in the holiday dressing hangs off this same box. */
+.ranger{position:absolute}
