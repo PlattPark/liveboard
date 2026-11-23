@@ -19,13 +19,13 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 32.0,
-    "pints": 2.0
+    "oz": 48.0,
+    "pints": 3.0
    },
    "Astronaut Amber": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -83,7 +83,7 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-23T21:51:45+00:00",
+  "orders_since": "2026-11-23T22:22:41+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
