@@ -1,7 +1,7 @@
 {
  "_comment": "What's pouring at Platt Park. The board AND the menu both read this file - edit here, nothing else. 'note' is the menu tasting line; 'remainingOz' drives the tank fill. 'medals' = [{comp, level, year, show}]: show 'wall' = plaque on the tank + menu line (GABF / US Open / State Fair / World Beer Cup / Brewers Cup), 'menu' = menu line only, 'site' = record only (DIBC and other points-based comps - never the wall or the menu). Computa: 'nutorious medal: US Open gold 2026' / 'take the bronze off nutorious wall'.",
- "updated": "2026-11-23T19:49:54+00:00",
- "updatedBy": "Tropical Snow Dance level 5.4 (sheet); Astronaut Amber level 5.8 (sheet); Witbier level 3.1 (sheet); Phaded level 4.7 (sheet); Platt Park Porter level 8.7 (sheet); Platty Lite level 13.1 (sheet); Madagascar Dream level 16.3 (sheet); Grandma's Pumpkin Pie level 3.3 (sheet)",
+ "updated": "2026-11-23T20:50:42+00:00",
+ "updatedBy": "kegs by the register: Plattmosphere 632 oz, Verboten Stealth Haze 1504 oz",
  "beers": [
   {
    "id": "platty-lite",
@@ -206,7 +206,7 @@
    "tall": true,
    "color": "#d9a83c",
    "colorTop": "#efc76a",
-   "remainingOz": 690,
+   "remainingOz": 632,
    "tappedDaysAgo": 0,
    "note": "the flagship hazy",
    "wall": "Hazy IPA · the flagship",
@@ -218,7 +218,7 @@
      "show": "wall"
     }
    ],
-   "levelAt": "2026-11-23T01:05:22+00:00"
+   "levelAt": "2026-11-23T20:50:42+00:00"
   },
   {
    "id": "platt-park-porter",
@@ -254,7 +254,7 @@
    "price10": 6.25,
    "vessel": "keg-half",
    "vesselLabel": "1/2 BBL",
-   "remainingOz": 1520,
+   "remainingOz": 1504,
    "tappedDaysAgo": 0,
    "color": "#d9a83c",
    "colorTop": "#efc76a",
@@ -263,7 +263,7 @@
    "sash": "guest tap",
    "guest": true,
    "tappedAt": 1794509988943,
-   "levelAt": "2026-11-23T00:34:56+00:00",
+   "levelAt": "2026-11-23T20:50:42+00:00",
    "wall": "Hazy IPA · guest tap · Loveland"
   }
  ],
