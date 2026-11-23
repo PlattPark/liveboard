@@ -511,8 +511,7 @@
    "price": "$9"
   }
  ],
- "card_paused": {
-  "_why": "Hidden Nov 19 until the printed bonus cards are at both registers. To show it again: rename this key back to card and set from to that day.",
+ "card": {
   "title": "Gift cards",
   "lines": [
    "Buy $50, get a $10 bonus card",
@@ -520,7 +519,7 @@
   ],
   "foot": "Through Dec 24 · bonus cards good Jan 2 – Mar 31",
   "wire": "gift cards · buy $50, get a $10 bonus card · buy $100, get $25 · through Dec 24",
-  "from": "2026-11-19",
+  "from": "2026-11-23",
   "until": "2026-12-24"
  }
 }
