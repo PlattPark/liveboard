@@ -19,8 +19,8 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 4230.0,
-    "pints": 244.0
+    "oz": 4246.0,
+    "pints": 245.0
    },
    "Astronaut Amber": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -49,7 +49,7 @@
    },
    "Tropical Snow Dance": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 4300.0,
+    "oz": 4310.0,
     "pints": 256.0
    },
    "Nadare": {
@@ -69,7 +69,7 @@
    },
    "Plattmosphere": {
     "base": "2026-11-23T01:05:22+00:00",
-    "oz": 16.0,
+    "oz": 26.0,
     "pints": 1.0
    },
    "Platt Park Porter": {
@@ -83,7 +83,7 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-23T03:34:09+00:00",
+  "orders_since": "2026-11-23T04:51:04+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
