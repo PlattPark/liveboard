@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- built 2026-11-20T20:50Z from src @ 36ecb29 - GENERATED FILE: edit src/, never this -->
+<!DOCTYPE html><!-- built 2026-11-23T18:08Z from src @ c4fdea7 - GENERATED FILE: edit src/, never this -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1057,6 +1057,11 @@ body.bn .ranger{transform:translate(257px,72px)}
 #floor .plate .name{color:#f0553d !important}   /* !important: the dark-mode script paints names cream inline */
 /* the TV never needs a mouse pointer */
 html, body, body *{cursor:none !important}
+/* Nov 23 2026: the ranger takes up no room in the page. He sat in the flow under the Also Pouring card and added his
+   own height to that column, so one more row on the card (or three lines wrapping on a band day) made the column taller
+   than the tanks and pushed every beer plate down into the rail. js/7-seat.js stands him on the rail by measurement;
+   here he only stops pushing. The snow on him in the holiday dressing hangs off this same box. */
+.ranger{position:absolute}
 </style>
 <script id="fitjs">
 (function(){
@@ -1531,7 +1536,7 @@ html.holiday #floor .unit:nth-child(3n+2) .vessel::before{background-image:url("
 html.holiday #floor .unit:nth-child(3n) .vessel::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 36' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f7f0' d='M6 29C17.6 12.7 32.9 5.4 58.9 5C82.9 3 124.7 16 134 29Q124.9 34.6 115.7 29.5Q106.6 34.3 97.4 29.4Q88.3 34.7 79.1 30.4Q70 35.6 60.9 30.4Q51.7 33.9 42.6 28.1Q33.4 32.9 24.3 28.3Q15.1 33 6 28.4Z'/%3E%3Cpath fill='none' stroke='%23cfdcdb' stroke-width='2' stroke-linecap='round' stroke-opacity='.75' d='M22 21C46 15.5 92 13.4 118 22'/%3E%3C/svg%3E")}
 html.holiday .banner::before{content:'';position:absolute;left:5px;right:5px;bottom:calc(100% - 2px);height:15px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1776 15' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f7f0' d='M0 15L0 8.2Q0 4.2 50.7 3.3Q101.3 2.3 158.6 2.6Q215.9 2.9 272.5 6.9Q329.2 10.9 370.7 5.8Q412.2 0.6 459.8 0.9Q507.4 1.1 537.2 3.5Q567.1 6 601.4 5.6Q635.7 5.1 680.8 8.1Q725.9 11.1 759.2 9.6Q792.4 8.1 848.9 5.4Q905.3 2.6 936.7 2.5Q968.1 2.3 998.8 3.3Q1029.5 4.3 1059.8 7.8Q1090.1 11.2 1145.1 10.1Q1200 8.9 1233.3 4.5Q1266.5 0.2 1321.5 4.1Q1376.5 8 1434.4 6.6Q1492.3 5.2 1540.9 7.1Q1589.4 8.9 1646.7 6.2Q1703.9 3.5 1740 6.2L1776 8.2 L1776 15Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 html.holiday .side::after{content:'';position:absolute;left:-2px;right:-2px;top:-14px;bottom:-45px;z-index:2;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 252 18' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f7f0' d='M0 18L0 9.9Q0 6.3 5.5 8.2Q10.9 10.1 18.7 10.9Q26.5 11.6 32.5 6.4Q38.6 1.2 42.7 3.2Q46.8 5.2 53.4 8.2Q60 11.2 65.5 7.3Q70.9 3.5 76.8 3.3Q82.6 3.2 87 6.1Q91.5 8.9 95.7 7.3Q99.9 5.8 108 5.3Q116 4.8 123.4 6Q130.7 7.2 137.9 8.9Q145.1 10.5 150.2 7.2Q155.3 3.8 162.4 5.3Q169.5 6.8 173.6 7.7Q177.7 8.6 182.4 8.5Q187.1 8.4 194.6 8.9Q202.1 9.4 210 5.4Q217.8 1.4 221.8 4.3Q225.8 7.3 231.8 9.3Q237.8 11.4 243.5 6.3Q249.2 1.1 250.6 5.9L252 9.9 L252 18Z'/%3E%3C/svg%3E") 0 0/100% 18px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 252 46' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='i' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f5f7f0'/%3E%3Cstop offset='1' stop-color='%23bcd6de'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23i)' fill-opacity='.93' d='M6.7 0Q8.5 7 11.2 12Q13 7 14.8 0ZM43.4 0Q45.6 7.3 49.3 12.6Q51 7.3 53.1 0ZM55.6 0Q57.6 20.1 59.2 34.7Q62.6 20.1 64.6 0ZM61.3 0Q62.8 20.4 65.1 35.1Q66.7 20.4 68.3 0ZM91.2 0Q93.4 7 96.7 12.1Q98.8 7 100.9 0ZM118.1 0Q119.5 7.3 121.3 12.7Q122.8 7.3 124.2 0ZM123.7 0Q125.2 18.6 127.5 32.1Q129.2 18.6 130.7 0ZM125.1 0Q126.8 10.3 128.3 17.8Q131 10.3 132.7 0ZM153.1 0Q154.9 26.6 156.5 45.9Q159.7 26.6 161.6 0ZM166 0Q167.8 26 169.4 44.8Q172.3 26 174 0ZM189.1 0Q191.2 24.3 193.6 41.9Q196.6 24.3 198.7 0ZM193.7 0Q195.3 19.2 197.4 33Q199.5 19.2 201.2 0Z'/%3E%3C/svg%3E") 0 100%/100% 46px no-repeat}
-html.holiday .ranger{position:relative}
+/* (Nov 23 2026) the ranger is position:absolute all year now - css/3-fit.css - and that anchors the snow on him too */
 html.holiday .ranger::before{content:'';position:absolute;left:0;top:0;width:100%;height:0;padding-bottom:128.05%;z-index:2;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 827 1059' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f7f0' d='M370 104C378 76 408 54 432 52C458 54 494 78 506 104C496 111 484 103 471 108C458 114 446 104 434 109C421 115 410 105 397 109C387 113 377 109 370 104Z'/%3E%3Cpath fill='none' stroke='%23cfdcdb' stroke-width='5' stroke-linecap='round' d='M394 90C414 78 452 78 482 92'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 html.holiday #hero .hn{position:relative}
 html.holiday #hero .hn::before{content:'';position:absolute;left:50%;margin-left:-145.5px;top:-6px;width:291px;height:11.5px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 291 11.5' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f7f0' d='M0.5 7.2Q1 4 6.5 2.7Q12.7 1.7 19 2.9Q26.2 0.2 33.4 1.2Q38.5 0.9 43.5 3.7Q49.4 0.6 55.3 1.7Q63.8 0.8 72.3 2.5Q80.2 1.9 88.2 2.5Q95.4 1.2 102.6 1.5Q109.8 0.2 117.1 3.8Q130 4 130.5 7.2Q124.8 10.6 119.1 8.3Q112.9 10.9 106.6 7.7Q100.1 10.1 93.6 8.3Q86.9 9.6 80.2 7.4Q75.1 10.9 70.1 7.7Q64 9.9 57.9 7.8Q52.5 10 47 7.9Q41.1 10.8 35.1 8Q28.3 10.8 21.5 8.4Q15.3 9.7 9.1 8.2Q4.8 10.8 0.5 7.9ZM143.3 7.2Q143.8 4 149.2 4.1Q154.6 2.3 160.1 3.3Q165.4 1.1 170.7 1.8Q179.2 0.7 187.7 1.7Q194.9 1.1 202.2 2.5Q208.8 1.4 215.3 2.6Q221 1.8 226.7 3.7Q232 0.8 237.3 1.7Q242.4 0.5 247.5 1.9Q253.9 1 260.3 3.9Q266.6 1 273 1.4Q278.9 1.1 284.8 4.2Q289.7 4 290.2 7.2Q283.3 10.2 276.5 7.4Q269.6 10.3 262.7 8.1Q256 9.9 249.3 7.6Q242.6 9.6 235.9 8.1Q231.2 10.5 226.5 8Q219.6 10.7 212.7 7.8Q207.7 9.6 202.7 7.8Q196.9 9.5 191.2 8.3Q185.4 10.5 179.6 7.5Q174.5 9.4 169.4 7.6Q164.2 10.1 159.1 7.7Q152.5 10.8 145.9 7.4Z'/%3E%3Cpath fill='none' stroke='%23b9c9c7' stroke-width='.9' d='M130.5 7.6Q124.8 10.6 119.1 8.3Q112.9 10.9 106.6 7.7Q100.1 10.1 93.6 8.3Q86.9 9.6 80.2 7.4Q75.1 10.9 70.1 7.7Q64 9.9 57.9 7.8Q52.5 10 47 7.9Q41.1 10.8 35.1 8Q28.3 10.8 21.5 8.4Q15.3 9.7 9.1 8.2Q4.8 10.8 0.5 7.9M290.2 7.6Q283.3 10.2 276.5 7.4Q269.6 10.3 262.7 8.1Q256 9.9 249.3 7.6Q242.6 9.6 235.9 8.1Q231.2 10.5 226.5 8Q219.6 10.7 212.7 7.8Q207.7 9.6 202.7 7.8Q196.9 9.5 191.2 8.3Q185.4 10.5 179.6 7.5Q174.5 9.4 169.4 7.6Q164.2 10.1 159.1 7.7Q152.5 10.8 145.9 7.4'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
@@ -1668,6 +1673,61 @@ html.holiday.hollights .side::after{bottom:-86px;background:url("data:image/svg+
   }
   var _r=render;
   render=function(s){ var out=_r(s); try{ place(s); wire(); }catch(e){ console.warn('[card]',e); } return out; };
+})();
+</script>
+<script id="seat">/* THE RANGER'S SEAT (Nov 23 2026): he stands on the rail, over the QR code, whatever the Also Pouring card says.
+   He sits in the page flow under that card and was put on the rail by a fixed nudge (css/3-fit.css). So every line
+   the crew added to the card or took off it moved him: 46px down into the rail on Oct 20, 16px up off it on Nov 20
+   when two lines got shorter - and the wall failed its own check for three days.
+   Now the nudge is measured: boots on the rail's top edge, centred over the QR cell, at any screen size, with or
+   without the band. If the card ever grows down into his space he gets smaller instead of standing in it.
+   The fixed nudge in 3-fit.css stays as the starting point. */
+(function(){
+  var FEET=3;              // design px his boots sink into the rail's top edge (the tagline under them stays behind the rail)
+  var AIR=8, LIGHTS=56;    // design px kept clear under the Also Pouring card; more while the holiday lights hang there
+  var MIN=0.6;             // never smaller than this share of his full size
+  function px(n){ return (Math.round(n*10)/10)+'px'; }
+  function seat(){
+    try{
+      var r=document.querySelector('.ranger'); if(!r) return;
+      var img=r.querySelector('img'), rail=document.querySelector('.rail'), q=document.querySelector('.rail .qrcell'), side=document.getElementById('side');
+      if(!img || !rail || !q || !img.naturalWidth || !r.offsetWidth) return;
+      if(document.body.classList.contains('curtained')) return;          // behind the curtain: nothing to seat
+      if(!r.__w0) r.__w0=r.offsetWidth;                                  // his full width, before anything here touches it
+      var kb=document.body.getBoundingClientRect().width/(document.body.offsetWidth||1920);   // screen px per design px
+      var k=r.getBoundingClientRect().width/r.offsetWidth;               // screen px per px of his own (the stage is scaled too)
+      if(!(k>0) || !(kb>0)) return;
+      var L=rail.getBoundingClientRect(), Q=q.getBoundingClientRect(), qx=(Q.left+Q.right)/2;
+      var boots=L.top+FEET*kb;
+      var f=1;
+      if(side){
+        var S=side.getBoundingClientRect(), half=r.__w0*k/2;
+        if(qx+half>S.left && qx-half<S.right){                           // he stands under the card: fit the room it leaves
+          var lights=document.documentElement.classList.contains('hollights');
+          var room=boots-(S.bottom+(lights?LIGHTS:AIR)*kb), full=r.__w0*k*img.naturalHeight/img.naturalWidth;
+          f=Math.max(MIN, Math.min(1, room/full));
+        }
+      }
+      var w=Math.round(r.__w0*f*10)/10;
+      if(Math.abs(r.offsetWidth-w)>0.5) r.style.width=px(w);
+      var R=img.getBoundingClientRect();                                 // measured after any resize
+      var m=/matrix\(([^)]+)\)/.exec(getComputedStyle(r).transform||''), p=m?m[1].split(',').map(parseFloat):[1,0,0,1,0,0];
+      var tx=p[4]+(qx-(R.left+R.right)/2)/k, ty=p[5]+(boots-R.bottom)/k;
+      if(Math.abs(tx-p[4])>0.25 || Math.abs(ty-p[5])>0.25) r.style.transform='translate('+px(tx)+','+px(ty)+')';
+    }catch(e){}
+  }
+  window.__seatRanger=seat;
+  var t=0; function soon(){ clearTimeout(t); t=setTimeout(seat,60); }
+  var _r=render;
+  render=function(s){ var out=_r(s); seat(); return out; };
+  window.addEventListener('resize',soon);
+  window.addEventListener('load',seat);
+  try{ var im=document.querySelector('.ranger img'); if(im) im.addEventListener('load',seat); }catch(e){}
+  try{ if(document.fonts && document.fonts.ready) document.fonts.ready.then(seat); }catch(e){}
+  try{ new MutationObserver(soon).observe(document.getElementById('side'),{childList:true,subtree:true,characterData:true}); }catch(e){}
+  try{ new MutationObserver(soon).observe(document.body,{attributes:true,attributeFilter:['class']});
+       new MutationObserver(soon).observe(document.documentElement,{attributes:true,attributeFilter:['class']}); }catch(e){}
+  seat(); setTimeout(seat,300); setTimeout(seat,1500); setInterval(seat,5000);
 })();
 </script>
 </body>
