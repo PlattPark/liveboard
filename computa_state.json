@@ -24,8 +24,8 @@
    },
    "Astronaut Amber": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
@@ -79,11 +79,11 @@
    },
    "Verboten Stealth Haze": {
     "base": "2026-11-23T20:50:42+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    }
   },
-  "orders_since": "2026-11-23T20:50:42+00:00",
+  "orders_since": "2026-11-23T21:21:02+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
