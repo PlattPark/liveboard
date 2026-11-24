@@ -29,8 +29,8 @@
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 2306.0,
-    "pints": 121.0
+    "oz": 2322.0,
+    "pints": 122.0
    },
    "Madagascar Dream": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -69,8 +69,8 @@
    },
    "Plattmosphere": {
     "base": "2026-11-24T20:54:36+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 42.0,
+    "pints": 2.0
    },
    "Platt Park Porter": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -83,7 +83,7 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-24T21:25:04+00:00",
+  "orders_since": "2026-11-24T21:55:33+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
