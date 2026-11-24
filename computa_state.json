@@ -83,8 +83,8 @@
     "pints": 1.0
    }
   },
-  "orders_since": "2026-11-24T05:37:05+00:00",
-  "pitcher_oz": 192.0,
+  "orders_since": "2026-11-24T17:12:58+00:00",
+  "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
@@ -94,7 +94,7 @@
    "Oktoberfest": false,
    "Platt Park Porter": false
   },
-  "sales_posted": "2026-11-23"
+  "sales_posted": "2026-11-24"
  },
  "cellar": {
   "applied": "November 26|wk 3|2026-11-23T19:29:15.749Z",
