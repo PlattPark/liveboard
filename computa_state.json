@@ -19,8 +19,8 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 432.0,
-    "pints": 27.0
+    "oz": 464.0,
+    "pints": 29.0
    },
    "Astronaut Amber": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -79,11 +79,11 @@
    },
    "Verboten Stealth Haze": {
     "base": "2026-11-24T18:52:40+00:00",
-    "oz": 0,
-    "pints": 0
+    "oz": 16.0,
+    "pints": 1.0
    }
   },
-  "orders_since": "2026-11-24T20:54:36+00:00",
+  "orders_since": "2026-11-24T21:25:04+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
