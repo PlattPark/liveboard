@@ -79,11 +79,11 @@
    },
    "Verboten Stealth Haze": {
     "base": "2026-11-23T20:50:42+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "oz": 32.0,
+    "pints": 2.0
    }
   },
-  "orders_since": "2026-11-23T23:55:23+00:00",
+  "orders_since": "2026-11-24T00:26:12+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
