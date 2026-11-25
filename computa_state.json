@@ -39,13 +39,13 @@
    },
    "Grandma's Pumpkin Pie": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 154.0,
+    "oz": 164.0,
     "pints": 9.0
    },
    "Witbier": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 340.0,
-    "pints": 20.0
+    "oz": 356.0,
+    "pints": 21.0
    },
    "Tropical Snow Dance": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -68,23 +68,23 @@
     "pints": 0
    },
    "Plattmosphere": {
-    "base": "2026-11-25T06:08:22+00:00",
-    "oz": 16.0,
-    "pints": 1.0
+    "base": "2026-11-25T19:25:44+00:00",
+    "oz": 0,
+    "pints": 0
    },
    "Platt Park Porter": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 292.0,
-    "pints": 17.0
+    "oz": 324.0,
+    "pints": 19.0
    },
    "Verboten Stealth Haze": {
-    "base": "2026-11-25T06:08:22+00:00",
+    "base": "2026-11-25T19:25:44+00:00",
     "oz": 0,
     "pints": 0
    }
   },
-  "orders_since": "2026-11-25T18:55:23+00:00",
-  "pitcher_oz": 64.0,
+  "orders_since": "2026-11-25T19:25:44+00:00",
+  "pitcher_oz": 96.0,
   "last": {
    "Platty Lite": false,
    "Astronaut Amber": false,
