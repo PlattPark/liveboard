@@ -19,17 +19,17 @@
   "ledger": {
    "Platty Lite": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 608.0,
+    "oz": 618.0,
     "pints": 38.0
    },
    "Astronaut Amber": {
     "base": "2026-11-23T19:29:15.749Z",
-    "oz": 106.0,
-    "pints": 6.0
+    "oz": 138.0,
+    "pints": 8.0
    },
    "Nutorious": {
     "base": "2026-11-16T19:58:54.111Z",
-    "oz": 2338.0,
+    "oz": 2348.0,
     "pints": 123.0
    },
    "Madagascar Dream": {
@@ -68,9 +68,9 @@
     "pints": 0
    },
    "Plattmosphere": {
-    "base": "2026-11-25T00:23:47+00:00",
-    "oz": 32.0,
-    "pints": 2.0
+    "base": "2026-11-25T01:40:13+00:00",
+    "oz": 0,
+    "pints": 0
    },
    "Platt Park Porter": {
     "base": "2026-11-23T19:29:15.749Z",
@@ -83,7 +83,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-25T01:24:59+00:00",
+  "orders_since": "2026-11-25T01:40:13+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
