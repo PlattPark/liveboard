@@ -69,7 +69,7 @@
    },
    "Plattmosphere": {
     "base": "2026-11-28T05:28:53+00:00",
-    "oz": 0,
+    "oz": 10.0,
     "pints": 0
    },
    "Platt Park Porter": {
@@ -83,7 +83,7 @@
     "pints": 0
    }
   },
-  "orders_since": "2026-11-28T05:59:44+00:00",
+  "orders_since": "2026-11-28T06:45:01+00:00",
   "pitcher_oz": 0,
   "last": {
    "Platty Lite": false,
